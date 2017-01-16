@@ -185,10 +185,9 @@ public class Scanner {
 		//int pos = 0; 
 		//TODO IMPLEMENT THIS!!!!
 		pos = 0;
-		//char[] charArr = chars.toCharArray();
 		Kind kind = null;
-		boolean isAComment = false;
 		while (!eof()) {
+			boolean isAComment = false;
 			skipWhitespace();
 			int oldPos = pos;
 			kind = this.ident();
@@ -320,7 +319,8 @@ public class Scanner {
 			case '*': kind = Kind.TIMES;
 				break;
 			// Need to check for / and make sure there is not a leading * 
-			case '/': pos++;
+			case '/': 
+				pos++;
 				if (eof() || !(!eof() && chars.charAt(pos) == '*')) {
 					kind = Kind.DIV;
 				}
@@ -438,7 +438,6 @@ public class Scanner {
 	}
 	
 	public void comment() throws IllegalCharException {
-		int start = pos;
 		boolean commentDone = false;
 		if (chars.charAt(pos) == '/') {
 			pos++;
@@ -452,6 +451,7 @@ public class Scanner {
 						if (!eof() && chars.charAt(pos) == '/') {
 							commentDone = true;
 							pos++;
+							return;
 						}
 					}
 					else {
@@ -465,9 +465,6 @@ public class Scanner {
 			else {
 				pos--;
 			}
-		}
-		if (commentDone || (pos - start == 0)) {
-			return;
 		}
 	}
 	

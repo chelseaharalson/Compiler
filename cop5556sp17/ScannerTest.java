@@ -153,4 +153,120 @@ public class ScannerTest {
         assertEquals("\"c24\" should NOT increment pos", 0, scanner.pos);
 	}
 	
+	//@Test
+	//public void testComment() throws IllegalCharException {
+		//Scanner scanner = new Scanner("/* c */");
+		//Scanner.Token token = scanner.nextToken();
+		//scanner.comment();
+		//scanner.isComment();
+        //assertEquals("\"/* c */\" should increment pos by 7", 7, scanner.pos);
+        //assertEquals("\"/*  */\" should increment the line counter by 0", 0, scanner.getLinePos(token));
+	//}
+	
+	@Test
+	public void testOperator() {
+		Scanner scanner = new Scanner("/");
+        assertEquals("\"/\" should return Kind.DIV", DIV, scanner.operator());
+        assertEquals("\"/\" should increment pos by 1", 1, scanner.pos);
+        
+        scanner = new Scanner("|");
+        assertEquals("\"|\" should return Kind.OR", OR, scanner.operator());
+        assertEquals("\"|\" should increment pos by 1", 1, scanner.pos);
+        
+        scanner = new Scanner("&");
+        assertEquals("\"&\" should return Kind.AND", AND, scanner.operator());
+        assertEquals("\"&\" should increment pos by 1", 1, scanner.pos);
+        
+        scanner = new Scanner("!");
+        assertEquals("\"!\" should return Kind.NOT", NOT, scanner.operator());
+        assertEquals("\"!\" should increment pos by 1", 1, scanner.pos);
+        
+        scanner = new Scanner("!=");
+        assertEquals("\"!=\" should return Kind.NOTEQUAL", NOTEQUAL, scanner.operator());
+        assertEquals("\"!=\" should increment pos by 2", 2, scanner.pos);
+        
+        scanner = new Scanner("==");
+        assertEquals("\"==\" should return Kind.EQUAL", EQUAL, scanner.operator());
+        assertEquals("\"==\" should increment pos by 2", 2, scanner.pos);
+        
+        scanner = new Scanner("<");
+        assertEquals("\"<\" should return Kind.LT", LT, scanner.operator());
+        assertEquals("\"<\" should increment pos by 1", 1, scanner.pos);
+        
+        scanner = new Scanner(">");
+        assertEquals("\">\" should return Kind.GT", GT, scanner.operator());
+        assertEquals("\">\" should increment pos by 1", 1, scanner.pos);
+        
+        scanner = new Scanner("<=");
+        assertEquals("\"<\" should return Kind.LE", LE, scanner.operator());
+        assertEquals("\"<\" should increment pos by 2", 2, scanner.pos);
+        
+        scanner = new Scanner(">=");
+        assertEquals("\">\" should return Kind.GE", GE, scanner.operator());
+        assertEquals("\">\" should increment pos by 2", 2, scanner.pos);
+        
+        scanner = new Scanner("+");
+        assertEquals("\"+\" should return Kind.PLUS", PLUS, scanner.operator());
+        assertEquals("\"+\" should increment pos by 1", 1, scanner.pos);
+        
+        scanner = new Scanner("-");
+        assertEquals("\"-\" should return Kind.MINUS", MINUS, scanner.operator());
+        assertEquals("\"-\" should increment pos by 1", 1, scanner.pos);
+        
+        scanner = new Scanner("->");
+        assertEquals("\"->\" should return Kind.ARROW", ARROW, scanner.operator());
+        assertEquals("\"->\" should increment pos by 2", 2, scanner.pos);
+        
+        scanner = new Scanner("<-");
+        assertEquals("\"<-\" should return Kind.ASSIGN", ASSIGN, scanner.operator());
+        assertEquals("\"<-\" should increment pos by 2", 2, scanner.pos);
+        
+        scanner = new Scanner("|->");
+        assertEquals("\"|->\" should return Kind.BARARROW", BARARROW, scanner.operator());
+        assertEquals("\"|->\" should increment pos by 3", 3, scanner.pos);
+        
+        scanner = new Scanner("%");
+        assertEquals("\"%\" should return Kind.MOD", MOD, scanner.operator());
+        assertEquals("\"%\" should increment pos by 1", 1, scanner.pos);
+        
+        scanner = new Scanner("/*");
+        assertEquals("\"/*\" should return null", null, scanner.operator());
+        assertEquals("\"/*\" should not increment pos", 0, scanner.pos);
+        
+        scanner = new Scanner("=");
+        assertEquals("\"=\" should return null", null, scanner.operator());
+        assertEquals("\"=\" should not increment pos", 0, scanner.pos);
+	}
+	
+	@Test
+	public void testSeparator() {
+		Scanner scanner = new Scanner(";");
+		assertEquals("\";\" should return Kind.SEMI", SEMI, scanner.separator());
+        assertEquals("\";\" should increment pos by 1", 1, scanner.pos);
+        
+        scanner = new Scanner(",");
+		assertEquals("\",\" should return Kind.COMMA", COMMA, scanner.separator());
+        assertEquals("\",\" should increment pos by 1", 1, scanner.pos);
+        
+        scanner = new Scanner("(");
+		assertEquals("\";\" should return Kind.LPAREN", LPAREN, scanner.separator());
+        assertEquals("\";\" should increment pos by 1", 1, scanner.pos);
+        
+        scanner = new Scanner(")");
+		assertEquals("\")\" should return Kind.RPAREN", RPAREN, scanner.separator());
+        assertEquals("\")\" should increment pos by 1", 1, scanner.pos);
+        
+        scanner = new Scanner("{");
+		assertEquals("\";\" should return Kind.LBRACE", LBRACE, scanner.separator());
+        assertEquals("\";\" should increment pos by 1", 1, scanner.pos);
+        
+        scanner = new Scanner("}");
+		assertEquals("\";\" should return Kind.RBRACE", RBRACE, scanner.separator());
+        assertEquals("\";\" should increment pos by 1", 1, scanner.pos);
+        
+        scanner = new Scanner(".");
+        assertEquals("\".\" should return null", null, scanner.separator());
+        assertEquals("\".\" should not increment pos", 0, scanner.pos);
+	}
+	
 }
