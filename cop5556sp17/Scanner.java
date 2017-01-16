@@ -189,6 +189,7 @@ public class Scanner {
 		Kind kind = null;
 		boolean isAComment = false;
 		while (!eof()) {
+			skipWhitespace();
 			int oldPos = pos;
 			kind = this.ident();
 			if (kind == null) {
@@ -497,6 +498,12 @@ public class Scanner {
 		return pos >= chars.length();
 	}
 	
+	public void skipWhitespace() {
+		while ((!eof()) && (Character.isWhitespace(chars.charAt(pos)) == true)) {
+			pos++;
+		}
+	}
+	
 	// Returns the kind of string if str is a reserved keyword
 	// If the string is not a reserved keyword, then the method returns null
 	static public Kind reserved(String str) {
@@ -533,6 +540,7 @@ public class Scanner {
 		Kind kind = null;
 		if (chars.charAt(pos) == '0') {
 			kind = Kind.INT_LIT;
+			pos++;
 		}
 		else if (Character.isDigit(chars.charAt(pos))) {
 			kind = Kind.INT_LIT;
@@ -543,7 +551,7 @@ public class Scanner {
 		else {
 			return null;
 		}
-		String numStr = new String(chars.toCharArray(), oldPos, pos-oldPos);
+		String numStr = new String(chars.toCharArray(), oldPos, (pos - oldPos));
 		try {
 			Integer.valueOf(numStr);
 		}
