@@ -269,4 +269,67 @@ public class ScannerTest {
         assertEquals("\".\" should not increment pos", 0, scanner.pos);
 	}
 	
+	@Test
+	public void testBooleanLiteral() {
+		assertEquals("\"true\" should return Kind.KW_TRUE", KW_TRUE, Scanner.booleanLiteral("true"));
+        assertEquals("\"false\" should return Kind.KW_FALSE", KW_FALSE, Scanner.booleanLiteral("false"));
+        assertEquals("\"t\" should return null", null, Scanner.booleanLiteral("t"));
+        assertEquals("\"f\" should return null", null, Scanner.booleanLiteral("f"));
+        assertEquals("\"FALSE\" should return null", null, Scanner.booleanLiteral("FALSE"));
+        assertEquals("\"TRUE\" should return null", null, Scanner.booleanLiteral("TRUE"));
+	}
+	
+	@Test
+	public void testKeywords() {
+		assertEquals("\"integer\" should return Kind.KW_INTEGER", KW_INTEGER, Scanner.keyword("integer"));
+		assertEquals("\"boolean\" should return Kind.KW_BOOLEAN", KW_BOOLEAN, Scanner.keyword("boolean"));
+		assertEquals("\"image\" should return Kind.KW_IMAGE", KW_IMAGE, Scanner.keyword("image"));
+		assertEquals("\"url\" should return Kind.KW_URL", KW_URL, Scanner.keyword("url"));
+		assertEquals("\"file\" should return Kind.KW_FILE", KW_FILE, Scanner.keyword("file"));
+		assertEquals("\"frame\" should return Kind.KW_FRAME", KW_FRAME, Scanner.keyword("frame"));
+		assertEquals("\"while\" should return Kind.KW_WHILE", KW_WHILE, Scanner.keyword("while"));
+		assertEquals("\"if\" should return Kind.KW_WHILE", KW_IF, Scanner.keyword("if"));
+		assertEquals("\"sleep\" should return Kind.OP_SLEEP", OP_SLEEP, Scanner.keyword("sleep"));
+		assertEquals("\"screenheight\" should return Kind.KW_SCREENHEIGHT", KW_SCREENHEIGHT, Scanner.keyword("screenheight"));
+		assertEquals("\"screenwidth\" should return Kind.KW_SCREENWIDTH", KW_SCREENWIDTH, Scanner.keyword("screenwidth"));
+		assertEquals("\"printf\" should return null", null, Scanner.keyword("printf"));
+		assertEquals("\"integer\n\" should return null", null, Scanner.keyword("integer\n"));
+		assertEquals("\"if get\" should return null", null, Scanner.keyword("if get"));
+	}
+	
+	@Test
+	public void testFilterOpKeywords() {
+		assertEquals("\"gray\" should return Kind.OP_GRAY", OP_GRAY, Scanner.filterOpKeyword("gray"));
+		assertEquals("\"convolve\" should return Kind.OP_CONVOLVE", OP_CONVOLVE, Scanner.filterOpKeyword("convolve"));
+		assertEquals("\"blur\" should return Kind.OP_BLUR", OP_BLUR, Scanner.filterOpKeyword("blur"));
+		assertEquals("\"scale\" should return Kind.KW_SCALE", KW_SCALE, Scanner.filterOpKeyword("scale"));
+		assertEquals("\"twist\" should return null", null, Scanner.filterOpKeyword("twist"));
+	}
+	
+	@Test
+	public void testImageOpKeywords() {
+		assertEquals("\"width\" should return Kind.OP_WIDTH", OP_WIDTH, Scanner.imageOpKeyword("width"));
+		assertEquals("\"height\" should return Kind.OP_HEIGHT", OP_HEIGHT, Scanner.imageOpKeyword("height"));
+		assertEquals("\"turn\" should return null", null, Scanner.imageOpKeyword("turn"));
+	}
+	
+	@Test
+	public void testFrameOpKeywords() {
+		assertEquals("\"xloc\" should return Kind.KW_XLOC", KW_XLOC, Scanner.frameOpKeyword("xloc"));
+		assertEquals("\"yloc\" should return Kind.KW_YLOC", KW_YLOC, Scanner.frameOpKeyword("yloc"));
+		assertEquals("\"hide\" should return Kind.KW_HIDE", KW_HIDE, Scanner.frameOpKeyword("hide"));
+		assertEquals("\"show\" should return Kind.KW_SHOW", KW_SHOW, Scanner.frameOpKeyword("show"));
+		assertEquals("\"move\" should return Kind.KW_MOVE", KW_MOVE, Scanner.frameOpKeyword("move"));
+		assertEquals("\"rotate\" should return null", null, Scanner.frameOpKeyword("rotate"));
+	}
+	
+	@Test
+	public void testIdent() {
+		Scanner scanner = new Scanner("integer");
+		assertEquals("the string \"int\" should return Kind.KW_INTEGER", KW_INTEGER, scanner.ident());
+        assertEquals("\"int\" should increment pos by 7", 7, scanner.pos);
+        
+        
+	}
+	
 }
