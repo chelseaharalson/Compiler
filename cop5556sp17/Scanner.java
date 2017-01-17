@@ -512,7 +512,7 @@ public class Scanner {
 			kind = imageOpKeyword(str);
 		}
 		if (kind == null) {
-			kind = filterOpKeyword(str);
+			kind = frameOpKeyword(str);
 		}
 		if (kind == null) {
 			kind = booleanLiteral(str);

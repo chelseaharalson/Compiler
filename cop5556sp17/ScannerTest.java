@@ -326,10 +326,92 @@ public class ScannerTest {
 	@Test
 	public void testIdent() {
 		Scanner scanner = new Scanner("integer");
-		assertEquals("the string \"int\" should return Kind.KW_INTEGER", KW_INTEGER, scanner.ident());
+		assertEquals("\"int\" should return Kind.KW_INTEGER", KW_INTEGER, scanner.ident());
         assertEquals("\"int\" should increment pos by 7", 7, scanner.pos);
         
+        scanner = new Scanner("boolean");
+        assertEquals("\"boolean\" should return Kind.KW_BOOLEAN", KW_BOOLEAN, scanner.ident());
+        assertEquals("\"boolean\" should increment pos by 7", 7, scanner.pos);
         
+        scanner = new Scanner("image");
+        assertEquals("\"image\" should return Kind.KW_IMAGE", KW_IMAGE, scanner.ident());
+        assertEquals("\"image\" should increment pos by 5", 5, scanner.pos);
+        
+        scanner = new Scanner("url");
+        assertEquals("\"url\" should return Kind.KW_URL", KW_URL, scanner.ident());
+        assertEquals("\"url\" should increment pos by 3", 3, scanner.pos);
+        
+        scanner = new Scanner("file");
+        assertEquals("\"file\" should return Kind.KW_FILE", KW_FILE, scanner.ident());
+        assertEquals("\"file\" should increment pos by 4", 4, scanner.pos);
+        
+        scanner = new Scanner("frame");
+        assertEquals("\"frame\" should return Kind.KW_FRAME", KW_FRAME, scanner.ident());
+        assertEquals("\"frame\" should increment pos by 5", 5, scanner.pos);
+        
+        scanner = new Scanner("while");
+        assertEquals("\"while\" should return Kind.KW_WHILE", KW_WHILE, scanner.ident());
+        assertEquals("\"while\" should increment pos by 5", 5, scanner.pos);
+        
+        scanner = new Scanner("if");
+        assertEquals("\"if\" should return Kind.KW_IF", KW_IF, scanner.ident());
+        assertEquals("\"if\" should increment pos by 2", 2, scanner.pos);
+        
+        scanner = new Scanner("sleep");
+        assertEquals("\"sleep\" should return Kind.OP_SLEEP", OP_SLEEP, scanner.ident());
+        assertEquals("\"sleep\" should increment pos by 5", 5, scanner.pos);
+        
+        scanner = new Scanner("screenheight");
+        assertEquals("\"screenheight\" should return Kind.KW_SCREENHEIGHT", KW_SCREENHEIGHT, scanner.ident());
+        assertEquals("\"screenheight\" should increment pos by 12", 12, scanner.pos);
+        
+        scanner = new Scanner("screenwidth");
+        assertEquals("\"screenwidth\" should return Kind.KW_SCREENWIDTH", KW_SCREENWIDTH, scanner.ident());
+        assertEquals("\"screenwidth\" should increment pos by 11", 11, scanner.pos);
+        
+        scanner = new Scanner("gray");
+        assertEquals("\"gray\" should return Kind.OP_GRAY", OP_GRAY, scanner.ident());
+        assertEquals("\"gray\" should increment pos by 4", 4, scanner.pos);
+        
+        scanner = new Scanner("convolve");
+        assertEquals("\"convolve\" should return Kind.OP_CONVOLVE", OP_CONVOLVE, scanner.ident());
+        assertEquals("\"convolve\" should increment pos by 8", 8, scanner.pos);
+        
+        scanner = new Scanner("blur");
+        assertEquals("\"blur\" should return Kind.OP_BLUR", OP_BLUR, scanner.ident());
+        assertEquals("\"blur\" should increment pos by 4", 4, scanner.pos);
+        
+        scanner = new Scanner("scale");
+        assertEquals("\"scale\" should return Kind.KW_SCALE", KW_SCALE, scanner.ident());
+        assertEquals("\"scale\" should increment pos by 5", 5, scanner.pos);
+        
+        scanner = new Scanner("width");
+        assertEquals("\"width\" should return Kind.OP_WIDTH", OP_WIDTH, scanner.ident());
+        assertEquals("\"width\" should increment pos by 5", 5, scanner.pos);
+        
+        scanner = new Scanner("height");
+        assertEquals("\"height\" should return Kind.OP_HEIGHT", OP_HEIGHT, scanner.ident());
+        assertEquals("\"height\" should increment pos by 6", 6, scanner.pos);
+        
+        scanner = new Scanner("xloc");
+        assertEquals("\"xloc\" should return Kind.KW_XLOC", KW_XLOC, scanner.ident());
+        assertEquals("\"xloc\" should increment pos by 4", 4, scanner.pos);
+        
+        scanner = new Scanner("yloc");
+        assertEquals("\"yloc\" should return Kind.KW_YLOC", KW_YLOC, scanner.ident());
+        assertEquals("\"yloc\" should increment pos by 4", 4, scanner.pos);
+        
+        scanner = new Scanner("hide");
+        assertEquals("\"hide\" should return Kind.KW_HIDE", KW_HIDE, scanner.ident());
+        assertEquals("\"hide\" should increment pos by 4", 4, scanner.pos);
+        
+        scanner = new Scanner("show");
+        assertEquals("\"show\" should return Kind.KW_SHOW", KW_SHOW, scanner.ident());
+        assertEquals("\"show\" should increment pos by 4", 4, scanner.pos);
+        
+        scanner = new Scanner("move");
+        assertEquals("\"move\" should return Kind.KW_MOVE", KW_MOVE, scanner.ident());
+        assertEquals("\"move\" should increment pos by 4", 4, scanner.pos);
 	}
 	
 }
