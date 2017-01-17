@@ -200,8 +200,8 @@ public class Scanner {
 			if (kind == null) {
 				kind = this.separator();
 			}
-			// add in comment check
 			if (kind == null) {
+				// comment check
 				isAComment = isComment();
 				if (isAComment == true) {
 					comment();
@@ -242,10 +242,9 @@ public class Scanner {
 		return kind;
 	}
 	
-	public Kind operator() {
+	public Kind operator() throws IllegalCharException {
 		Kind kind = null;
-		switch (chars.charAt(pos))
-		{
+		switch (chars.charAt(pos)) {
 			// Need to check for | and |->
 			case '|': kind = Kind.OR;
 				pos++;
@@ -253,6 +252,9 @@ public class Scanner {
 					pos++;
 					if (!eof() && chars.charAt(pos) == '>') {
 						kind = Kind.BARARROW;
+					}
+					else {
+						pos = pos - 2;
 					}
 				}
 				else {
@@ -269,6 +271,7 @@ public class Scanner {
 				}
 				else {
 					pos--;
+					throw new IllegalCharException("Expected ==, got =");
 				}
 				break;
 			// Need to check for: ! and !=
@@ -429,11 +432,11 @@ public class Scanner {
 	public boolean isComment() {
 		boolean isAComment = false;
 		if (chars.charAt(pos) == '/') {
-			pos++;
-			if (chars.charAt(pos) == '*') {
+			if (chars.charAt(pos+1) == '*') {
 				isAComment = true;
 			}
 		}
+		//System.out.println("isAComment: " + isAComment);
 		return isAComment;
 	}
 	
@@ -444,7 +447,9 @@ public class Scanner {
 			if (!eof() && chars.charAt(pos) == '*') {
 				// Now inside a comment
 				pos++;
+				//System.out.println("Found beginning comment");
 				while (!eof() && !commentDone) {
+					//System.out.println("Looking at character " + chars.charAt(pos) + " at pos " + pos);
 					// Check for end of comment
 					if (chars.charAt(pos) == '*') {
 						pos++;
@@ -472,7 +477,7 @@ public class Scanner {
 	public Kind ident() {
 		Kind kind = null;
 		if (!eof() && Character.isJavaIdentifierStart(chars.charAt(pos))) {
-			int start = pos;
+			int oldPos = pos;
 			kind = Kind.IDENT;
 			pos++;
 			// Check to see if the following chars are also an ident
@@ -480,7 +485,7 @@ public class Scanner {
 				pos++;
 			}
 			// Check to see if the ident is a keyword or reserved
-			String ident = String.copyValueOf(chars.toCharArray(), start, (pos - start));
+			String ident = String.copyValueOf(chars.toCharArray(), oldPos, (pos - oldPos));
 			Kind temp = Scanner.reserved(ident);
 			if (temp != null) {
 				kind = temp;
