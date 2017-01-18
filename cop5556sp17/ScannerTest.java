@@ -698,4 +698,15 @@ public class ScannerTest {
 	    assertEquals(MINUS, token2.kind);
 	}
 	
+	@Test
+	public void testOperator4() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "|->";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Scanner.Token token1 = scanner.nextToken();
+	    assertEquals(BARARROW, token1.kind);
+	}
+	
 }
