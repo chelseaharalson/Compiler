@@ -155,11 +155,63 @@ public class ScannerTest {
 	}
 	
 	@Test
-	public void testComment() throws IllegalCharException, IllegalNumberException {
+	public void testComment1() throws IllegalCharException, IllegalNumberException {
 		Scanner scanner = new Scanner("/* c */");
 		scanner.scan();
+		Scanner.Token token = scanner.nextToken();
+		LinePos pos = token.getLinePos();
         assertEquals("\"/* c */\" should increment pos by 7", 7, scanner.pos);
-        //assertEquals("\"/*  */\" should increment the line counter by 0", 0, scanner.getLinePos(token));
+        assertEquals("\"/* c */\" should increment the line counter by 0", 0, pos.line);
+	}
+	
+	@Test
+	public void testComment2() throws IllegalCharException, IllegalNumberException {
+		Scanner scanner = new Scanner("/* c\n */");
+		scanner.scan();
+		Scanner.Token token = scanner.nextToken();
+		LinePos pos = token.getLinePos();
+        assertEquals("\"/* c\n */\" should increment pos by 8", 8, scanner.pos);
+        assertEquals("\"/* c\n */\" should increment the line counter by 1", 1, pos.line);
+	}
+	
+	@Test
+	public void testComment3() throws IllegalCharException, IllegalNumberException {
+		Scanner scanner = new Scanner("/* c\n\n\n */");
+		scanner.scan();
+		Scanner.Token token = scanner.nextToken();
+		LinePos pos = token.getLinePos();
+        assertEquals("\"/* c\n\n\n */\" should increment pos by 10", 10, scanner.pos);
+        assertEquals("\"/* c\n\n\n */\" should increment the line counter by 3", 3, pos.line);
+	}
+	
+	@Test
+	public void testComment4() throws IllegalCharException, IllegalNumberException {
+		Scanner scanner = new Scanner("/* */");
+		scanner.scan();
+		Scanner.Token token = scanner.nextToken();
+		LinePos pos = token.getLinePos();
+        assertEquals("\"/* */\" should increment pos by 5", 5, scanner.pos);
+        assertEquals("\"/* */\" should increment the line counter by 0", 0, pos.line);
+	}
+	
+	@Test
+	public void testComment5() throws IllegalCharException, IllegalNumberException {
+		Scanner scanner = new Scanner("/**/");
+		scanner.scan();
+		Scanner.Token token = scanner.nextToken();
+		LinePos pos = token.getLinePos();
+        assertEquals("\"/**/\" should increment pos by 4", 4, scanner.pos);
+        assertEquals("\"/**/\" should increment the line counter by 0", 0, pos.line);
+	}
+	
+	@Test
+	public void testComment6() throws IllegalCharException, IllegalNumberException {
+		Scanner scanner = new Scanner("/***/");
+		scanner.scan();
+		Scanner.Token token = scanner.nextToken();
+		LinePos pos = token.getLinePos();
+        assertEquals("\"/***/\" should increment pos by 5", 5, scanner.pos);
+        assertEquals("\"/***/\" should increment the line counter by 0", 0, pos.line);
 	}
 	
 	@Test
