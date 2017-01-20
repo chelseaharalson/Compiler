@@ -709,4 +709,68 @@ public class ScannerTest {
 	    assertEquals(BARARROW, token1.kind);
 	}
 	
+	@Test
+	public void testOperator5() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "& &";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Scanner.Token token1 = scanner.nextToken();
+	    assertEquals(AND, token1.kind);
+	    Scanner.Token token2 = scanner.nextToken();
+	    assertEquals(AND, token2.kind);
+	}
+	
+	@Test
+	public void testInt1() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "0012345";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Scanner.Token token1 = scanner.nextToken();
+	    assertEquals(0, token1.intVal());
+	    Scanner.Token token2 = scanner.nextToken();
+	    assertEquals(0, token2.intVal());
+	    Scanner.Token token3 = scanner.nextToken();
+	    assertEquals(12345, token3.intVal());
+	}
+	
+	@Test
+	public void linePositionTest5() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "this is a string literal\non two lines";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+	    // get the first token and check its kind, position, and contents
+	    Scanner.Token token1 = scanner.nextToken();
+	    token1 = scanner.tokens.get(6);
+	    LinePos pos1 = token1.getLinePos();
+	    assertEquals(1, pos1.line);
+	    assertEquals(3, pos1.posInLine);
+	    assertEquals("two", token1.getText());
+	 }
+	
+	@Test
+	public void badCommentTest2() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "boolean /* comment */ */*/";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		thrown.expect(IllegalCharException.class);
+		scanner.scan();
+	}
+	
+	@Test
+	public void incompleteTokenTest2() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "~";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		thrown.expect(IllegalCharException.class);
+		scanner.scan();
+	}
+	
 }

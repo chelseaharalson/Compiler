@@ -211,6 +211,9 @@ public class Scanner {
 				//System.out.println("@@@ KIND: " + kind.getText());
 				tokens.add(new Token(kind, oldPos, (pos - oldPos)));
 			}
+			else if (kind == null && !eof()) {
+				throw new IllegalCharException("Illegal character: " + chars.charAt(pos));
+			}
 		}
 		
 		// Add EOF token
