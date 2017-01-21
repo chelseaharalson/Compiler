@@ -773,4 +773,63 @@ public class ScannerTest {
 		scanner.scan();
 	}
 	
+	@Test
+	public void badCommentTest3() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "/** /";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		thrown.expect(IllegalCharException.class);
+		scanner.scan();
+	}
+	
+	@Test
+	public void testIllegalChar() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "testing\nif`\n\t\n\twhile";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		thrown.expect(IllegalCharException.class);
+		scanner.scan();
+	 }
+	
+	@Test
+	public void commentTest1() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "integer /* * */\n/* c */gray";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+	    // get the first token and check its kind, position, and contents
+	    Scanner.Token token1 = scanner.nextToken();
+	    LinePos pos1 = token1.getLinePos();
+	    assertEquals(0, pos1.line);
+	    assertEquals(0, pos1.posInLine);
+	    assertEquals(KW_INTEGER, token1.kind);
+	    assertEquals(0, token1.pos);
+	    assertEquals(7, token1.length);
+	    
+	    Scanner.Token token2 = scanner.nextToken();
+	    LinePos pos2 = token2.getLinePos();
+	    assertEquals(1, pos2.line);
+	    assertEquals(7, pos2.posInLine);
+	    assertEquals(OP_GRAY, token2.kind);
+	    assertEquals(23, token2.pos);
+	    assertEquals(4, token2.length);
+	    
+	    Scanner.Token end = scanner.nextToken();
+	    assertEquals(Scanner.Kind.EOF,end.kind);
+	}
+	
+	@Test
+	public void commentTest3() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "/* ~ */";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Scanner.Token end = scanner.nextToken();
+	    assertEquals(Scanner.Kind.EOF,end.kind);
+	}
+	
 }
