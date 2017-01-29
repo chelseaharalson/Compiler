@@ -832,4 +832,17 @@ public class ScannerTest {
 	    assertEquals(Scanner.Kind.EOF,end.kind);
 	}
 	
+	@Test
+	public void keywordTest1() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "integerblurgray";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+	    // get the first token and check its kind, position, and contents
+	    Scanner.Token token1 = scanner.nextToken();
+	    assertEquals(15, token1.length);
+	    assertEquals(token1.kind, Scanner.Kind.IDENT);
+	 }
+	
 }
