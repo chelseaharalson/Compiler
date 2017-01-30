@@ -1,5 +1,6 @@
 package cop5556sp17;
 
+// Chelsea Metcalf
 //import static cop5556sp17.Scanner.Kind.SEMI;
 import static cop5556sp17.Scanner.Kind.*;
 import static cop5556sp17.Scanner.LinePos;
@@ -754,13 +755,61 @@ public class ScannerTest {
 	 }
 	
 	@Test
-	public void badCommentTest2() throws IllegalCharException, IllegalNumberException {
+	public void testComment7() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "boolean /* comment */*/";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Scanner.Token token1 = scanner.nextToken();
+		assertEquals(KW_BOOLEAN, token1.kind);
+		Scanner.Token token2 = scanner.nextToken();
+		assertEquals(TIMES, token2.kind);
+		Scanner.Token token3 = scanner.nextToken();
+		assertEquals(DIV, token3.kind);
+	}
+	
+	@Test
+	public void testComment8() throws IllegalCharException, IllegalNumberException {
 		// input string
 		String input = "boolean /* comment */ */*/";
 		// create and initialize the scanner
 		Scanner scanner = new Scanner(input);
-		thrown.expect(IllegalCharException.class);
+	    thrown.expect(IllegalCharException.class);
 		scanner.scan();
+	}
+	
+	@Test
+	public void testComment9() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "boolean /* comment */ 22";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		//thrown.expect(IllegalCharException.class);
+		scanner.scan();
+		Scanner.Token token1 = scanner.nextToken();
+		assertEquals(KW_BOOLEAN, token1.kind);
+		Scanner.Token token2 = scanner.nextToken();
+		assertEquals(INT_LIT, token2.kind);
+	}
+	
+	@Test
+	public void testComment10() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "boolean /* comment */ */ */";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Scanner.Token token1 = scanner.nextToken();
+		assertEquals(KW_BOOLEAN, token1.kind);
+		Scanner.Token token2 = scanner.nextToken();
+		assertEquals(TIMES, token2.kind);
+		Scanner.Token token3 = scanner.nextToken();
+		assertEquals(DIV, token3.kind);
+		Scanner.Token token4 = scanner.nextToken();
+		assertEquals(TIMES, token4.kind);
+		Scanner.Token token5 = scanner.nextToken();
+		assertEquals(DIV, token5.kind);
 	}
 	
 	@Test

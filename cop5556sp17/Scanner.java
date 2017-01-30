@@ -2,6 +2,8 @@ package cop5556sp17;
 
 import java.util.ArrayList;
 
+// Chelsea Metcalf
+
 public class Scanner {
 	/**
 	 * Kind enum
@@ -205,6 +207,7 @@ public class Scanner {
 				isAComment = isComment();
 				if (isAComment == true) {
 					comment();
+					//if (!eof()) System.out.println("+++CHAR: " + chars.charAt(pos));
 				}
 			}
 			if (kind != null) {
