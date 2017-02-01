@@ -191,6 +191,9 @@ public class Scanner {
 		while (!eof()) {
 			boolean isAComment = false;
 			skipWhitespace();
+			if (eof()) {
+				break;
+			}
 			int oldPos = pos;
 			kind = this.ident();
 			if (kind == null) {

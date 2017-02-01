@@ -894,4 +894,76 @@ public class ScannerTest {
 	    assertEquals(token1.kind, Scanner.Kind.IDENT);
 	 }
 	
+	@Test
+	public void commentTest11() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "klmn/* abcd */1234 abc";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Scanner.Token token1 = scanner.nextToken();
+		LinePos position1 = token1.getLinePos();
+		assertEquals(0, position1.line);
+		assertEquals(0, position1.posInLine);
+		Scanner.Token token2 = scanner.nextToken();
+		LinePos position2 = token2.getLinePos();
+		assertEquals(0, position2.line);
+		assertEquals(14, position2.posInLine);
+		assertEquals(14, token2.pos);
+	}
+	
+	@Test
+	public void commentTest12() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "klmn/* abcd */\n1234 abc";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Scanner.Token token1 = scanner.nextToken();
+		LinePos position1 = token1.getLinePos();
+		assertEquals(0, position1.line);
+		assertEquals(0, position1.posInLine);
+		Scanner.Token token2 = scanner.nextToken();
+		LinePos position2 = token2.getLinePos();
+		assertEquals(1, position2.line);
+		assertEquals(0, position2.posInLine);
+		assertEquals(15, token2.pos);
+	}
+	
+	@Test
+	public void failedTest1() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "     (3,5) ";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+	}
+	
+	@Test
+	public void failedTest2() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "hide show move sleep ";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+	}
+	
+	@Test
+	public void failedTest3() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = "frame\n, while,\n if ";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+	}
+	
+	@Test
+	public void failedTest4() throws IllegalCharException, IllegalNumberException {
+		// input string
+		String input = " ";
+		// create and initialize the scanner
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+	}
+	
 }
