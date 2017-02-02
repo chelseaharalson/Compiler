@@ -179,6 +179,7 @@ public class Parser {
 	}
 
 	// block ::= { ( dec | statement) * }
+	// statement ::=   OP_SLEEP expression ; | whileStatement | ifStatement | chain ; | assign ;
 	void block() throws SyntaxException {
 		//TODO
 		Kind kind = t.kind;
@@ -189,14 +190,14 @@ public class Parser {
 		consume();
 		while (!kind.equals(EOF)) {
 			kind = t.kind;
-			if (kind.equals(KW_INTEGER) || kind.equals(KW_BOOLEAN) 
-					|| kind.equals(KW_IMAGE) || kind.equals(KW_FRAME)) {
+			if (isDec(kind)) {
 				dec();
 			}
-			else if (kind.equals(OP_SLEEP)) {
-				
+			else if (isStatement(kind)) {
+				statement();
 			}
 			else if (kind.equals(RBRACE)) {
+				consume();
 				return;
 			}
 			else {
@@ -209,10 +210,57 @@ public class Parser {
 		//throw new UnimplementedFeatureException();
 	}
 
+	// program ::=  IDENT block
 	// program ::=  IDENT param_dec ( , param_dec )*   block
 	void program() throws SyntaxException {
 		//TODO
-		throw new UnimplementedFeatureException();
+		Kind kind = t.kind;
+		if (kind.equals(IDENT)) {
+			consume();
+			kind = t.kind;
+			if (isBlock(kind)) {
+				block();
+				return;
+			}
+			else if (isParamDec(kind)) {
+				paramDec();
+				kind = t.kind;
+				if (isBlock(kind)) {
+					block();
+					return;
+				}
+				else if (kind.equals(COMMA)) {
+					while (!kind.equals(EOF)) {
+						consume();
+						paramDec();
+						kind = t.kind;
+						if (isBlock(kind)) {
+							block();
+							return;
+						}
+						else if (!kind.equals(COMMA)) {
+							throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+									+ t.getLinePos().posInLine + "; Expected comma or block but found " + kind);
+						}
+					}
+					throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+							+ t.getLinePos().posInLine + "; Reached end of file, but shouldn't have");
+				}
+				else {
+					throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+							+ t.getLinePos().posInLine + "; Expected comma or block but found " + kind);
+				}
+			}
+			else {
+				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+						+ t.getLinePos().posInLine + "; Expected block or param_dec but found " + kind);
+			}
+		}
+		else {
+			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+					+ t.getLinePos().posInLine + "; Expected IDENT but found " + kind);
+		}
+		//throw new UnimplementedFeatureException();
 	}
 
 	// param_dec ::= ( KW_URL | KW_FILE | KW_INTEGER | KW_BOOLEAN)   IDENT
@@ -302,19 +350,89 @@ public class Parser {
 						+ t.getLinePos().posInLine + "; Expected semicolon but found " + kind);
 			}
 		}
-		else if (kind.equals(KW_WHILE)) {
+		else if (isWhileStatement(kind)) {
 			whileStatement();
 		}
-		else if (kind.equals(KW_IF)) {
+		else if (isIfStatement(kind)) {
 			ifStatement();
 		}
+		else if (isAssign(kind)) {
+			assign();
+		}
+		else if (isChain(kind)) {
+			chain();
+		}
+		else {
+			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+					+ t.getLinePos().posInLine + "; Expected OP_SLEEP expression, whileStatement, ifStatement, chain, or assign"
+							+ " but found " + kind);
+		}
 		//throw new UnimplementedFeatureException();
+	}
+	
+	// assign ::= IDENT ASSIGN expression
+	void assign() throws SyntaxException {
+		match(IDENT);
+		consume();
+		match(ASSIGN);
+		consume();
+		Kind kind = t.kind;
+		if (isExpression(kind)) {
+			expression();
+			return;
+		}
+		else {
+			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+					+ t.getLinePos().posInLine + "; Expected expression but found " + kind);
+		}
 	}
 
 	// chain ::=  chainElem arrowOp chainElem ( arrowOp  chainElem)*
 	void chain() throws SyntaxException {
 		//TODO
-		throw new UnimplementedFeatureException();
+		Kind kind = t.kind;
+		if (isChainElem(kind)) {
+			chainElem();
+			kind = t.kind;
+			if (arrowOp()) {
+				consume();
+				kind = t.kind;
+				if (isChainElem(kind)) {
+					chainElem();
+					kind = t.kind;
+					while (!kind.equals(EOF)) {
+						if (arrowOp()) {
+							consume();
+							kind = t.kind;
+							if (isChainElem(kind)) {
+								chainElem();
+								kind = t.kind;
+							}
+							else {
+								throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+										+ t.getLinePos().posInLine + "; Expected chainElem but found " + kind);
+							}
+						}
+						else {
+							return;
+						}
+					}
+				}
+				else {
+					throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+							+ t.getLinePos().posInLine + "; Expected chainElem but found " + kind);
+				}
+			}
+			else {
+				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+						+ t.getLinePos().posInLine + "; Expected arrowOp but found " + kind);
+			}
+		}
+		else {
+			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+					+ t.getLinePos().posInLine + "; Expected chainElem but found " + kind);
+		}
+		//throw new UnimplementedFeatureException();
 	}
 
 	// chainElem ::= IDENT | filterOp arg | frameOp arg | imageOp arg
@@ -446,6 +564,20 @@ public class Parser {
 		else if (isIfStatement(kind)) {
 			return true;
 		}
+		else if (isAssign(kind)) {
+			return true;
+		}
+		else if (isChain(kind)) {
+			return true;
+		}
+		return false;
+	}
+	
+	// block ::= { ( dec | statement) * }
+	public boolean isBlock(Kind kind) {
+		if (kind.equals(LBRACE)) {
+			return true;
+		}
 		return false;
 	}
 	
@@ -464,7 +596,23 @@ public class Parser {
 	}
 	
 	public boolean isChain(Kind kind) {
-		if (kind.equals(KW_IF)) {
+		if (isChainElem(kind)) {
+			return true;
+		}
+		return false;
+	}
+	
+	// param_dec ::= ( KW_URL | KW_FILE | KW_INTEGER | KW_BOOLEAN)   IDENT
+	public boolean isParamDec(Kind kind) {
+		if (kind.equals(KW_URL) || kind.equals(KW_FILE) || kind.equals(KW_INTEGER) || kind.equals(KW_BOOLEAN)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isDec(Kind kind) {
+		if (kind.equals(KW_INTEGER) || kind.equals(KW_BOOLEAN) 
+					|| kind.equals(KW_IMAGE) || kind.equals(KW_FRAME)) {
 			return true;
 		}
 		return false;
@@ -472,7 +620,12 @@ public class Parser {
 	
 	public boolean isAssign(Kind kind) {
 		if (kind.equals(IDENT)) {
-			return true;
+			Token nextTok = scanner.peek();
+			if (nextTok != null) {
+				if (nextTok.kind.equals(ASSIGN)) {
+					return true;
+				}
+			}
 		}
 		return false;
 	}
@@ -486,6 +639,13 @@ public class Parser {
 		return false;
 	}
 	
+	public boolean isExpression(Kind kind) {
+		if (isTerm(kind)) {
+			return true;
+		}
+		return false;
+	}
+	
 	public boolean isTerm(Kind kind) {
 		if (isElem(kind)) {
 			return true;
@@ -495,6 +655,13 @@ public class Parser {
 	
 	public boolean isElem(Kind kind) {
 		if (isFactor(kind)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isChainElem(Kind kind) {
+		if (kind.equals(IDENT) || filterOp() || frameOp() || imageOp()) {
 			return true;
 		}
 		return false;
