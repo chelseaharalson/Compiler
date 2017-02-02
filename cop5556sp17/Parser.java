@@ -57,23 +57,25 @@ public class Parser {
 		Kind kind = t.kind;
 		if (isTerm(kind)) {
 			term();
-		}
-		kind = t.kind;
-		while (!kind.equals(EOF)) {
-			if (relOp()) {
-				consume();
-				kind = t.kind;
-				if (isTerm(kind)) {
-					term();
+			kind = t.kind;
+			while (!kind.equals(EOF)) {
+				if (relOp()) {
+					consume();
+					kind = t.kind;
+					if (isTerm(kind)) {
+						term();
+					}
+					else {
+						throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+								+ t.getLinePos().posInLine + "; Expected term but found " + kind);
+					}
 				}
 				else {
-					throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
-							+ t.getLinePos().posInLine + "; Expected term but found " + kind);
+					return;
 				}
 			}
-			else {
-				return;
-			}
+			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+					+ t.getLinePos().posInLine + "; Expected term but found " + kind);
 		}
 		throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 				+ t.getLinePos().posInLine + "; Reached end of file, but shouldn't have");
@@ -86,26 +88,28 @@ public class Parser {
 		Kind kind = t.kind;
 		if (isElem(kind)) {
 			elem();
-		}
-		kind = t.kind;
-		while (!kind.equals(EOF)) {
-			if (weakOp()) {
-				consume();
-				kind = t.kind;
-				if (isElem(kind)) {
-					elem();
+			kind = t.kind;
+			while (!kind.equals(EOF)) {
+				if (weakOp()) {
+					consume();
+					kind = t.kind;
+					if (isElem(kind)) {
+						elem();
+					}
+					else {
+						throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+								+ t.getLinePos().posInLine + "; Expected elem but found " + kind);
+					}
 				}
 				else {
-					throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
-							+ t.getLinePos().posInLine + "; Expected elem but found " + kind);
+					return;
 				}
 			}
-			else {
-				return;
-			}
+			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+					+ t.getLinePos().posInLine + "; Reached end of file, but shouldn't have");
 		}
 		throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
-				+ t.getLinePos().posInLine + "; Reached end of file, but shouldn't have");
+				+ t.getLinePos().posInLine + "; Expected elem but found " + kind);
 		//throw new UnimplementedFeatureException();
 	}
 
@@ -115,26 +119,28 @@ public class Parser {
 		Kind kind = t.kind;
 		if (isFactor(kind)) {
 			factor();
-		}
-		kind = t.kind;
-		while (!kind.equals(EOF)) {
-			if (strongOp()) {
-				consume();
-				kind = t.kind;
-				if (isFactor(kind)) {
-					factor();
+			kind = t.kind;
+			while (!kind.equals(EOF)) {
+				if (strongOp()) {
+					consume();
+					kind = t.kind;
+					if (isFactor(kind)) {
+						factor();
+					}
+					else {
+						throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+								+ t.getLinePos().posInLine + "; Expected factor but found " + kind);
+					}
 				}
 				else {
-					throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
-							+ t.getLinePos().posInLine + "; Expected factor but found " + kind);
+					return;
 				}
 			}
-			else {
-				return;
-			}
+			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+					+ t.getLinePos().posInLine + "; Reached end of file, but shouldn't have");
 		}
 		throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
-				+ t.getLinePos().posInLine + "; Reached end of file, but shouldn't have");
+				+ t.getLinePos().posInLine + "; Expected factor but found " + kind);
 		//throw new UnimplementedFeatureException();
 	}
 
@@ -163,6 +169,7 @@ public class Parser {
 			consume();
 			expression();
 			match(RPAREN);
+			consume();	// added code
 		}
 			break;
 		default:
@@ -229,24 +236,78 @@ public class Parser {
 		return;
 		//throw new UnimplementedFeatureException();
 	}
+	
+	void whileStatement() throws SyntaxException {
+		match(KW_WHILE);
+		consume();
+		Kind kind = t.kind;
+		if (kind.equals(LPAREN)) {
+			consume();
+			expression();
+			kind = t.kind;
+			if (kind.equals(RPAREN)) {
+				consume();
+				block();
+				return;
+			}
+			else {
+				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+						+ t.getLinePos().posInLine + "; Expected right parenthesis but found " + kind);
+			}
+		}
+		else {
+			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+					+ t.getLinePos().posInLine + "; Expected left parenthesis but found " + kind);
+		}
+	}
+	
+	void ifStatement() throws SyntaxException {
+		match(KW_IF);
+		consume();
+		Kind kind = t.kind;
+		if (kind.equals(LPAREN)) {
+			consume();
+			expression();
+			kind = t.kind;
+			if (kind.equals(RPAREN)) {
+				consume();
+				block();
+				return;
+			}
+			else {
+				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+						+ t.getLinePos().posInLine + "; Expected right parenthesis but found " + kind);
+			}
+		}
+		else {
+			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+					+ t.getLinePos().posInLine + "; Expected left parenthesis but found " + kind);
+		}
+	}
 
 	// statement ::=   OP_SLEEP expression ; | whileStatement | ifStatement | chain ; | assign ;
 	void statement() throws SyntaxException {
 		//TODO
 		Kind kind = t.kind;
 		if (kind.equals(OP_SLEEP)) {
-			match(OP_SLEEP);
-			
+			consume();
+			expression();
+			kind = t.kind;
+			if (kind.equals(SEMI)) {
+				consume();
+				return;
+			}
+			else {
+				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+						+ t.getLinePos().posInLine + "; Expected semicolon but found " + kind);
+			}
 		}
 		else if (kind.equals(KW_WHILE)) {
-			match(KW_WHILE);
-			
+			whileStatement();
 		}
 		else if (kind.equals(KW_IF)) {
-			match(KW_IF);
-			
+			ifStatement();
 		}
-		
 		//throw new UnimplementedFeatureException();
 	}
 
@@ -259,13 +320,56 @@ public class Parser {
 	// chainElem ::= IDENT | filterOp arg | frameOp arg | imageOp arg
 	void chainElem() throws SyntaxException {
 		//TODO
-		throw new UnimplementedFeatureException();
+		Kind kind = t.kind;
+		if (kind.equals(IDENT)) {
+			consume();
+			return;
+		}
+		else if (filterOp() || frameOp() || imageOp()) {
+			consume();
+			kind = t.kind;
+			if (kind.equals(LPAREN)) {
+				arg();
+			}
+		}
+		else {
+			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+					+ t.getLinePos().posInLine + "; Expected IDENT or OP but found " + kind);
+		}
+		//throw new UnimplementedFeatureException();
 	}
 
 	// arg ::= ε | ( expression (   ,expression)* )
 	void arg() throws SyntaxException {
 		//TODO
-		throw new UnimplementedFeatureException();
+		Kind kind = t.kind;
+		if (kind.equals(LPAREN)) {
+			consume();
+			expression();
+			kind = t.kind;
+			if (kind.equals(RPAREN)) {
+				consume();
+				return;
+			}
+			else if (kind.equals(COMMA)) {
+				while (!kind.equals(EOF)) {
+					consume();
+					expression();
+					kind = t.kind;
+					if (kind.equals(RPAREN)) {
+						consume();
+						return;
+					}
+					else if (!kind.equals(COMMA)) {
+						throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+								+ t.getLinePos().posInLine + "; Expected comma OR right parenthesis but found " + kind);
+					}
+				}
+				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+						+ t.getLinePos().posInLine + "; Reached end of file, but shouldn't have");
+			}
+		}
+		//throw new UnimplementedFeatureException();
 	}
 	
 	// relOp ∷=  LT | LE | GT | GE | EQUAL | NOTEQUAL
