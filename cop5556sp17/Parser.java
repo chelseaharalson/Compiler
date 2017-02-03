@@ -74,11 +74,11 @@ public class Parser {
 					return;
 				}
 			}
-			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
-					+ t.getLinePos().posInLine + "; Expected term but found " + kind);
 		}
-		throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+		else {
+			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 				+ t.getLinePos().posInLine + "; Reached end of file, but shouldn't have");
+		}
 		//throw new UnimplementedFeatureException();
 	}
 
@@ -105,11 +105,11 @@ public class Parser {
 					return;
 				}
 			}
-			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
-					+ t.getLinePos().posInLine + "; Reached end of file, but shouldn't have");
 		}
-		throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+		else {
+			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 				+ t.getLinePos().posInLine + "; Expected elem but found " + kind);
+		}
 		//throw new UnimplementedFeatureException();
 	}
 
@@ -136,11 +136,11 @@ public class Parser {
 					return;
 				}
 			}
-			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
-					+ t.getLinePos().posInLine + "; Reached end of file, but shouldn't have");
 		}
-		throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+		else {
+			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 				+ t.getLinePos().posInLine + "; Expected factor but found " + kind);
+		}
 		//throw new UnimplementedFeatureException();
 	}
 
@@ -169,12 +169,13 @@ public class Parser {
 			consume();
 			expression();
 			match(RPAREN);
-			consume();	// added code
 		}
 			break;
 		default:
 			//you will want to provide a more useful error message
-			throw new SyntaxException("illegal factor");
+			//throw new SyntaxException("illegal factor");
+			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+					+ t.getLinePos().posInLine + "; Expected factor but found " + kind);
 		}
 	}
 
@@ -267,9 +268,7 @@ public class Parser {
 	void paramDec() throws SyntaxException {
 		//TODO
 		match(KW_URL, KW_FILE, KW_INTEGER, KW_BOOLEAN);
-		consume();
 		match(IDENT);
-		consume();
 		return;
 		//throw new UnimplementedFeatureException();
 	}
@@ -278,16 +277,13 @@ public class Parser {
 	void dec() throws SyntaxException {
 		//TODO
 		match(KW_INTEGER, KW_BOOLEAN, KW_IMAGE, KW_FRAME);
-		consume();
 		match(IDENT);
-		consume();
 		return;
 		//throw new UnimplementedFeatureException();
 	}
 	
 	void whileStatement() throws SyntaxException {
 		match(KW_WHILE);
-		consume();
 		Kind kind = t.kind;
 		if (kind.equals(LPAREN)) {
 			consume();
@@ -311,7 +307,6 @@ public class Parser {
 	
 	void ifStatement() throws SyntaxException {
 		match(KW_IF);
-		consume();
 		Kind kind = t.kind;
 		if (kind.equals(LPAREN)) {
 			consume();
@@ -373,9 +368,7 @@ public class Parser {
 	// assign ::= IDENT ASSIGN expression
 	void assign() throws SyntaxException {
 		match(IDENT);
-		consume();
 		match(ASSIGN);
-		consume();
 		Kind kind = t.kind;
 		if (isExpression(kind)) {
 			expression();
@@ -483,9 +476,11 @@ public class Parser {
 								+ t.getLinePos().posInLine + "; Expected comma OR right parenthesis but found " + kind);
 					}
 				}
-				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
-						+ t.getLinePos().posInLine + "; Reached end of file, but shouldn't have");
 			}
+		}
+		else {
+			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+				+ t.getLinePos().posInLine + "; Reached end of file, but shouldn't have");
 		}
 		//throw new UnimplementedFeatureException();
 	}
