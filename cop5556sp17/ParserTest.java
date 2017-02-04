@@ -4,6 +4,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import static org.junit.Assert.assertEquals;
+import static cop5556sp17.Scanner.Kind.*;
 
 import cop5556sp17.Parser.SyntaxException;
 import cop5556sp17.Scanner.IllegalCharException;
@@ -57,28 +58,28 @@ public class ParserTest {
 	public void testStrongOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "*";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.strongOp());
+		assertEquals(true, parser.strongOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testStrongOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "/";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.strongOp());
+		assertEquals(true, parser.strongOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testStrongOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "&";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.strongOp());
+		assertEquals(true, parser.strongOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testStrongOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "%";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.strongOp());
+		assertEquals(true, parser.strongOp(parser.t.kind));
 	}
 	
 	@Test
@@ -86,14 +87,14 @@ public class ParserTest {
 		String input = "`";
 		thrown.expect(IllegalCharException.class);
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.strongOp();
+		parser.strongOp(parser.t.kind);
 	}
 	
 	@Test
 	public void testStrongOp6() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "c";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(false, parser.strongOp());
+		assertEquals(false, parser.strongOp(parser.t.kind));
 	}
 	
 	//weakOp  ∷= PLUS | MINUS | OR 
@@ -101,28 +102,28 @@ public class ParserTest {
 	public void testWeakOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "+";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.weakOp());
+		assertEquals(true, parser.weakOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testWeakOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "-";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.weakOp());
+		assertEquals(true, parser.weakOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testWeakOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "|";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.weakOp());
+		assertEquals(true, parser.weakOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testWeakOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "%";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(false, parser.weakOp());
+		assertEquals(false, parser.weakOp(parser.t.kind));
 	}
 	
 	//relOp ∷=  LT | LE | GT | GE | EQUAL | NOTEQUAL
@@ -130,49 +131,49 @@ public class ParserTest {
 	public void testRelOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "<";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.relOp());
+		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "<=";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.relOp());
+		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = ">";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.relOp());
+		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = ">=";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.relOp());
+		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "==";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.relOp());
+		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp6() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "!=";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.relOp());
+		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp7() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(false, parser.relOp());
+		assertEquals(false, parser.relOp(parser.t.kind));
 	}
 	
 	//arrowOp ∷= ARROW   |   BARARROW
@@ -180,21 +181,21 @@ public class ParserTest {
 	public void testArrowOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "->";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.arrowOp());
+		assertEquals(true, parser.arrowOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testArrowOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "|->";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.arrowOp());
+		assertEquals(true, parser.arrowOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testArrowOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(false, parser.arrowOp());
+		assertEquals(false, parser.arrowOp(parser.t.kind));
 	}
 	
 	//filterOp ::= KW_BLUR |KW_GRAY | KW_CONVOLVE
@@ -202,28 +203,28 @@ public class ParserTest {
 	public void testFilterOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "blur";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.filterOp());
+		assertEquals(true, parser.filterOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFilterOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "gray";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.filterOp());
+		assertEquals(true, parser.filterOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFilterOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "convolve";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.filterOp());
+		assertEquals(true, parser.filterOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFilterOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(false, parser.filterOp());
+		assertEquals(false, parser.filterOp(parser.t.kind));
 	}
 	
 	//frameOp ::= KW_SHOW | KW_HIDE | KW_MOVE | KW_XLOC |KW_YLOC
@@ -231,42 +232,42 @@ public class ParserTest {
 	public void testFrameOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "show";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.frameOp());
+		assertEquals(true, parser.frameOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFrameOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "hide";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.frameOp());
+		assertEquals(true, parser.frameOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFrameOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "move";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.frameOp());
+		assertEquals(true, parser.frameOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFrameOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "xloc";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.frameOp());
+		assertEquals(true, parser.frameOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFrameOp5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "yloc";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.frameOp());
+		assertEquals(true, parser.frameOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFrameOp6() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(false, parser.frameOp());
+		assertEquals(false, parser.frameOp(parser.t.kind));
 	}
 	
 	
@@ -275,28 +276,28 @@ public class ParserTest {
 	public void testImageOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "width";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.imageOp());
+		assertEquals(true, parser.imageOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testImageOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "height";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.imageOp());
+		assertEquals(true, parser.imageOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testImageOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "scale";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(true, parser.imageOp());
+		assertEquals(true, parser.imageOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testImageOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
-		assertEquals(false, parser.imageOp());
+		assertEquals(false, parser.imageOp(parser.t.kind));
 	}
 	
 	//factor ∷= IDENT | INT_LIT | KW_TRUE | KW_FALSE | KW_SCREENWIDTH | KW_SCREENHEIGHT | ( expression )
@@ -668,7 +669,6 @@ public class ParserTest {
 		parser.arg();
 	}
 	
-	// Is this right?
 	@Test
 	public void testArg8() throws IllegalCharException, IllegalNumberException, SyntaxException {
 		String input = "(2(*))";
@@ -676,6 +676,7 @@ public class ParserTest {
 		scanner.scan();
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.arg();
 	}
 	
@@ -686,6 +687,163 @@ public class ParserTest {
 		scanner.scan();
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.arg();
+	}
+	
+	
+	@Test
+	public void testArg10() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "(2+(i>5))";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.arg();
+	}
+	
+	@Test
+	public void testArg11() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "(2+(i>=5))";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.arg();
+	}
+	
+	@Test
+	public void testElem1() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "3 * 4";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.elem();
+	}
+	
+	@Test
+	public void testElem2() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "2";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.elem();
+	}
+	
+	@Test
+	public void testElem3() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "3 / 4";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.elem();
+	}
+	
+	@Test
+	public void testElem4() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "3&4";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.elem();
+	}
+	
+	@Test
+	public void testElem5() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "3%4*2";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.elem();
+	}
+	
+	@Test
+	public void testElem6() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "3*";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.elem();
+	}
+	
+	@Test
+	public void testElem7() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "chelsea / 2";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.elem();
+	}
+	
+	@Test
+	public void testElem8() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "true&false";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.elem();
+	}
+	
+	@Test
+	public void testElem9() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "screenwidth%screenheight*2";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.elem();
+	}
+	
+	@Test
+	public void testElem10() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "(5 != 4)*2";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		//thrown.expect(Parser.SyntaxException.class);
+        parser.elem();
+	}
+	
+	@Test
+	public void testElem11() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "(5+4)";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		//thrown.expect(Parser.SyntaxException.class);
+        parser.elem();
+	}
+	
+	@Test
+	public void testElem12() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "(c";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.elem();
+	}
+	
+	@Test
+	public void testElem13() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "(5->3)";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.elem();
 	}
 }

@@ -59,11 +59,12 @@ public class Parser {
 			term();
 			kind = t.kind;
 			while (!kind.equals(EOF)) {
-				if (relOp()) {
+				if (relOp(kind)) {
 					consume();
 					kind = t.kind;
 					if (isTerm(kind)) {
 						term();
+						kind = t.kind;
 					}
 					else {
 						throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -90,11 +91,12 @@ public class Parser {
 			elem();
 			kind = t.kind;
 			while (!kind.equals(EOF)) {
-				if (weakOp()) {
+				if (weakOp(kind)) {
 					consume();
 					kind = t.kind;
 					if (isElem(kind)) {
 						elem();
+						kind = t.kind;
 					}
 					else {
 						throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -118,14 +120,17 @@ public class Parser {
 		//TODO
 		Kind kind = t.kind;
 		if (isFactor(kind)) {
+			//System.out.println("GOT A FACTOR");
 			factor();
 			kind = t.kind;
 			while (!kind.equals(EOF)) {
-				if (strongOp()) {
+				if (strongOp(kind)) {
+					//System.out.println("GOT A STRONG OP");
 					consume();
 					kind = t.kind;
 					if (isFactor(kind)) {
 						factor();
+						kind = t.kind;
 					}
 					else {
 						throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -133,6 +138,7 @@ public class Parser {
 					}
 				}
 				else {
+					//System.out.println("RETURNING...");
 					return;
 				}
 			}
@@ -387,14 +393,14 @@ public class Parser {
 		if (isChainElem(kind)) {
 			chainElem();
 			kind = t.kind;
-			if (arrowOp()) {
+			if (arrowOp(kind)) {
 				consume();
 				kind = t.kind;
 				if (isChainElem(kind)) {
 					chainElem();
 					kind = t.kind;
 					while (!kind.equals(EOF)) {
-						if (arrowOp()) {
+						if (arrowOp(kind)) {
 							consume();
 							kind = t.kind;
 							if (isChainElem(kind)) {
@@ -436,7 +442,7 @@ public class Parser {
 			consume();
 			return;
 		}
-		else if (filterOp() || frameOp() || imageOp()) {
+		else if (filterOp(kind) || frameOp(kind) || imageOp(kind)) {
 			consume();
 			kind = t.kind;
 			if (kind.equals(LPAREN)) {
@@ -477,6 +483,10 @@ public class Parser {
 					}
 				}
 			}
+			else {
+				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+						+ t.getLinePos().posInLine + "; Expected comma OR right parenthesis but found " + kind);
+			}
 		}
 		else {
 			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -486,8 +496,8 @@ public class Parser {
 	}
 	
 	// relOp ∷=  LT | LE | GT | GE | EQUAL | NOTEQUAL
-	public boolean relOp() {	
-		switch (t.kind) {
+	public boolean relOp(Kind kind) {	
+		switch (kind) {
 			case LT: case LE: case GT: case GE: case EQUAL: case NOTEQUAL: 
 				return true;
 		}
@@ -495,8 +505,8 @@ public class Parser {
 	}
 	
 	// weakOp  ∷= PLUS | MINUS | OR   
-	public boolean weakOp() {
-		switch (t.kind) {
+	public boolean weakOp(Kind kind) {
+		switch (kind) {
 		case PLUS: case MINUS: case OR: 
 			return true;
 		}
@@ -504,8 +514,8 @@ public class Parser {
 	}
 	
 	// strongOp ∷= TIMES | DIV | AND | MOD 
-	public boolean strongOp() {
-		switch (t.kind) {
+	public boolean strongOp(Kind kind) {
+		switch (kind) {
 		case TIMES: case DIV: case AND: case MOD: 
 			return true;
 		}
@@ -513,8 +523,8 @@ public class Parser {
 	}
 	
 	// arrowOp ∷= ARROW   |   BARARROW
-	public boolean arrowOp() {
-		switch (t.kind) {
+	public boolean arrowOp(Kind kind) {
+		switch (kind) {
 		case ARROW: case BARARROW: 
 			return true;
 		}
@@ -522,8 +532,8 @@ public class Parser {
 	}
 	
 	// filterOp ::= KW_BLUR |KW_GRAY | KW_CONVOLVE
-	public boolean filterOp() {
-		switch (t.kind) {
+	public boolean filterOp(Kind kind) {
+		switch (kind) {
 		case OP_BLUR: case OP_GRAY: case OP_CONVOLVE:  
 			return true;
 		}
@@ -531,8 +541,8 @@ public class Parser {
 	}
 	
 	// frameOp ::= KW_SHOW | KW_HIDE | KW_MOVE | KW_XLOC |KW_YLOC
-	public boolean frameOp() {
-		switch (t.kind) {
+	public boolean frameOp(Kind kind) {
+		switch (kind) {
 		case KW_SHOW: case KW_HIDE: case KW_MOVE: case KW_XLOC: case KW_YLOC: 
 			return true;
 		}
@@ -540,8 +550,8 @@ public class Parser {
 	}
 	
 	// imageOp ::= KW_WIDTH |KW_HEIGHT | KW_SCALE
-	public boolean imageOp() {
-		switch (t.kind) {
+	public boolean imageOp(Kind kind) {
+		switch (kind) {
 		case OP_WIDTH: case OP_HEIGHT: case KW_SCALE: 
 			return true;
 		}
@@ -656,7 +666,7 @@ public class Parser {
 	}
 	
 	public boolean isChainElem(Kind kind) {
-		if (kind.equals(IDENT) || filterOp() || frameOp() || imageOp()) {
+		if (kind.equals(IDENT) || filterOp(kind) || frameOp(kind) || imageOp(kind)) {
 			return true;
 		}
 		return false;
