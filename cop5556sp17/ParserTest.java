@@ -23,6 +23,7 @@ public class ParserTest {
 		scanner.scan();
 		Parser parser = new Parser(scanner);
 		parser.factor();
+		assertEquals(EOF, parser.t.kind);
 	}
 
 	@Test
@@ -33,6 +34,7 @@ public class ParserTest {
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.arg();
+        assertEquals(EOF, parser.t.kind);
 	}
 
 	@Test
@@ -51,6 +53,7 @@ public class ParserTest {
 		String input = "prog0 {}";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.parse();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	// strongOp ∷= TIMES | DIV | AND | MOD
@@ -306,6 +309,7 @@ public class ParserTest {
 		String input = "chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.factor();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -313,6 +317,7 @@ public class ParserTest {
 		String input = "2";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.factor();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -320,6 +325,7 @@ public class ParserTest {
 		String input = "true";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.factor();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -327,6 +333,7 @@ public class ParserTest {
 		String input = "false";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.factor();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -334,6 +341,7 @@ public class ParserTest {
 		String input = "screenwidth";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.factor();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -341,6 +349,7 @@ public class ParserTest {
 		String input = "screenheight";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.factor();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -349,6 +358,7 @@ public class ParserTest {
 		Parser parser = new Parser(new Scanner(input).scan());
 		thrown.expect(Parser.SyntaxException.class);
 		parser.factor();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -356,6 +366,7 @@ public class ParserTest {
 		String input = "(true)";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.factor();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -363,6 +374,7 @@ public class ParserTest {
 		String input = "  ( false)  ";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.factor();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -371,6 +383,7 @@ public class ParserTest {
 		Parser parser = new Parser(new Scanner(input).scan());
 		thrown.expect(Parser.SyntaxException.class);
 		parser.factor();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -403,6 +416,7 @@ public class ParserTest {
 		String input = "url chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.paramDec();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -410,6 +424,7 @@ public class ParserTest {
 		String input = "file chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.paramDec();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -417,6 +432,7 @@ public class ParserTest {
 		String input = "integer chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.paramDec();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -424,6 +440,7 @@ public class ParserTest {
 		String input = "boolean chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.paramDec();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -473,6 +490,14 @@ public class ParserTest {
 		thrown.expect(Parser.SyntaxException.class);
 		parser.paramDec();
 	}
+	
+	@Test
+	public void testParamDec11() throws IllegalCharException, IllegalNumberException, SyntaxException{
+		String input = "boolean chelsea metcalf";
+		Parser parser = new Parser(new Scanner(input).scan());
+		parser.paramDec();
+		assertEquals(IDENT, parser.t.kind);
+	}
 
 	//dec ::= (  KW_INTEGER | KW_BOOLEAN | KW_IMAGE | KW_FRAME)    IDENT
 	@Test
@@ -480,6 +505,7 @@ public class ParserTest {
 		String input = "integer chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.dec();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -487,6 +513,7 @@ public class ParserTest {
 		String input = "boolean chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.dec();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -494,6 +521,7 @@ public class ParserTest {
 		String input = "image chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.dec();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -501,6 +529,7 @@ public class ParserTest {
 		String input = "frame chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.dec();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -551,12 +580,21 @@ public class ParserTest {
 		parser.dec();
 	}
 	
+	@Test
+	public void testDec11() throws IllegalCharException, IllegalNumberException, SyntaxException{
+		String input = "boolean chelsea metcalf";
+		Parser parser = new Parser(new Scanner(input).scan());
+		parser.dec();
+		assertEquals(IDENT, parser.t.kind);
+	}
+	
 	//assign ::= IDENT ASSIGN expression
 	@Test
 	public void testAssign1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea <- true";
 		Parser parser = new Parser(new Scanner(input).scan());
 		parser.assign();
+		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -607,6 +645,7 @@ public class ParserTest {
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.arg();
+        assertEquals(EOF, parser.t.kind);
 	}
 
 	@Test
@@ -647,6 +686,7 @@ public class ParserTest {
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.arg();
+        assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -657,6 +697,7 @@ public class ParserTest {
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.arg();
+        assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -700,6 +741,7 @@ public class ParserTest {
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.arg();
+        assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -710,6 +752,7 @@ public class ParserTest {
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.arg();
+        assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -720,6 +763,7 @@ public class ParserTest {
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.elem();
+        assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -730,6 +774,7 @@ public class ParserTest {
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.elem();
+        assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -740,6 +785,7 @@ public class ParserTest {
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.elem();
+        assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -750,6 +796,7 @@ public class ParserTest {
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.elem();
+        assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -760,6 +807,7 @@ public class ParserTest {
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.elem();
+        assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -781,6 +829,7 @@ public class ParserTest {
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.elem();
+        assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -791,6 +840,7 @@ public class ParserTest {
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.elem();
+        assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -801,6 +851,7 @@ public class ParserTest {
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.elem();
+        assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -810,8 +861,8 @@ public class ParserTest {
 		scanner.scan();
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-		//thrown.expect(Parser.SyntaxException.class);
         parser.elem();
+        assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -821,8 +872,8 @@ public class ParserTest {
 		scanner.scan();
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-		//thrown.expect(Parser.SyntaxException.class);
         parser.elem();
+        assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -845,5 +896,888 @@ public class ParserTest {
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.elem();
+	}
+	
+	@Test
+	public void testElem14() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "2+3";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.elem();
+        assertEquals(PLUS, parser.t.kind);
+	}
+	
+	@Test
+	public void testTerm1() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "chelsea + screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.term();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testTerm2() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "chelsea +";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.term();
+	}
+	
+	@Test
+	public void testTerm3() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "chelsea < screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.term();
+        assertEquals(LT, parser.t.kind);
+	}
+	
+	@Test
+	public void testTerm4() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "chelsea + screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.term();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testTerm5() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "-";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.term();
+	}
+	
+	@Test
+	public void testTerm6() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "true | screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.term();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testTerm7() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "true - screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.term();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testTerm8() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "true * screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.term();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testTerm9() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "true / screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.term();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testTerm10() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "true & screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.term();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testTerm11() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "true % screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.term();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testTerm12() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "true < screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.term();
+        assertEquals(LT, parser.t.kind);
+	}
+	
+	@Test
+	public void testTerm13() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "(true < screenheight)";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.term();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testTerm14() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "image + chelsea";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.term();
+	}
+	
+	@Test
+	public void testExpression1() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "true < screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.expression();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testExpression2() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "(true > screenheight)";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.expression();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testExpression3() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "true <= screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.expression();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testExpression4() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "true >= screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.expression();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testExpression5() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "true > screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.expression();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testExpression6() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "false == screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.expression();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testExpression7() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "screenwidth != screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.expression();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testExpression8() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "true < screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.expression();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testExpression9() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "true - screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.expression();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testExpression10() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "true % screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.expression();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testExpression11() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "true & screenheight";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.expression();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testExpression12() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "url";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.expression();
+	}
+	
+	// chainElem ::= IDENT | filterOp arg | frameOp arg | imageOp arg
+	@Test
+	public void testChainElem1() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "chelsea";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.chainElem();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testChainElem2() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "blur (2)";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.chainElem();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testChainElem3() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "gray ()";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        thrown.expect(Parser.SyntaxException.class);
+        parser.chainElem();
+	}
+	
+	@Test
+	public void testChainElem4() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "convolve (2)";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.chainElem();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testChainElem5() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "gray";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.chainElem();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testChainElem6() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "hide (2)";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.chainElem();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testChainElem7() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "scale";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.chainElem();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testChainElem8() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "gray (2,2,3)";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.chainElem();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testChainElem9() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "gray (2,2,chelsea)";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.chainElem();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testChainElem10() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "show (2,2,)";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.chainElem();
+	}
+	
+	// chain ::=  chainElem arrowOp chainElem ( arrowOp  chainElem)*
+	@Test
+	public void testChain1() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "gray (2,2,chelsea) -> show (2,2)";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.chain();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testChain2() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "gray (2,2,chelsea) -> show (2,2) -> hide";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.chain();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testChain3() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "gray (2,2,chelsea) -> show (2,2) ->";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.chain();
+	}
+	
+	@Test
+	public void testChain4() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "gray (2,2,chelsea) ->";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.chain();
+	}
+	
+	@Test
+	public void testChain5() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "gray (2,2,chelsea) ";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.chain();
+	}
+	
+	@Test
+	public void testChain6() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "boolean";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.chain();
+	}
+	
+	@Test
+	public void testChain7() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "gray (2,2,chelsea) -> show (2,2) -> hide -> xloc(1)";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.chain();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	// statement ::=   OP_SLEEP expression ; | whileStatement | ifStatement | chain ; | assign ;
+	@Test
+	public void testStatement1() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "sleep(5);";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.statement();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testStatement2() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "sleep 2;";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.statement();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testStatement3() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "sleep;";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.statement();
+	}
+	
+	@Test
+	public void testStatement4() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "gray (2,2,chelsea) -> show (2,2) -> hide -> xloc(1);";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.statement();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testStatement5() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "chelsea <- 8;";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.statement();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testStatement6() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "chelsea <- integer;";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.statement();
+	}
+	
+	@Test
+	public void testStatement7() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "while(true) {}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.statement();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testStatement8() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "if(true) {}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.statement();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testBlock1() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "{}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.block();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testBlock2() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "{integer c}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.block();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testBlock3() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "{";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.block();
+	}
+	
+	@Test
+	public void testBlock4() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "{integer c sleep(5);}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.block();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testBlock5() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "{sleep(5); integer c}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.block();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testBlock6() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "{sleep(5); integer c sleep(5); frame c}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.block();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testWhileStatement1() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "while(true) { integer c }";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.whileStatement();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testWhileStatement2() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "while(true) { integer c ";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.whileStatement();
+	}
+	
+	@Test
+	public void testWhileStatement3() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "while (true { integer c }";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.whileStatement();
+	}
+	
+	@Test
+	public void testWhileStatement4() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "while true) { integer c }";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.whileStatement();
+	}
+	
+	@Test
+	public void testWhileStatement5() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "while (true) integer c }";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.whileStatement();
+	}
+	
+	@Test
+	public void testWhileStatement6() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "while";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.whileStatement();
+	}
+	
+	@Test
+	public void testIfStatement1() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "if(true) { integer c }";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.ifStatement();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testIfStatement2() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "if(true) { integer c ";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.ifStatement();
+	}
+	
+	@Test
+	public void testIfStatement3() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "if (true { integer c }";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.ifStatement();
+	}
+	
+	@Test
+	public void testIfStatement4() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "if true) { integer c }";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.ifStatement();
+	}
+	
+	@Test
+	public void testIfStatement6() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "if (true) integer c }";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.ifStatement();
+	}
+	
+	@Test
+	public void testIfStatement7() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "if";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.ifStatement();
+	}
+	
+	@Test
+	public void testParse1() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "main {}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.parse();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testParse2() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "main { while(true) {integer c} }";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.parse();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testParse3() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "main url x, boolean t {image c}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.parse();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testParse4() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "main url x {frame c}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.parse();
+        assertEquals(EOF, parser.t.kind);
+	}
+	
+	@Test
+	public void testParse5() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "main url x {frame c";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.parse();
+	}
+	
+	@Test
+	public void testParse6() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "main url x {frame 2}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.parse();
+	}
+	
+	@Test
+	public void testParse7() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.parse();
+	}
+	
+	@Test
+	public void testParse8() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "22";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.parse();
+	}
+	
+	@Test
+	public void testParse9() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "file";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.parse();
+	}
+	
+	@Test
+	public void testParse10() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "main url x, {frame c}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.parse();
 	}
 }

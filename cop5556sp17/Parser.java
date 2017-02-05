@@ -359,9 +359,27 @@ public class Parser {
 		}
 		else if (isAssign(kind)) {
 			assign();
+			kind = t.kind;
+			if (kind.equals(SEMI)) {
+				consume();
+				return;
+			}
+			else {
+				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+						+ t.getLinePos().posInLine + "; Expected semicolon but found " + kind);
+			}
 		}
 		else if (isChain(kind)) {
 			chain();
+			kind = t.kind;
+			if (kind.equals(SEMI)) {
+				consume();
+				return;
+			}
+			else {
+				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
+						+ t.getLinePos().posInLine + "; Expected semicolon but found " + kind);
+			}
 		}
 		else {
 			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
