@@ -1780,4 +1780,15 @@ public class ParserTest {
 		thrown.expect(Parser.SyntaxException.class);
         parser.parse();
 	}
+	
+	@Test
+	public void testParse11() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "main { while(true,2) {integer c} }";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.parse();
+	}
 }
