@@ -1195,6 +1195,16 @@ public class ParserTest {
         parser.expression();
 	}
 	
+	@Test
+	public void testExpression13() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "int_lit * int_lit + int_lit ! int_lit ";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.expression();
+	}
+	
 	// chainElem ::= IDENT | filterOp arg | frameOp arg | imageOp arg
 	@Test
 	public void testChainElem1() throws IllegalCharException, IllegalNumberException, SyntaxException {
@@ -1789,6 +1799,92 @@ public class ParserTest {
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
+        parser.parse();
+	}
+	
+	@Test
+	public void testParse12() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "method file x { }";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.parse();
+	}
+	
+	@Test
+	public void testParse13() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "chelsea {integer x \n sleep(x<2); \n if(x>y) {boolean t} \n blur(3) -> move(2,4); }";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.parse();
+	}
+	
+	@Test
+	public void testParse14() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "awesomeProgram file awesome {\n    integer i\n    i  <- 1;\n    integer j\n    j <- 5;\n    while(i < j){\n    i <- (i + 1);\n    }\n    frame f\n    if(f){\n    f <- (i + j);\n}    \n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.parse();
+	}
+	
+	@Test
+	public void testParse15() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "me {sleep(5+(4*(false/(4-(true%(5&(me)))))));}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		//System.out.println(scanner);
+		Parser parser = new Parser(scanner);
+        parser.parse();
+	}
+	
+	@Test
+	public void testParse16() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "chelsea{if(a<b <= c){}}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        parser.parse();
+	}
+	
+	@Test
+	public void testParse17() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "chelsea{if(a<b <= c){};}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
+        parser.parse();
+	}
+	
+	@Test
+	public void testParse18() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "chelsea{\n while(i<3){\n if(a+b==3){\n boolean chelsea}\n}\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        parser.parse();
+	}
+	
+	@Test
+	public void testParse19() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "chelsea{\n while(i<3){\n if(a+b==3){\n boolean chelsea\n while(true){blur(2) |-> convolve(2,3); \n} \n}\n}\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        parser.parse();
+	}
+	
+	@Test
+	public void testParse20() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "me {sleep(5+4*false/4-true%5&me);}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
         parser.parse();
 	}
 }
