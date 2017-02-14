@@ -9,6 +9,7 @@ import static cop5556sp17.Scanner.Kind.*;
 import cop5556sp17.Parser.SyntaxException;
 import cop5556sp17.Scanner.IllegalCharException;
 import cop5556sp17.Scanner.IllegalNumberException;
+import jdk.nashorn.internal.runtime.regexp.joni.Syntax;
 
 
 public class ParserTest {
@@ -664,7 +665,6 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
 		parser.arg();
 	}
 	
@@ -1885,6 +1885,16 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
+        parser.parse();
+	}
+
+	@Test
+	public void testParse21() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "chelsea{\n while(i<3){\n if(a+b==3){\n boolean chelsea\n while(true){blur3,2) |-> convolve(2,3); \n} \n}\n}\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.parse();
 	}
 }

@@ -506,10 +506,10 @@ public class Parser {
 						+ t.getLinePos().posInLine + "; Expected comma OR right parenthesis but found " + kind);
 			}
 		}
-		else {
+		/*else {
 			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 				+ t.getLinePos().posInLine + "; Reached end of file, but shouldn't have");
-		}
+		}*/
 		//throw new UnimplementedFeatureException();
 	}
 	
