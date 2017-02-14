@@ -9,7 +9,6 @@ import static cop5556sp17.Scanner.Kind.*;
 import cop5556sp17.Parser.SyntaxException;
 import cop5556sp17.Scanner.IllegalCharException;
 import cop5556sp17.Scanner.IllegalNumberException;
-import jdk.nashorn.internal.runtime.regexp.joni.Syntax;
 
 
 public class ParserTest {
