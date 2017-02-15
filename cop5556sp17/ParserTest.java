@@ -6,7 +6,7 @@ import org.junit.rules.ExpectedException;
 import static org.junit.Assert.assertEquals;
 import static cop5556sp17.Scanner.Kind.*;
 
-import cop5556sp17.Parser.SyntaxException;
+import cop5556sp17.ParserHW2.SyntaxException;
 import cop5556sp17.Scanner.IllegalCharException;
 import cop5556sp17.Scanner.IllegalNumberException;
 
@@ -21,7 +21,7 @@ public class ParserTest {
 		String input = "abc";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
 		parser.factor();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -32,7 +32,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.arg();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -42,8 +42,8 @@ public class ParserTest {
 		String input = "  (3,) ";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.arg();
 	}
 
@@ -51,7 +51,7 @@ public class ParserTest {
 	@Test
 	public void testProgram0() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "prog0 {}";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.parse();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -60,28 +60,28 @@ public class ParserTest {
 	@Test
 	public void testStrongOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "*";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.strongOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testStrongOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "/";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.strongOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testStrongOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "&";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.strongOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testStrongOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "%";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.strongOp(parser.t.kind));
 	}
 	
@@ -89,14 +89,14 @@ public class ParserTest {
 	public void testStrongOp5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "`";
 		thrown.expect(IllegalCharException.class);
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.strongOp(parser.t.kind);
 	}
 	
 	@Test
 	public void testStrongOp6() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "c";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(false, parser.strongOp(parser.t.kind));
 	}
 	
@@ -104,28 +104,28 @@ public class ParserTest {
 	@Test
 	public void testWeakOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "+";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.weakOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testWeakOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "-";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.weakOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testWeakOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "|";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.weakOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testWeakOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "%";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(false, parser.weakOp(parser.t.kind));
 	}
 	
@@ -133,49 +133,49 @@ public class ParserTest {
 	@Test
 	public void testRelOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "<";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "<=";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = ">";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = ">=";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "==";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp6() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "!=";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp7() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(false, parser.relOp(parser.t.kind));
 	}
 	
@@ -183,21 +183,21 @@ public class ParserTest {
 	@Test
 	public void testArrowOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "->";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.arrowOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testArrowOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "|->";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.arrowOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testArrowOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(false, parser.arrowOp(parser.t.kind));
 	}
 	
@@ -205,28 +205,28 @@ public class ParserTest {
 	@Test
 	public void testFilterOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "blur";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.filterOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFilterOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "gray";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.filterOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFilterOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "convolve";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.filterOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFilterOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(false, parser.filterOp(parser.t.kind));
 	}
 	
@@ -234,42 +234,42 @@ public class ParserTest {
 	@Test
 	public void testFrameOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "show";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.frameOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFrameOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "hide";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.frameOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFrameOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "move";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.frameOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFrameOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "xloc";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.frameOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFrameOp5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "yloc";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.frameOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFrameOp6() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(false, parser.frameOp(parser.t.kind));
 	}
 	
@@ -278,28 +278,28 @@ public class ParserTest {
 	@Test
 	public void testImageOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "width";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.imageOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testImageOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "height";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.imageOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testImageOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "scale";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(true, parser.imageOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testImageOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		assertEquals(false, parser.imageOp(parser.t.kind));
 	}
 	
@@ -307,7 +307,7 @@ public class ParserTest {
 	@Test
 	public void testFactor1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.factor();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -315,7 +315,7 @@ public class ParserTest {
 	@Test
 	public void testFactor2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "2";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.factor();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -323,7 +323,7 @@ public class ParserTest {
 	@Test
 	public void testFactor3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "true";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.factor();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -331,7 +331,7 @@ public class ParserTest {
 	@Test
 	public void testFactor4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "false";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.factor();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -339,7 +339,7 @@ public class ParserTest {
 	@Test
 	public void testFactor5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "screenwidth";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.factor();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -347,7 +347,7 @@ public class ParserTest {
 	@Test
 	public void testFactor6() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "screenheight";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.factor();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -355,8 +355,8 @@ public class ParserTest {
 	@Test
 	public void testFactor7() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "integer";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.factor();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -364,7 +364,7 @@ public class ParserTest {
 	@Test
 	public void testFactor8() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "(true)";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.factor();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -372,7 +372,7 @@ public class ParserTest {
 	@Test
 	public void testFactor9() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "  ( false)  ";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.factor();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -380,8 +380,8 @@ public class ParserTest {
 	@Test
 	public void testFactor10() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "(xloc)";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.factor();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -389,24 +389,24 @@ public class ParserTest {
 	@Test
 	public void testFactor11() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "()";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.factor();
 	}
 	
 	@Test
 	public void testFactor12() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "(true";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.factor();
 	}
 	
 	@Test
 	public void testFactor13() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "yloc)";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.factor();
 	}
 	
@@ -414,7 +414,7 @@ public class ParserTest {
 	@Test
 	public void testParamDec1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "url chelsea";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.paramDec();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -422,7 +422,7 @@ public class ParserTest {
 	@Test
 	public void testParamDec2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "file chelsea";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.paramDec();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -430,7 +430,7 @@ public class ParserTest {
 	@Test
 	public void testParamDec3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "integer chelsea";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.paramDec();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -438,7 +438,7 @@ public class ParserTest {
 	@Test
 	public void testParamDec4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean chelsea";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.paramDec();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -446,55 +446,55 @@ public class ParserTest {
 	@Test
 	public void testParamDec5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "url";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.paramDec();
 	}
 	
 	@Test
 	public void testParamDec6() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "file";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.paramDec();
 	}
 	
 	@Test
 	public void testParamDec7() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "integer";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.paramDec();
 	}
 	
 	@Test
 	public void testParamDec8() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.paramDec();
 	}
 	
 	@Test
 	public void testParamDec9() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "xloc";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.paramDec();
 	}
 	
 	@Test
 	public void testParamDec10() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean yloc";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.paramDec();
 	}
 	
 	@Test
 	public void testParamDec11() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean chelsea metcalf";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.paramDec();
 		assertEquals(IDENT, parser.t.kind);
 	}
@@ -503,7 +503,7 @@ public class ParserTest {
 	@Test
 	public void testDec1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "integer chelsea";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.dec();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -511,7 +511,7 @@ public class ParserTest {
 	@Test
 	public void testDec2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean chelsea";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.dec();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -519,7 +519,7 @@ public class ParserTest {
 	@Test
 	public void testDec3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "image chelsea";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.dec();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -527,7 +527,7 @@ public class ParserTest {
 	@Test
 	public void testDec4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "frame chelsea";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.dec();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -535,55 +535,55 @@ public class ParserTest {
 	@Test
 	public void testDec5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "integer";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testDec6() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testDec7() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "image";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testDec8() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "frame";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testDec9() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "xloc";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testDec10() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean yloc";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testDec11() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean chelsea metcalf";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.dec();
 		assertEquals(IDENT, parser.t.kind);
 	}
@@ -592,7 +592,7 @@ public class ParserTest {
 	@Test
 	public void testAssign1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea <- true";
-		Parser parser = new Parser(new Scanner(input).scan());
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
 		parser.assign();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -600,40 +600,40 @@ public class ParserTest {
 	@Test
 	public void testAssign2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testAssign3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "<-";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testAssign4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea <- ";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testAssign5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea <- yloc";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testAssign7() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea *";
-		Parser parser = new Parser(new Scanner(input).scan());
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(new Scanner(input).scan());
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.dec();
 	}
 	
@@ -643,7 +643,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.arg();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -653,8 +653,8 @@ public class ParserTest {
 		String input = "  (3,2";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.arg();
 	}
 	
@@ -663,7 +663,7 @@ public class ParserTest {
 		String input = "3,2)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
 		parser.arg();
 	}
 	
@@ -672,8 +672,8 @@ public class ParserTest {
 		String input = "()";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.arg();
 	}
 	
@@ -683,7 +683,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.arg();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -694,7 +694,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.arg();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -704,8 +704,8 @@ public class ParserTest {
 		String input = "(yloc)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
 		parser.arg();
 	}
 	
@@ -715,8 +715,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.arg();
 	}
 	
@@ -726,8 +726,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.arg();
 	}
 	
@@ -738,7 +738,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.arg();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -749,7 +749,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.arg();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -760,7 +760,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.elem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -771,7 +771,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.elem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -782,7 +782,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.elem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -793,7 +793,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.elem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -804,7 +804,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.elem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -815,8 +815,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.elem();
 	}
 	
@@ -826,7 +826,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.elem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -837,7 +837,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.elem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -848,7 +848,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.elem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -859,7 +859,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.elem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -870,7 +870,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.elem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -881,8 +881,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.elem();
 	}
 	
@@ -892,8 +892,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.elem();
 	}
 	
@@ -903,7 +903,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.elem();
         assertEquals(PLUS, parser.t.kind);
 	}
@@ -914,7 +914,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.term();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -925,8 +925,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.term();
 	}
 	
@@ -936,7 +936,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.term();
         assertEquals(LT, parser.t.kind);
 	}
@@ -947,7 +947,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.term();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -958,8 +958,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.term();
 	}
 	
@@ -969,7 +969,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.term();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -980,7 +980,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.term();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -991,7 +991,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.term();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1002,7 +1002,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.term();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1013,7 +1013,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.term();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1024,7 +1024,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.term();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1035,7 +1035,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.term();
         assertEquals(LT, parser.t.kind);
 	}
@@ -1046,7 +1046,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.term();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1057,8 +1057,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.term();
 	}
 	
@@ -1068,7 +1068,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.expression();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1079,7 +1079,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.expression();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1090,7 +1090,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.expression();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1101,7 +1101,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.expression();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1112,7 +1112,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.expression();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1123,7 +1123,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.expression();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1134,7 +1134,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.expression();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1145,7 +1145,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.expression();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1156,7 +1156,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.expression();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1167,7 +1167,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.expression();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1178,7 +1178,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.expression();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1189,8 +1189,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.expression();
 	}
 	
@@ -1200,7 +1200,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.expression();
 	}
 	
@@ -1211,7 +1211,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.chainElem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1222,7 +1222,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.chainElem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1233,8 +1233,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-        thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+        thrown.expect(ParserHW2.SyntaxException.class);
         parser.chainElem();
 	}
 	
@@ -1244,7 +1244,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.chainElem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1255,7 +1255,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.chainElem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1266,7 +1266,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.chainElem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1277,7 +1277,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.chainElem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1288,7 +1288,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.chainElem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1299,7 +1299,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.chainElem();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1310,8 +1310,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.chainElem();
 	}
 	
@@ -1322,7 +1322,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.chain();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1333,7 +1333,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.chain();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1344,8 +1344,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.chain();
 	}
 	
@@ -1355,8 +1355,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.chain();
 	}
 	
@@ -1366,8 +1366,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.chain();
 	}
 	
@@ -1377,8 +1377,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.chain();
 	}
 	
@@ -1388,7 +1388,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.chain();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1400,7 +1400,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.statement();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1411,7 +1411,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.statement();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1422,8 +1422,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.statement();
 	}
 	
@@ -1433,7 +1433,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.statement();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1444,7 +1444,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.statement();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1455,8 +1455,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.statement();
 	}
 	
@@ -1466,7 +1466,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.statement();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1477,7 +1477,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.statement();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1488,7 +1488,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.block();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1499,7 +1499,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.block();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1510,8 +1510,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.block();
 	}
 	
@@ -1521,7 +1521,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.block();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1532,7 +1532,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.block();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1543,7 +1543,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.block();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1554,7 +1554,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.whileStatement();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1565,8 +1565,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.whileStatement();
 	}
 	
@@ -1576,8 +1576,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.whileStatement();
 	}
 	
@@ -1587,8 +1587,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.whileStatement();
 	}
 	
@@ -1598,8 +1598,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.whileStatement();
 	}
 	
@@ -1609,8 +1609,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.whileStatement();
 	}
 	
@@ -1620,7 +1620,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.ifStatement();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1631,8 +1631,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.ifStatement();
 	}
 	
@@ -1642,8 +1642,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.ifStatement();
 	}
 	
@@ -1653,8 +1653,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.ifStatement();
 	}
 	
@@ -1664,8 +1664,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.ifStatement();
 	}
 	
@@ -1675,8 +1675,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.ifStatement();
 	}
 	
@@ -1686,7 +1686,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.parse();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1697,7 +1697,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.parse();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1708,7 +1708,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.parse();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1719,7 +1719,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.parse();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1730,8 +1730,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -1741,8 +1741,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -1752,8 +1752,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -1763,8 +1763,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -1774,8 +1774,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -1785,8 +1785,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -1796,8 +1796,8 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -1807,7 +1807,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.parse();
 	}
 	
@@ -1817,7 +1817,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.parse();
 	}
 	
@@ -1827,7 +1827,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.parse();
 	}
 	
@@ -1837,7 +1837,7 @@ public class ParserTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.parse();
 	}
 	
@@ -1846,7 +1846,7 @@ public class ParserTest {
 		String input = "chelsea{if(a<b <= c){}}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.parse();
 	}
 	
@@ -1855,8 +1855,8 @@ public class ParserTest {
 		String input = "chelsea{if(a<b <= c){};}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -1865,7 +1865,7 @@ public class ParserTest {
 		String input = "chelsea{\n while(i<3){\n if(a+b==3){\n boolean chelsea}\n}\n}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.parse();
 	}
 	
@@ -1874,7 +1874,7 @@ public class ParserTest {
 		String input = "chelsea{\n while(i<3){\n if(a+b==3){\n boolean chelsea\n while(true){blur(2) |-> convolve(2,3); \n} \n}\n}\n}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.parse();
 	}
 	
@@ -1883,7 +1883,7 @@ public class ParserTest {
 		String input = "me {sleep(5+4*false/4-true%5&me);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		Parser parser = new Parser(scanner);
+		ParserHW2 parser = new ParserHW2(scanner);
         parser.parse();
 	}
 
@@ -1892,8 +1892,8 @@ public class ParserTest {
 		String input = "chelsea{\n while(i<3){\n if(a+b==3){\n boolean chelsea\n while(true){blur3,2) |-> convolve(2,3); \n} \n}\n}\n}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		Parser parser = new Parser(scanner);
-		thrown.expect(Parser.SyntaxException.class);
+		ParserHW2 parser = new ParserHW2(scanner);
+		thrown.expect(ParserHW2.SyntaxException.class);
         parser.parse();
 	}
 }

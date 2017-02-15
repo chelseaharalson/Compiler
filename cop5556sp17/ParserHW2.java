@@ -1,14 +1,10 @@
 package cop5556sp17;
 
-import cop5556sp17.AST.*;
 import cop5556sp17.Scanner.Kind;
 import static cop5556sp17.Scanner.Kind.*;
-import java.util.ArrayList;
-import java.util.List;
-
 import cop5556sp17.Scanner.Token;
 
-public class Parser {
+public class ParserHW2 {
 
 	/**
 	 * Exception to be thrown if a syntax error is detected in the input.
@@ -38,7 +34,7 @@ public class Parser {
 	Scanner scanner;
 	Token t;
 
-	Parser(Scanner scanner) {
+	ParserHW2(Scanner scanner) {
 		this.scanner = scanner;
 		t = scanner.nextToken();
 	}
@@ -56,24 +52,19 @@ public class Parser {
 	}
 
 	// expression ∷= term ( relOp term)*
-	// Expression ∷= IdentExpression | IntLitExpression | BooleanLitExpression | ConstantExpression | BinaryExpression
-	Expression expression() throws SyntaxException {
-		Expression e0 = null;
-		Expression e1 = null;
+	void expression() throws SyntaxException {
+		//TODO
 		Kind kind = t.kind;
-		Token startToken = t;
 		if (isTerm(kind)) {
-			e0 = term();
+			term();
 			kind = t.kind;
 			while (!kind.equals(EOF)) {
-				if (relOp(kind) || weakOp(kind) || strongOp(kind)) {
-					Token op = t;
+				if (relOp(kind)) {
 					consume();
 					kind = t.kind;
 					if (isTerm(kind)) {
-						e1 = term();
+						term();
 						kind = t.kind;
-						e0 = new BinaryExpression(startToken, e0, op, e1);
 					}
 					else {
 						throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -81,35 +72,31 @@ public class Parser {
 					}
 				}
 				else {
-					break;
+					return;
 				}
 			}
-			return e0;
 		}
 		else {
 			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 				+ t.getLinePos().posInLine + "; Reached end of file, but shouldn't have");
 		}
+		//throw new UnimplementedFeatureException();
 	}
 
 	// term ∷= elem ( weakOp  elem)*
-	Expression term() throws SyntaxException {
-		Expression e0 = null;
-		Expression e1 = null;
+	void term() throws SyntaxException {
+		//TODO
 		Kind kind = t.kind;
-		Token startToken = t;
 		if (isElem(kind)) {
-			e0 = elem();
+			elem();
 			kind = t.kind;
 			while (!kind.equals(EOF)) {
 				if (weakOp(kind)) {
-					Token op = t;
 					consume();
 					kind = t.kind;
 					if (isElem(kind)) {
-						e1 = elem();
+						elem();
 						kind = t.kind;
-						e0 = new BinaryExpression(startToken, e0, op, e1);
 					}
 					else {
 						throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -117,35 +104,33 @@ public class Parser {
 					}
 				}
 				else {
-					break;
+					return;
 				}
 			}
-			return e0;
 		}
 		else {
 			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 				+ t.getLinePos().posInLine + "; Expected elem but found " + kind);
 		}
+		//throw new UnimplementedFeatureException();
 	}
 
 	// elem ∷= factor ( strongOp factor)*
-	Expression elem() throws SyntaxException {
-		Expression e0 = null;
-		Expression e1 = null;
+	void elem() throws SyntaxException {
+		//TODO
 		Kind kind = t.kind;
-		Token startToken = t;
 		if (isFactor(kind)) {
-			e0 = factor();
+			//System.out.println("GOT A FACTOR");
+			factor();
 			kind = t.kind;
 			while (!kind.equals(EOF)) {
 				if (strongOp(kind)) {
-					Token op = t;
+					//System.out.println("GOT A STRONG OP");
 					consume();
 					kind = t.kind;
 					if (isFactor(kind)) {
-						e1 = factor();
+						factor();
 						kind = t.kind;
-						e0 = new BinaryExpression(startToken, e0, op, e1);
 					}
 					else {
 						throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -154,64 +139,56 @@ public class Parser {
 				}
 				else {
 					//System.out.println("RETURNING...");
-					break;
+					return;
 				}
 			}
-			return e0;
 		}
 		else {
 			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 				+ t.getLinePos().posInLine + "; Expected factor but found " + kind);
 		}
+		//throw new UnimplementedFeatureException();
 	}
 
-	// Expression ∷= IdentExpression | IntLitExpression | BooleanLitExpression | ConstantExpression | BinaryExpression
-	Expression factor() throws SyntaxException {
-		Expression exp = null;
+	void factor() throws SyntaxException {
 		Kind kind = t.kind;
 		switch (kind) {
 		case IDENT: {
-			exp = new IdentExpression(t);
 			consume();
 		}
 			break;
 		case INT_LIT: {
-			exp = new IntLitExpression(t);
 			consume();
 		}
 			break;
 		case KW_TRUE:
 		case KW_FALSE: {
-			exp = new BooleanLitExpression(t);
 			consume();
 		}
 			break;
 		case KW_SCREENWIDTH:
 		case KW_SCREENHEIGHT: {
-			exp = new ConstantExpression(t);
 			consume();
 		}
 			break;
 		case LPAREN: {
 			consume();
-			exp = expression();
+			expression();
 			match(RPAREN);
 		}
 			break;
 		default:
+			//you will want to provide a more useful error message
+			//throw new SyntaxException("illegal factor");
 			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 					+ t.getLinePos().posInLine + "; Expected factor but found " + kind);
 		}
-		return exp;
 	}
 
 	// block ::= { ( dec | statement) * }
 	// statement ::=   OP_SLEEP expression ; | whileStatement | ifStatement | chain ; | assign ;
-	// Block ∷= List<Dec>  List<Statement>
-	Block block() throws SyntaxException {
-		Token startToken = t;
-		ArrayList<Dec> decList = new ArrayList<Dec>();
-		ArrayList<Statement> statementList = new ArrayList<Statement>();
+	void block() throws SyntaxException {
+		//TODO
 		Kind kind = t.kind;
 		if (!kind.equals(LBRACE)) {
 			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -221,49 +198,52 @@ public class Parser {
 		while (!kind.equals(EOF)) {
 			kind = t.kind;
 			if (isDec(kind)) {
-				decList.add(dec());
+				dec();
 			}
 			else if (isStatement(kind)) {
-				statementList.add(statement());
+				statement();
 			}
 			else if (kind.equals(RBRACE)) {
 				consume();
-				return new Block(startToken, decList, statementList);
+				return;
 			}
 			else {
 				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 						+ t.getLinePos().posInLine + "; Expected right brace but found " + kind);
 			}
 		}
-		
 		throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 				+ t.getLinePos().posInLine + "; Expected right brace but found " + kind);
+		//throw new UnimplementedFeatureException();
 	}
 
 	// program ::=  IDENT block
 	// program ::=  IDENT param_dec ( , param_dec )*   block
-	// Program ∷= List<ParamDec> Block
-	Program program() throws SyntaxException {
-		ArrayList<ParamDec> paramDecList = new ArrayList<ParamDec>();
-		Token startToken = t;
-		Block b = null;
+	void program() throws SyntaxException {
+		//TODO
 		Kind kind = t.kind;
 		if (kind.equals(IDENT)) {
 			consume();
 			kind = t.kind;
-			if (isParamDec(kind)) {
-				paramDecList.add(paramDec());
+			if (isBlock(kind)) {
+				block();
+				return;
+			}
+			else if (isParamDec(kind)) {
+				paramDec();
 				kind = t.kind;
 				if (isBlock(kind)) {
-					b = block();
+					block();
+					return;
 				}
 				else if (kind.equals(COMMA)) {
 					while (!kind.equals(EOF)) {
 						consume();
-						paramDecList.add(paramDec());
+						paramDec();
 						kind = t.kind;
 						if (isBlock(kind)) {
-							b = block();
+							block();
+							return;
 						}
 						else if (!kind.equals(COMMA)) {
 							throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -278,9 +258,6 @@ public class Parser {
 							+ t.getLinePos().posInLine + "; Expected comma or block but found " + kind);
 				}
 			}
-			else if (isBlock(kind)) {
-				b = block();
-			}
 			else {
 				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 						+ t.getLinePos().posInLine + "; Expected block or param_dec but found " + kind);
@@ -290,36 +267,38 @@ public class Parser {
 			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 					+ t.getLinePos().posInLine + "; Expected IDENT but found " + kind);
 		}
-		return new Program(startToken, paramDecList, b);
+		//throw new UnimplementedFeatureException();
 	}
 
-	// ParamDec ∷= type ident
-	ParamDec paramDec() throws SyntaxException {
-		match(KW_INTEGER, KW_BOOLEAN, KW_IMAGE, KW_FRAME, KW_FILE, KW_URL);
-		Token startToken = t;
-        Token identToken = match(IDENT);
-		return new ParamDec(startToken, identToken);
+	// param_dec ::= ( KW_URL | KW_FILE | KW_INTEGER | KW_BOOLEAN)   IDENT
+	void paramDec() throws SyntaxException {
+		//TODO
+		match(KW_URL, KW_FILE, KW_INTEGER, KW_BOOLEAN);
+		match(IDENT);
+		return;
+		//throw new UnimplementedFeatureException();
 	}
 
-	// Dec ∷= type ident
-	Dec dec() throws SyntaxException {
-		match(KW_INTEGER, KW_BOOLEAN, KW_IMAGE, KW_FRAME, KW_FILE, KW_URL);
-		Token startToken = t;
-        Token identToken = match(IDENT);
-		return new Dec(startToken, identToken);
+	// dec ::= (  KW_INTEGER | KW_BOOLEAN | KW_IMAGE | KW_FRAME)    IDENT
+	void dec() throws SyntaxException {
+		//TODO
+		match(KW_INTEGER, KW_BOOLEAN, KW_IMAGE, KW_FRAME);
+		match(IDENT);
+		return;
+		//throw new UnimplementedFeatureException();
 	}
-
-	WhileStatement whileStatement() throws SyntaxException {
+	
+	void whileStatement() throws SyntaxException {
 		match(KW_WHILE);
 		Kind kind = t.kind;
-		Token startToken = t;
 		if (kind.equals(LPAREN)) {
 			consume();
-			Expression e = factor();
+			expression();
 			kind = t.kind;
 			if (kind.equals(RPAREN)) {
 				consume();
-				return new WhileStatement(startToken, e, block());
+				block();
+				return;
 			}
 			else {
 				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -332,17 +311,17 @@ public class Parser {
 		}
 	}
 	
-	IfStatement ifStatement() throws SyntaxException {
+	void ifStatement() throws SyntaxException {
 		match(KW_IF);
 		Kind kind = t.kind;
-		Token startToken = t;
 		if (kind.equals(LPAREN)) {
 			consume();
-			Expression e = factor();
+			expression();
 			kind = t.kind;
 			if (kind.equals(RPAREN)) {
 				consume();
-				return new IfStatement(startToken, e, block());
+				block();
+				return;
 			}
 			else {
 				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -356,17 +335,16 @@ public class Parser {
 	}
 
 	// statement ::=   OP_SLEEP expression ; | whileStatement | ifStatement | chain ; | assign ;
-	// Statement ∷= SleepStatement | WhileStatement | IfStatement | Chain | AssignmentStatement
-	Statement statement() throws SyntaxException {
+	void statement() throws SyntaxException {
+		//TODO
 		Kind kind = t.kind;
-		Token startToken = t;
 		if (kind.equals(OP_SLEEP)) {
 			consume();
-			Expression e = factor();
+			expression();
 			kind = t.kind;
 			if (kind.equals(SEMI)) {
 				consume();
-				return new SleepStatement(startToken, e);
+				return;
 			}
 			else {
 				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -374,17 +352,17 @@ public class Parser {
 			}
 		}
 		else if (isWhileStatement(kind)) {
-			return whileStatement();
+			whileStatement();
 		}
 		else if (isIfStatement(kind)) {
-			return ifStatement();
+			ifStatement();
 		}
 		else if (isAssign(kind)) {
-			AssignmentStatement a = assign();
+			assign();
 			kind = t.kind;
 			if (kind.equals(SEMI)) {
 				consume();
-				return a;
+				return;
 			}
 			else {
 				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -392,11 +370,11 @@ public class Parser {
 			}
 		}
 		else if (isChain(kind)) {
-			Chain c = chain();
+			chain();
 			kind = t.kind;
 			if (kind.equals(SEMI)) {
 				consume();
-				return c;
+				return;
 			}
 			else {
 				throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -408,19 +386,17 @@ public class Parser {
 					+ t.getLinePos().posInLine + "; Expected OP_SLEEP expression, whileStatement, ifStatement, chain, or assign"
 							+ " but found " + kind);
 		}
+		//throw new UnimplementedFeatureException();
 	}
 	
 	// assign ::= IDENT ASSIGN expression
-	// AssignmentStatement ∷= IdentLValue Expression
-	// IdentLValue ∷= ident
-	AssignmentStatement assign() throws SyntaxException {
-		Token startToken = t;
-		IdentLValue lval = new IdentLValue(match(IDENT));
+	void assign() throws SyntaxException {
+		match(IDENT);
 		match(ASSIGN);
 		Kind kind = t.kind;
-		if (isFactor(kind)) {
-			Expression e = factor();
-			return new AssignmentStatement(startToken, lval, e);
+		if (isExpression(kind)) {
+			expression();
+			return;
 		}
 		else {
 			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -429,38 +405,24 @@ public class Parser {
 	}
 
 	// chain ::=  chainElem arrowOp chainElem ( arrowOp  chainElem)*
-	// --------
-	// Chain ∷= ChainElem | BinaryChain
-	// BinaryChain ∷= Chain (arrow | bararrow)  ChainElem
-	// ChainElem ::= IdentChain | FilterOpChain | FrameOpChain | ImageOpChain
-	Chain chain() throws SyntaxException {
-		Token startToken = t;
+	void chain() throws SyntaxException {
+		//TODO
 		Kind kind = t.kind;
-		Chain c1 = null;
-		ChainElem c2 = null;
-		BinaryChain bc = null;
 		if (isChainElem(kind)) {
-			c1 = chainElem();
+			chainElem();
 			kind = t.kind;
 			if (arrowOp(kind)) {
-				Token arrowToken = t;
 				consume();
 				kind = t.kind;
 				if (isChainElem(kind)) {
-					c2 = chainElem();
-					bc = new BinaryChain(startToken, c1, arrowToken, c2);
-					startToken = t;
+					chainElem();
 					kind = t.kind;
 					while (!kind.equals(EOF)) {
 						if (arrowOp(kind)) {
-							arrowToken = t;
-							// BinaryChain(Token firstToken, Chain e0, Token arrow, ChainElem e1)
 							consume();
 							kind = t.kind;
 							if (isChainElem(kind)) {
-								c2 = chainElem();
-								bc = new BinaryChain(startToken, bc, arrowToken, c2);
-								startToken = t;
+								chainElem();
 								kind = t.kind;
 							}
 							else {
@@ -469,7 +431,7 @@ public class Parser {
 							}
 						}
 						else {
-							break;
+							return;
 						}
 					}
 				}
@@ -487,73 +449,51 @@ public class Parser {
 			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 					+ t.getLinePos().posInLine + "; Expected chainElem but found " + kind);
 		}
-		return bc;
+		//throw new UnimplementedFeatureException();
 	}
-	
+
 	// chainElem ::= IDENT | filterOp arg | frameOp arg | imageOp arg
-	// ChainElem ::= IdentChain | FilterOpChain | FrameOpChain | ImageOpChain
-	ChainElem chainElem() throws SyntaxException {
+	void chainElem() throws SyntaxException {
+		//TODO
 		Kind kind = t.kind;
-		Token startToken = t;
 		if (kind.equals(IDENT)) {
 			consume();
-			// IdentChain ∷= ident
-			return new IdentChain(match(IDENT));
+			return;
 		}
-		else if (filterOp(kind)) {
-			Tuple listExpressionTuple = null;
+		else if (filterOp(kind) || frameOp(kind) || imageOp(kind)) {
 			consume();
 			kind = t.kind;
 			if (kind.equals(LPAREN)) {
-				listExpressionTuple = arg();
+				arg();
 			}
-			return new FilterOpChain(startToken, listExpressionTuple);
-		}
-		else if (frameOp(kind)) {
-			Tuple listExpressionTuple = null;
-			consume();
-			kind = t.kind;
-			if (kind.equals(LPAREN)) {
-				listExpressionTuple = arg();
-			}
-			return new FrameOpChain(startToken, listExpressionTuple);
-		}
-		else if (imageOp(kind)) {
-			Tuple listExpressionTuple = null;
-			consume();
-			kind = t.kind;
-			if (kind.equals(LPAREN)) {
-				listExpressionTuple = arg();
-			}
-			return new ImageOpChain(startToken, listExpressionTuple);
 		}
 		else {
 			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 					+ t.getLinePos().posInLine + "; Expected IDENT or OP but found " + kind);
 		}
+		//throw new UnimplementedFeatureException();
 	}
 
 	// arg ::= ε | ( expression (   ,expression)* )
-	Tuple arg() throws SyntaxException {
-		List<Expression> expressionList = new ArrayList<Expression>();
+	void arg() throws SyntaxException {
+		//TODO
 		Kind kind = t.kind;
-		Token startToken = t;
 		if (kind.equals(LPAREN)) {
 			consume();
-			factor();
+			expression();
 			kind = t.kind;
 			if (kind.equals(RPAREN)) {
 				consume();
-				expressionList.add(factor());
+				return;
 			}
 			else if (kind.equals(COMMA)) {
 				while (!kind.equals(EOF)) {
 					consume();
-					factor();
+					expression();
 					kind = t.kind;
 					if (kind.equals(RPAREN)) {
 						consume();
-						expressionList.add(factor());
+						return;
 					}
 					else if (!kind.equals(COMMA)) {
 						throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -566,11 +506,11 @@ public class Parser {
 						+ t.getLinePos().posInLine + "; Expected comma OR right parenthesis but found " + kind);
 			}
 		}
-		return new Tuple(startToken, expressionList);
 		/*else {
 			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 				+ t.getLinePos().posInLine + "; Reached end of file, but shouldn't have");
 		}*/
+		//throw new UnimplementedFeatureException();
 	}
 	
 	// relOp ∷=  LT | LE | GT | GE | EQUAL | NOTEQUAL
@@ -796,6 +736,7 @@ public class Parser {
 	 * @throws SyntaxException
 	 */
 	private Token match(Kind... kinds) throws SyntaxException {
+		// TODO. Optional but handy
 		for (Kind k : kinds) {
 			if (t.kind.equals(k)) {
 				consume();
@@ -803,6 +744,7 @@ public class Parser {
 			}
 		}
 		throw new SyntaxException("Error with token " + t + " and kind " + t.kind);
+		//return null; //replace this statement
 	}
 
 	/**
