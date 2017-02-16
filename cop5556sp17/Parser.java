@@ -496,7 +496,6 @@ public class Parser {
 		Kind kind = t.kind;
 		Token startToken = t;
 		if (kind.equals(IDENT)) {
-			consume();
 			// IdentChain ∷= ident
 			return new IdentChain(match(IDENT));
 		}
@@ -780,7 +779,7 @@ public class Parser {
 		//if (t.isKind(kind)) {
 			return consume();
 		}
-		throw new SyntaxException("saw " + t.kind + "expected " + kind);
+		throw new SyntaxException("saw " + t.kind + " expected " + kind);
 	}
 
 	/**
