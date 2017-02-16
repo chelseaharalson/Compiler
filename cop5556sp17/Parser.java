@@ -49,10 +49,10 @@ public class Parser {
 	 * 
 	 * @throws SyntaxException
 	 */
-	void parse() throws SyntaxException {
-		program();
+	ASTNode parse() throws SyntaxException {
+		Program p = program();
 		matchEOF();
-		return;
+		return p;
 	}
 
 	// expression ∷= term ( relOp term)*
@@ -263,7 +263,7 @@ public class Parser {
 						paramDecList.add(paramDec());
 						kind = t.kind;
 						if (isBlock(kind)) {
-							b = block();
+							return new Program(startToken, paramDecList, block());
 						}
 						else if (!kind.equals(COMMA)) {
 							throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
@@ -315,7 +315,7 @@ public class Parser {
 		Token startToken = t;
 		if (kind.equals(LPAREN)) {
 			consume();
-			Expression e = factor();
+			Expression e = expression();
 			kind = t.kind;
 			if (kind.equals(RPAREN)) {
 				consume();
@@ -338,7 +338,7 @@ public class Parser {
 		Token startToken = t;
 		if (kind.equals(LPAREN)) {
 			consume();
-			Expression e = factor();
+			Expression e = expression();
 			kind = t.kind;
 			if (kind.equals(RPAREN)) {
 				consume();
@@ -362,7 +362,7 @@ public class Parser {
 		Token startToken = t;
 		if (kind.equals(OP_SLEEP)) {
 			consume();
-			Expression e = factor();
+			Expression e = expression();
 			kind = t.kind;
 			if (kind.equals(SEMI)) {
 				consume();
@@ -418,8 +418,8 @@ public class Parser {
 		IdentLValue lval = new IdentLValue(match(IDENT));
 		match(ASSIGN);
 		Kind kind = t.kind;
-		if (isFactor(kind)) {
-			Expression e = factor();
+		if (isExpression(kind)) {
+			Expression e = expression();
 			return new AssignmentStatement(startToken, lval, e);
 		}
 		else {
@@ -540,20 +540,20 @@ public class Parser {
 		Token startToken = t;
 		if (kind.equals(LPAREN)) {
 			consume();
-			factor();
+			expressionList.add(expression());
 			kind = t.kind;
 			if (kind.equals(RPAREN)) {
 				consume();
-				expressionList.add(factor());
+				return new Tuple(startToken, expressionList);
 			}
 			else if (kind.equals(COMMA)) {
 				while (!kind.equals(EOF)) {
 					consume();
-					factor();
+					expressionList.add(expression());
 					kind = t.kind;
 					if (kind.equals(RPAREN)) {
 						consume();
-						expressionList.add(factor());
+						return new Tuple(startToken, expressionList);
 					}
 					else if (!kind.equals(COMMA)) {
 						throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
