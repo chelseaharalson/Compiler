@@ -587,48 +587,54 @@ public class ASTTest {
 	public void testFactor_1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.factor();
+		Expression f = parser.factor();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(IDENT, f.getFirstToken().kind);
 	}
 	
 	@Test
 	public void testFactor2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "2";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.factor();
+		Expression f = parser.factor();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(INT_LIT, f.getFirstToken().kind);
 	}
 	
 	@Test
 	public void testFactor3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "true";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.factor();
+		Expression f = parser.factor();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(KW_TRUE, f.getFirstToken().kind);
 	}
 	
 	@Test
 	public void testFactor4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "false";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.factor();
+		Expression f = parser.factor();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(KW_FALSE, f.getFirstToken().kind);
 	}
 	
 	@Test
 	public void testFactor5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "screenwidth";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.factor();
+		Expression f = parser.factor();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(KW_SCREENWIDTH, f.getFirstToken().kind);
 	}
 	
 	@Test
 	public void testFactor6() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "screenheight";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.factor();
+		Expression f = parser.factor();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(KW_SCREENHEIGHT, f.getFirstToken().kind);
 	}
 	
 	@Test
@@ -644,16 +650,18 @@ public class ASTTest {
 	public void testFactor8() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "(true)";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.factor();
+		Expression f = parser.factor();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(KW_TRUE, f.getFirstToken().kind);
 	}
 	
 	@Test
 	public void testFactor9() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "  ( false)  ";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.factor();
+		Expression f = parser.factor();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(KW_FALSE, f.getFirstToken().kind);
 	}
 	
 	@Test
@@ -662,7 +670,6 @@ public class ASTTest {
 		Parser parser = new Parser(new Scanner(input).scan());
 		thrown.expect(Parser.SyntaxException.class);
 		parser.factor();
-		assertEquals(EOF, parser.t.kind);
 	}
 	
 	@Test
@@ -689,37 +696,50 @@ public class ASTTest {
 		parser.factor();
 	}
 	
-	//param_dec ::= ( KW_URL | KW_FILE | KW_INTEGER | KW_BOOLEAN)   IDENT
+	// param_dec ::= ( KW_URL | KW_FILE | KW_INTEGER | KW_BOOLEAN)   IDENT
+	// ParamDec ∷= type ident
 	@Test
 	public void testParamDec1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "url chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.paramDec();
+		ParamDec pd = parser.paramDec();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(KW_URL, pd.getType().kind);
+		assertEquals(IDENT, pd.getIdent().kind);
+		assertEquals(ParamDec.class, pd.getClass());
 	}
 	
 	@Test
 	public void testParamDec2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "file chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.paramDec();
+		ParamDec pd = parser.paramDec();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(KW_FILE, pd.getType().kind);
+		assertEquals(IDENT, pd.getIdent().kind);
+		assertEquals(ParamDec.class, pd.getClass());
 	}
 	
 	@Test
 	public void testParamDec3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "integer chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.paramDec();
+		ParamDec pd = parser.paramDec();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(KW_INTEGER, pd.getType().kind);
+		assertEquals(IDENT, pd.getIdent().kind);
+		assertEquals(ParamDec.class, pd.getClass());
 	}
 	
 	@Test
 	public void testParamDec4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.paramDec();
+		ParamDec pd = parser.paramDec();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(KW_BOOLEAN, pd.getType().kind);
+		assertEquals(IDENT, pd.getIdent().kind);
+		assertEquals(ParamDec.class, pd.getClass());
 	}
 	
 	@Test
@@ -774,41 +794,57 @@ public class ASTTest {
 	public void testParamDec11() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean chelsea metcalf";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.paramDec();
+		ParamDec pd = parser.paramDec();
 		assertEquals(IDENT, parser.t.kind);
+		assertEquals(KW_BOOLEAN, pd.getType().kind);
+		assertEquals(IDENT, pd.getIdent().kind);
+		assertEquals(ParamDec.class, pd.getClass());
 	}
 
 	//dec ::= (  KW_INTEGER | KW_BOOLEAN | KW_IMAGE | KW_FRAME)    IDENT
+	// Dec ∷= type ident
 	@Test
 	public void testDec1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "integer chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.dec();
+		Dec d = parser.dec();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(KW_INTEGER, d.getType().kind);
+		assertEquals(IDENT, d.getIdent().kind);
+		assertEquals(Dec.class, d.getClass());
 	}
 	
 	@Test
 	public void testDec2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.dec();
+		Dec d = parser.dec();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(KW_BOOLEAN, d.getType().kind);
+		assertEquals(IDENT, d.getIdent().kind);
+		assertEquals(Dec.class, d.getClass());
 	}
 	
 	@Test
 	public void testDec3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "image chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.dec();
+		Dec d = parser.dec();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(KW_IMAGE, d.getType().kind);
+		assertEquals(IDENT, d.getIdent().kind);
+		assertEquals(Dec.class, d.getClass());
 	}
 	
 	@Test
 	public void testDec4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "frame chelsea";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.dec();
+		Dec d = parser.dec();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(KW_FRAME, d.getType().kind);
+		assertEquals(IDENT, d.getIdent().kind);
+		assertEquals(Dec.class, d.getClass());
 	}
 	
 	@Test
@@ -863,17 +899,24 @@ public class ASTTest {
 	public void testDec11() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean chelsea metcalf";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.dec();
+		Dec d = parser.dec();
 		assertEquals(IDENT, parser.t.kind);
+		assertEquals(KW_BOOLEAN, d.getType().kind);
+		assertEquals(IDENT, d.getIdent().kind);
+		assertEquals(Dec.class, d.getClass());
 	}
 	
-	//assign ::= IDENT ASSIGN expression
+	// assign ::= IDENT ASSIGN expression
+	// AssignmentStatement ∷= IdentLValue Expression
 	@Test
 	public void testAssign1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea <- true";
 		Parser parser = new Parser(new Scanner(input).scan());
-		parser.assign();
+		AssignmentStatement as = parser.assign();
 		assertEquals(EOF, parser.t.kind);
+		assertEquals(IDENT, as.getVar().firstToken.kind);
+		assertEquals(KW_TRUE, as.getE().firstToken.kind);
+		assertEquals(AssignmentStatement.class, as.getClass());
 	}
 	
 	@Test
@@ -917,14 +960,23 @@ public class ASTTest {
 	}
 	
 	@Test
+	public void testAssign8() throws IllegalCharException, IllegalNumberException, SyntaxException{
+		String input = "chelsea <- true <- false";
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
+		parser.dec();
+	}
+	
+	@Test
 	public void testArg1() throws IllegalCharException, IllegalNumberException, SyntaxException {
 		String input = "  (3,5,3,4,7,8) ";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.arg();
+        Tuple tuple = parser.arg();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(6, tuple.getExprList().size());
+        assertEquals("4", tuple.getExprList().get(3).getFirstToken().getText());
 	}
 
 	@Test
@@ -961,7 +1013,6 @@ public class ASTTest {
 		String input = "(3)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.arg();
         assertEquals(EOF, parser.t.kind);
@@ -972,7 +1023,6 @@ public class ASTTest {
 		String input = "(2 )";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.arg();
         assertEquals(EOF, parser.t.kind);
@@ -993,7 +1043,6 @@ public class ASTTest {
 		String input = "(2(*))";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.arg();
@@ -1004,7 +1053,6 @@ public class ASTTest {
 		String input = "(2(+))";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.arg();
@@ -1016,7 +1064,6 @@ public class ASTTest {
 		String input = "(2+(i>5))";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.arg();
         assertEquals(EOF, parser.t.kind);
@@ -1027,7 +1074,6 @@ public class ASTTest {
 		String input = "(2+(i>=5))";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.arg();
         assertEquals(EOF, parser.t.kind);
@@ -1038,10 +1084,10 @@ public class ASTTest {
 		String input = "3 * 4";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.elem();
+        Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(INT_LIT, el.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1049,10 +1095,10 @@ public class ASTTest {
 		String input = "2";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.elem();
+		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(INT_LIT, el.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1060,10 +1106,10 @@ public class ASTTest {
 		String input = "3 / 4";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.elem();
+		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(INT_LIT, el.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1071,10 +1117,10 @@ public class ASTTest {
 		String input = "3&4";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.elem();
+		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(INT_LIT, el.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1082,10 +1128,10 @@ public class ASTTest {
 		String input = "3%4*2";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.elem();
+		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(INT_LIT, el.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1093,7 +1139,6 @@ public class ASTTest {
 		String input = "3*";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.elem();
@@ -1104,10 +1149,10 @@ public class ASTTest {
 		String input = "chelsea / 2";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.elem();
+		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(IDENT, el.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1115,10 +1160,10 @@ public class ASTTest {
 		String input = "true&false";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.elem();
+		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(KW_TRUE, el.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1126,10 +1171,10 @@ public class ASTTest {
 		String input = "screenwidth%screenheight*2";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.elem();
+		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(KW_SCREENWIDTH, el.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1137,10 +1182,10 @@ public class ASTTest {
 		String input = "(5 != 4)*2";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.elem();
+		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(LPAREN, el.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1148,10 +1193,10 @@ public class ASTTest {
 		String input = "(5+4)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.elem();
+		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(INT_LIT, el.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1159,7 +1204,6 @@ public class ASTTest {
 		String input = "(c";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.elem();
@@ -1170,7 +1214,6 @@ public class ASTTest {
 		String input = "(5->3)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.elem();
@@ -1181,10 +1224,10 @@ public class ASTTest {
 		String input = "2+3";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.elem();
+        Expression el = parser.elem();
         assertEquals(PLUS, parser.t.kind);
+        assertEquals(INT_LIT, el.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1192,10 +1235,10 @@ public class ASTTest {
 		String input = "chelsea + screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.term();
+        Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(IDENT, t.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1203,7 +1246,6 @@ public class ASTTest {
 		String input = "chelsea +";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.term();
@@ -1214,10 +1256,10 @@ public class ASTTest {
 		String input = "chelsea < screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.term();
+        Expression t = parser.term();
         assertEquals(LT, parser.t.kind);
+        assertEquals(IDENT, t.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1225,10 +1267,10 @@ public class ASTTest {
 		String input = "chelsea + screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.term();
+        Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(IDENT, t.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1236,7 +1278,6 @@ public class ASTTest {
 		String input = "-";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.term();
@@ -1247,10 +1288,10 @@ public class ASTTest {
 		String input = "true | screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.term();
+        Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(KW_TRUE, t.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1258,10 +1299,10 @@ public class ASTTest {
 		String input = "true - screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.term();
+        Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(KW_TRUE, t.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1269,10 +1310,10 @@ public class ASTTest {
 		String input = "true * screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.term();
+        Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(KW_TRUE, t.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1280,10 +1321,10 @@ public class ASTTest {
 		String input = "true / screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.term();
+        Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(KW_TRUE, t.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1291,10 +1332,10 @@ public class ASTTest {
 		String input = "true & screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.term();
+        Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(KW_TRUE, t.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1302,10 +1343,10 @@ public class ASTTest {
 		String input = "true % screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.term();
+        Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(KW_TRUE, t.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1313,10 +1354,10 @@ public class ASTTest {
 		String input = "true < screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.term();
+        Expression t = parser.term();
         assertEquals(LT, parser.t.kind);
+        assertEquals(KW_TRUE, t.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1324,10 +1365,10 @@ public class ASTTest {
 		String input = "(true < screenheight)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.term();
+        Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(KW_TRUE, t.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1335,18 +1376,17 @@ public class ASTTest {
 		String input = "image + chelsea";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.term();
 	}
 	
+	// Expression ∷= IdentExpression | IntLitExpression | BooleanLitExpression | ConstantExpression | BinaryExpression
 	@Test
 	public void testExpression1() throws IllegalCharException, IllegalNumberException, SyntaxException {
 		String input = "true < screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         ASTNode ast = parser.expression();
         assertEquals(EOF, parser.t.kind);
@@ -1378,10 +1418,14 @@ public class ASTTest {
 		String input = "true <= screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.expression();
+        Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(BinaryExpression.class, e.getClass());
+		BinaryExpression be = (BinaryExpression) e;
+		assertEquals(BooleanLitExpression.class, be.getE0().getClass());
+		assertEquals(ConstantExpression.class, be.getE1().getClass());
+		assertEquals(LE, be.getOp().kind);
 	}
 	
 	@Test
@@ -1389,10 +1433,14 @@ public class ASTTest {
 		String input = "true >= screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.expression();
+        Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(BinaryExpression.class, e.getClass());
+		BinaryExpression be = (BinaryExpression) e;
+		assertEquals(BooleanLitExpression.class, be.getE0().getClass());
+		assertEquals(ConstantExpression.class, be.getE1().getClass());
+		assertEquals(GE, be.getOp().kind);
 	}
 	
 	@Test
@@ -1400,10 +1448,14 @@ public class ASTTest {
 		String input = "true > screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.expression();
+        Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(BinaryExpression.class, e.getClass());
+		BinaryExpression be = (BinaryExpression) e;
+		assertEquals(BooleanLitExpression.class, be.getE0().getClass());
+		assertEquals(ConstantExpression.class, be.getE1().getClass());
+		assertEquals(GT, be.getOp().kind);
 	}
 	
 	@Test
@@ -1411,10 +1463,14 @@ public class ASTTest {
 		String input = "false == screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.expression();
+        Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(BinaryExpression.class, e.getClass());
+		BinaryExpression be = (BinaryExpression) e;
+		assertEquals(BooleanLitExpression.class, be.getE0().getClass());
+		assertEquals(ConstantExpression.class, be.getE1().getClass());
+		assertEquals(EQUAL, be.getOp().kind);
 	}
 	
 	@Test
@@ -1422,10 +1478,14 @@ public class ASTTest {
 		String input = "screenwidth != screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.expression();
+        Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(BinaryExpression.class, e.getClass());
+		BinaryExpression be = (BinaryExpression) e;
+		assertEquals(ConstantExpression.class, be.getE0().getClass());
+		assertEquals(ConstantExpression.class, be.getE1().getClass());
+		assertEquals(NOTEQUAL, be.getOp().kind);
 	}
 	
 	@Test
@@ -1433,10 +1493,14 @@ public class ASTTest {
 		String input = "true < screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.expression();
+        Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(BinaryExpression.class, e.getClass());
+		BinaryExpression be = (BinaryExpression) e;
+		assertEquals(BooleanLitExpression.class, be.getE0().getClass());
+		assertEquals(ConstantExpression.class, be.getE1().getClass());
+		assertEquals(LT, be.getOp().kind);
 	}
 	
 	@Test
@@ -1444,10 +1508,14 @@ public class ASTTest {
 		String input = "true - screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.expression();
+        Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(BinaryExpression.class, e.getClass());
+		BinaryExpression be = (BinaryExpression) e;
+		assertEquals(BooleanLitExpression.class, be.getE0().getClass());
+		assertEquals(ConstantExpression.class, be.getE1().getClass());
+		assertEquals(MINUS, be.getOp().kind);
 	}
 	
 	@Test
@@ -1455,10 +1523,14 @@ public class ASTTest {
 		String input = "true % screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.expression();
+        Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(BinaryExpression.class, e.getClass());
+		BinaryExpression be = (BinaryExpression) e;
+		assertEquals(BooleanLitExpression.class, be.getE0().getClass());
+		assertEquals(ConstantExpression.class, be.getE1().getClass());
+		assertEquals(MOD, be.getOp().kind);
 	}
 	
 	@Test
@@ -1466,10 +1538,14 @@ public class ASTTest {
 		String input = "true & screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.expression();
+        Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(BinaryExpression.class, e.getClass());
+		BinaryExpression be = (BinaryExpression) e;
+		assertEquals(BooleanLitExpression.class, be.getE0().getClass());
+		assertEquals(ConstantExpression.class, be.getE1().getClass());
+		assertEquals(AND, be.getOp().kind);
 	}
 	
 	@Test
@@ -1477,7 +1553,6 @@ public class ASTTest {
 		String input = "url";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.expression();
@@ -1488,7 +1563,6 @@ public class ASTTest {
 		String input = "int_lit * int_lit + int_lit ! int_lit ";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.expression();
 	}
@@ -1558,8 +1632,10 @@ public class ASTTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
-        parser.chainElem();
+        ChainElem ast = parser.chainElem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(FilterOpChain.class, ast.getClass());
+		assertEquals(OP_GRAY, ast.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1567,10 +1643,17 @@ public class ASTTest {
 		String input = "hide (2)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.chainElem();
+        ChainElem ast = parser.chainElem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(EOF, parser.t.kind);
+        assertEquals(FrameOpChain.class, ast.getClass());
+        ChainElem ce = (ChainElem) ast;
+		assertEquals(KW_HIDE, ce.getFirstToken().kind);
+		FrameOpChain f = (FrameOpChain)ce;
+		Tuple tuple = f.getArg();
+		assertEquals(1, tuple.getExprList().size());
+		assertEquals(INT_LIT, tuple.getExprList().get(0).firstToken.kind);
 	}
 	
 	@Test
@@ -1578,10 +1661,11 @@ public class ASTTest {
 		String input = "scale";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.chainElem();
+        ChainElem ast = parser.chainElem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(ImageOpChain.class, ast.getClass());
+		assertEquals(KW_SCALE, ast.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1711,7 +1795,6 @@ public class ASTTest {
 		String input = "gray (2,2,chelsea) -> show (2,2) ->";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.chain();
@@ -1722,7 +1805,6 @@ public class ASTTest {
 		String input = "gray (2,2,chelsea) ->";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.chain();
@@ -1733,7 +1815,6 @@ public class ASTTest {
 		String input = "gray (2,2,chelsea) ";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.chain();
@@ -1744,7 +1825,6 @@ public class ASTTest {
 		String input = "boolean";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.chain();
@@ -1766,7 +1846,6 @@ public class ASTTest {
 		String input = "sleep(5);";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.statement();
         assertEquals(EOF, parser.t.kind);
@@ -1845,8 +1924,10 @@ public class ASTTest {
 		scanner.scan();
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.statement();
+        ASTNode ast = parser.statement();
         assertEquals(EOF, parser.t.kind);
+        //assertEquals(Statement.class, ast.getClass());
+        //assertEquals(KW_IF, ast.firstToken.kind);
 	}
 	
 	@Test
@@ -1925,10 +2006,13 @@ public class ASTTest {
 		String input = "while(true) { integer c }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.whileStatement();
+        ASTNode ast = parser.whileStatement();
         assertEquals(EOF, parser.t.kind);
+        //WhileStatement w = (WhileStatement)ast;
+        //assertEquals(KW_WHILE, w.firstToken.kind);
+        //assertEquals(Expression.class, w.getE());
+        //assertEquals(Block.class, w.getB());
 	}
 	
 	@Test

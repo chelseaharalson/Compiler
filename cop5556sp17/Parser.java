@@ -84,12 +84,12 @@ public class Parser {
 					break;
 				}
 			}
-			return e0;
 		}
 		else {
 			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 				+ t.getLinePos().posInLine + "; Reached end of file, but shouldn't have");
 		}
+		return e0;
 	}
 
 	// term ∷= elem ( weakOp  elem)*
@@ -153,16 +153,15 @@ public class Parser {
 					}
 				}
 				else {
-					//System.out.println("RETURNING...");
-					break;
+					return e0;
 				}
 			}
-			return e0;
 		}
 		else {
 			throw new SyntaxException("Line: " + t.getLinePos().line + " and column: " 
 				+ t.getLinePos().posInLine + "; Expected factor but found " + kind);
 		}
+		return e0;
 	}
 
 	// Expression ∷= IdentExpression | IntLitExpression | BooleanLitExpression | ConstantExpression | BinaryExpression
