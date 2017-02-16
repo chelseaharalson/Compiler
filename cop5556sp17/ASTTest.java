@@ -4,6 +4,9 @@ package cop5556sp17;
 //import static cop5556sp17.Scanner.Kind.PLUS;
 import static cop5556sp17.Scanner.Kind.*;
 import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -11,6 +14,7 @@ import org.junit.rules.ExpectedException;
 import cop5556sp17.Parser.SyntaxException;
 import cop5556sp17.Scanner.IllegalCharException;
 import cop5556sp17.Scanner.IllegalNumberException;
+import cop5556sp17.Scanner.Token;
 import cop5556sp17.AST.*;
 //import cop5556sp17.AST.ASTNode;
 //import cop5556sp17.AST.BinaryExpression;
@@ -1344,8 +1348,13 @@ public class ASTTest {
 		scanner.scan();
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.expression();
+        ASTNode ast = parser.expression();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(BinaryExpression.class, ast.getClass());
+		BinaryExpression be = (BinaryExpression) ast;
+		assertEquals(BooleanLitExpression.class, be.getE0().getClass());
+		assertEquals(ConstantExpression.class, be.getE1().getClass());
+		assertEquals(LT, be.getOp().kind);
 	}
 	
 	@Test
@@ -1355,8 +1364,13 @@ public class ASTTest {
 		scanner.scan();
 		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.expression();
+        ASTNode ast = parser.expression();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(BinaryExpression.class, ast.getClass());
+		BinaryExpression be = (BinaryExpression) ast;
+		assertEquals(BooleanLitExpression.class, be.getE0().getClass());
+		assertEquals(ConstantExpression.class, be.getE1().getClass());
+		assertEquals(GT, be.getOp().kind);
 	}
 	
 	@Test
@@ -1480,15 +1494,18 @@ public class ASTTest {
 	}
 	
 	// chainElem ::= IDENT | filterOp arg | frameOp arg | imageOp arg
+	// ChainElem ::= IdentChain | FilterOpChain | FrameOpChain | ImageOpChain
 	@Test
 	public void testChainElem1() throws IllegalCharException, IllegalNumberException, SyntaxException {
 		String input = "chelsea";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.chainElem();
+        ASTNode ast = parser.chainElem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(IdentChain.class, ast.getClass());
+        ChainElem ce = (ChainElem) ast;
+		assertEquals(IDENT, ce.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1496,10 +1513,16 @@ public class ASTTest {
 		String input = "blur (2)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.chainElem();
+        ASTNode ast = parser.chainElem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(FilterOpChain.class, ast.getClass());
+        ChainElem ce = (ChainElem) ast;
+		assertEquals(OP_BLUR, ce.getFirstToken().kind);
+		FilterOpChain f = (FilterOpChain)ce;
+		Tuple tuple = f.getArg();
+		assertEquals(1, tuple.getExprList().size());
+		assertEquals(INT_LIT, tuple.getExprList().get(0).firstToken.kind);
 	}
 	
 	@Test
@@ -1507,7 +1530,6 @@ public class ASTTest {
 		String input = "gray ()";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         thrown.expect(Parser.SyntaxException.class);
         parser.chainElem();
@@ -1518,10 +1540,16 @@ public class ASTTest {
 		String input = "convolve (2)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.chainElem();
+        ASTNode ast = parser.chainElem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(FilterOpChain.class, ast.getClass());
+        ChainElem ce = (ChainElem) ast;
+		assertEquals(OP_CONVOLVE, ce.getFirstToken().kind);
+		FilterOpChain f = (FilterOpChain)ce;
+		Tuple tuple = f.getArg();
+		assertEquals(1, tuple.getExprList().size());
+		assertEquals(INT_LIT, tuple.getExprList().get(0).firstToken.kind);
 	}
 	
 	@Test
@@ -1529,7 +1557,6 @@ public class ASTTest {
 		String input = "gray";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.chainElem();
         assertEquals(EOF, parser.t.kind);
@@ -1562,10 +1589,18 @@ public class ASTTest {
 		String input = "gray (2,2,3)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.chainElem();
+        ASTNode ast = parser.chainElem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(FilterOpChain.class, ast.getClass());
+        ChainElem ce = (ChainElem) ast;
+		assertEquals(OP_GRAY, ce.getFirstToken().kind);
+		FilterOpChain f = (FilterOpChain)ce;
+		Tuple tuple = f.getArg();
+		assertEquals(3, tuple.getExprList().size());
+		assertEquals(INT_LIT, tuple.getExprList().get(0).firstToken.kind);
+		assertEquals(INT_LIT, tuple.getExprList().get(1).firstToken.kind);
+		assertEquals(INT_LIT, tuple.getExprList().get(2).firstToken.kind);
 	}
 	
 	@Test
@@ -1573,10 +1608,20 @@ public class ASTTest {
 		String input = "gray (2,2,chelsea)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.chainElem();
+        ASTNode ast = parser.chainElem();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(FilterOpChain.class, ast.getClass());
+        ChainElem ce = (ChainElem) ast;
+		assertEquals(OP_GRAY, ce.getFirstToken().kind);
+		FilterOpChain f = (FilterOpChain)ce;
+		Tuple tuple = f.getArg();
+		assertEquals(3, tuple.getExprList().size());
+		assertEquals(INT_LIT, tuple.getExprList().get(0).firstToken.kind);
+		assertEquals(INT_LIT, tuple.getExprList().get(1).firstToken.kind);
+		assertEquals(IDENT, tuple.getExprList().get(2).firstToken.kind);
+		assertEquals("2", tuple.getExprList().get(0).firstToken.getText());
+		assertEquals("chelsea", tuple.getExprList().get(2).firstToken.getText());
 	}
 	
 	@Test
@@ -1584,22 +1629,41 @@ public class ASTTest {
 		String input = "show (2,2,)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.chainElem();
 	}
 	
 	// chain ::=  chainElem arrowOp chainElem ( arrowOp  chainElem)*
+	// Chain ∷= ChainElem | BinaryChain
 	@Test
 	public void testChain1() throws IllegalCharException, IllegalNumberException, SyntaxException {
 		String input = "gray (2,2,chelsea) -> show (2,2)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.chain();
+        ASTNode ast = parser.chain();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(BinaryChain.class, ast.getClass());
+		BinaryChain bc = (BinaryChain)ast;
+		Chain e0 = bc.getE0();
+		ChainElem e1 = bc.getE1();
+		Token arrowOp = bc.getArrow();
+		assertEquals(OP_GRAY, e0.firstToken.kind);
+		FilterOpChain e00 = (FilterOpChain)e0;
+		assertEquals(3, e00.getArg().getExprList().size());
+		assertEquals(INT_LIT, e00.getArg().getExprList().get(0).firstToken.kind);
+		assertEquals(INT_LIT, e00.getArg().getExprList().get(1).firstToken.kind);
+		assertEquals(IDENT, e00.getArg().getExprList().get(2).firstToken.kind);
+		assertEquals("2", e00.getArg().getExprList().get(0).firstToken.getText());
+		assertEquals("chelsea", e00.getArg().getExprList().get(2).firstToken.getText());
+		assertEquals(ARROW, arrowOp.kind);
+		FrameOpChain e11 = (FrameOpChain)e1;
+		assertEquals(2, e11.getArg().getExprList().size());
+		assertEquals(INT_LIT, e11.getArg().getExprList().get(0).firstToken.kind);
+		assertEquals(INT_LIT, e11.getArg().getExprList().get(1).firstToken.kind);
+		assertEquals("2", e11.getArg().getExprList().get(0).firstToken.getText());
+		assertEquals("2", e11.getArg().getExprList().get(1).firstToken.getText());
 	}
 	
 	@Test
@@ -1607,10 +1671,39 @@ public class ASTTest {
 		String input = "gray (2,2,chelsea) -> show (2,2) -> hide";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.chain();
+        ASTNode ast = parser.chain();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(BinaryChain.class, ast.getClass());
+		BinaryChain mainBC = (BinaryChain)ast;
+		Chain grayShow = mainBC.getE0();
+		ChainElem hide = mainBC.getE1();
+		Token arrowRight = mainBC.getArrow();
+		assertEquals(ARROW, arrowRight.kind);
+		BinaryChain grayShowBC = (BinaryChain)grayShow;
+		Chain gray = grayShowBC.getE0();
+		ChainElem show = grayShowBC.getE1();
+		Token arrowLeft = grayShowBC.getArrow();
+		assertEquals(ARROW, arrowLeft.kind);
+		assertEquals(OP_GRAY, gray.firstToken.kind);
+		assertEquals(FilterOpChain.class, gray.getClass());
+		FilterOpChain grayFilter = (FilterOpChain)gray;
+		assertEquals(3, grayFilter.getArg().getExprList().size());
+		assertEquals(INT_LIT, grayFilter.getArg().getExprList().get(0).firstToken.kind);
+		assertEquals(INT_LIT, grayFilter.getArg().getExprList().get(1).firstToken.kind);
+		assertEquals(IDENT, grayFilter.getArg().getExprList().get(2).firstToken.kind);
+		assertEquals("2", grayFilter.getArg().getExprList().get(0).firstToken.getText());
+		assertEquals("chelsea", grayFilter.getArg().getExprList().get(2).firstToken.getText());
+		assertEquals(FrameOpChain.class, show.getClass());
+		FrameOpChain showFrame = (FrameOpChain)show;
+		assertEquals(2, showFrame.getArg().getExprList().size());
+		assertEquals(INT_LIT, showFrame.getArg().getExprList().get(0).firstToken.kind);
+		assertEquals(INT_LIT, showFrame.getArg().getExprList().get(1).firstToken.kind);
+		assertEquals("2", showFrame.getArg().getExprList().get(0).firstToken.getText());
+		assertEquals("2", showFrame.getArg().getExprList().get(1).firstToken.getText());
+		assertEquals(FrameOpChain.class, hide.getClass());
+		FrameOpChain hideFrame = (FrameOpChain)hide;
+		assertEquals(KW_HIDE, hideFrame.firstToken.kind);
 	}
 	
 	@Test
@@ -1662,7 +1755,6 @@ public class ASTTest {
 		String input = "gray (2,2,chelsea) -> show (2,2) -> hide -> xloc(1)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.chain();
         assertEquals(EOF, parser.t.kind);
@@ -1795,10 +1887,15 @@ public class ASTTest {
 		String input = "{integer c sleep(5);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.block();
+        ASTNode ast = parser.block();
         assertEquals(EOF, parser.t.kind);
+        Block b = (Block)ast;
+        ArrayList<Dec> decList = b.getDecs();
+        ArrayList<Statement> statementList = b.getStatements();
+        assertEquals(KW_INTEGER, decList.get(0).getType().kind);
+        assertEquals(IDENT, decList.get(0).getIdent().kind);
+        assertEquals(SleepStatement.class, statementList.get(0).getClass());
 	}
 	
 	@Test

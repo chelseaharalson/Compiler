@@ -295,16 +295,16 @@ public class Parser {
 
 	// ParamDec ∷= type ident
 	ParamDec paramDec() throws SyntaxException {
-		match(KW_INTEGER, KW_BOOLEAN, KW_IMAGE, KW_FRAME, KW_FILE, KW_URL);
 		Token startToken = t;
+		match(KW_INTEGER, KW_BOOLEAN, KW_IMAGE, KW_FRAME, KW_FILE, KW_URL);
         Token identToken = match(IDENT);
 		return new ParamDec(startToken, identToken);
 	}
 
 	// Dec ∷= type ident
 	Dec dec() throws SyntaxException {
-		match(KW_INTEGER, KW_BOOLEAN, KW_IMAGE, KW_FRAME, KW_FILE, KW_URL);
 		Token startToken = t;
+		match(KW_INTEGER, KW_BOOLEAN, KW_IMAGE, KW_FRAME, KW_FILE, KW_URL);
         Token identToken = match(IDENT);
 		return new Dec(startToken, identToken);
 	}
