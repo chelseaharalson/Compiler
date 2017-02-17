@@ -1185,7 +1185,7 @@ public class ASTTest {
 		Parser parser = new Parser(scanner);
 		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
-        assertEquals(LPAREN, el.getFirstToken().kind);
+        assertEquals(INT_LIT, el.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1847,8 +1847,12 @@ public class ASTTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
-        parser.statement();
+        //parser.statement();
+		SleepStatement ss = (SleepStatement)parser.statement();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(SleepStatement.class, ss.getClass());
+        assertEquals(INT_LIT, ss.getE().firstToken.kind);
+        assertEquals("5", ss.getE().firstToken.getText());
 	}
 	
 	@Test
@@ -1856,10 +1860,12 @@ public class ASTTest {
 		String input = "sleep 2;";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.statement();
+		SleepStatement ss = (SleepStatement)parser.statement();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(SleepStatement.class, ss.getClass());
+        assertEquals(INT_LIT, ss.getE().firstToken.kind);
+        assertEquals("2", ss.getE().firstToken.getText());
 	}
 	
 	@Test
@@ -1867,7 +1873,6 @@ public class ASTTest {
 		String input = "sleep;";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.statement();
@@ -1878,10 +1883,10 @@ public class ASTTest {
 		String input = "gray (2,2,chelsea) -> show (2,2) -> hide -> xloc(1);";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.statement();
+        Statement s = parser.statement();
         assertEquals(EOF, parser.t.kind);
+        //assertEquals(Statement.class, s.getClass());
 	}
 	
 	@Test
@@ -1889,7 +1894,6 @@ public class ASTTest {
 		String input = "chelsea <- 8;";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.statement();
         assertEquals(EOF, parser.t.kind);
@@ -1900,7 +1904,6 @@ public class ASTTest {
 		String input = "chelsea <- integer;";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.statement();
@@ -1911,7 +1914,6 @@ public class ASTTest {
 		String input = "while(true) {}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.statement();
         assertEquals(EOF, parser.t.kind);
@@ -1922,12 +1924,11 @@ public class ASTTest {
 		String input = "if(true) {}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        ASTNode ast = parser.statement();
+        Statement s = parser.statement();
         assertEquals(EOF, parser.t.kind);
-        //assertEquals(Statement.class, ast.getClass());
-        //assertEquals(KW_IF, ast.firstToken.kind);
+        assertEquals(IfStatement.class, s.getClass());
+        assertEquals(KW_TRUE, s.firstToken.kind);
 	}
 	
 	@Test
@@ -1935,10 +1936,13 @@ public class ASTTest {
 		String input = "{}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.block();
+        Block b = parser.block();
         assertEquals(EOF, parser.t.kind);
+        ArrayList<Dec> decList = b.getDecs();
+        ArrayList<Statement> statementList = b.getStatements();
+        assertEquals(0, decList.size());
+        assertEquals(0, statementList.size());
 	}
 	
 	@Test
@@ -1946,10 +1950,14 @@ public class ASTTest {
 		String input = "{integer c}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.block();
+        Block b = parser.block();
         assertEquals(EOF, parser.t.kind);
+        ArrayList<Dec> decList = b.getDecs();
+        ArrayList<Statement> statementList = b.getStatements();
+        assertEquals(KW_INTEGER, decList.get(0).getType().kind);
+        assertEquals(IDENT, decList.get(0).getIdent().kind);
+        assertEquals(0, statementList.size());
 	}
 	
 	@Test
@@ -1957,7 +1965,6 @@ public class ASTTest {
 		String input = "{";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.block();
@@ -1969,9 +1976,8 @@ public class ASTTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
-        ASTNode ast = parser.block();
+        Block b = parser.block();
         assertEquals(EOF, parser.t.kind);
-        Block b = (Block)ast;
         ArrayList<Dec> decList = b.getDecs();
         ArrayList<Statement> statementList = b.getStatements();
         assertEquals(KW_INTEGER, decList.get(0).getType().kind);
@@ -1984,10 +1990,15 @@ public class ASTTest {
 		String input = "{sleep(5); integer c}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.block();
+        Block b = parser.block();
         assertEquals(EOF, parser.t.kind);
+        ArrayList<Dec> decList = b.getDecs();
+        ArrayList<Statement> statementList = b.getStatements();
+        assertEquals(KW_INTEGER, decList.get(0).getType().kind);
+        assertEquals(IDENT, decList.get(0).getIdent().kind);
+        assertEquals(SleepStatement.class, statementList.get(0).getClass());
+        assertEquals(OP_SLEEP, statementList.get(0).getFirstToken().kind);
 	}
 	
 	@Test
@@ -1995,10 +2006,20 @@ public class ASTTest {
 		String input = "{sleep(5); integer c sleep(5); frame c}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.block();
+        Block b = parser.block();
         assertEquals(EOF, parser.t.kind);
+        ArrayList<Dec> decList = b.getDecs();
+        ArrayList<Statement> statementList = b.getStatements();
+        assertEquals(KW_INTEGER, decList.get(0).getType().kind);
+        assertEquals(IDENT, decList.get(0).getIdent().kind);
+        assertEquals(SleepStatement.class, statementList.get(0).getClass());
+        assertEquals(OP_SLEEP, statementList.get(0).getFirstToken().kind);
+        assertEquals(OP_SLEEP, statementList.get(1).getFirstToken().kind);
+        assertEquals(2, statementList.size());
+        assertEquals(2, decList.size());
+        assertEquals(KW_FRAME, decList.get(1).getType().kind);
+        assertEquals(IDENT, decList.get(1).getIdent().kind);
 	}
 	
 	@Test
@@ -2007,12 +2028,11 @@ public class ASTTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
-        ASTNode ast = parser.whileStatement();
+        WhileStatement ws = parser.whileStatement();
         assertEquals(EOF, parser.t.kind);
-        //WhileStatement w = (WhileStatement)ast;
-        //assertEquals(KW_WHILE, w.firstToken.kind);
-        //assertEquals(Expression.class, w.getE());
-        //assertEquals(Block.class, w.getB());
+        assertEquals(WhileStatement.class, ws.getClass());
+        assertEquals(KW_TRUE, ws.getE().getFirstToken().kind);
+        assertEquals(KW_INTEGER, ws.getB().getFirstToken().kind);
 	}
 	
 	@Test
@@ -2020,7 +2040,6 @@ public class ASTTest {
 		String input = "while(true) { integer c ";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.whileStatement();
@@ -2031,7 +2050,6 @@ public class ASTTest {
 		String input = "while (true { integer c }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.whileStatement();
@@ -2042,7 +2060,6 @@ public class ASTTest {
 		String input = "while true) { integer c }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.whileStatement();
@@ -2053,7 +2070,6 @@ public class ASTTest {
 		String input = "while (true) integer c }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.whileStatement();
@@ -2064,7 +2080,6 @@ public class ASTTest {
 		String input = "while";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.whileStatement();
@@ -2075,10 +2090,12 @@ public class ASTTest {
 		String input = "if(true) { integer c }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
-        parser.ifStatement();
+        IfStatement is = parser.ifStatement();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(IfStatement.class, is.getClass());
+        assertEquals(KW_TRUE, is.getE().getFirstToken().kind);
+        assertEquals(KW_INTEGER, is.getB().getFirstToken().kind);
 	}
 	
 	@Test
@@ -2086,7 +2103,6 @@ public class ASTTest {
 		String input = "if(true) { integer c ";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.ifStatement();
@@ -2097,7 +2113,6 @@ public class ASTTest {
 		String input = "if (true { integer c }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.ifStatement();
@@ -2108,7 +2123,6 @@ public class ASTTest {
 		String input = "if true) { integer c }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.ifStatement();
@@ -2119,7 +2133,6 @@ public class ASTTest {
 		String input = "if (true) integer c }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.ifStatement();
@@ -2130,7 +2143,6 @@ public class ASTTest {
 		String input = "if";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
 		thrown.expect(Parser.SyntaxException.class);
         parser.ifStatement();
