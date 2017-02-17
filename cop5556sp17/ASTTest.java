@@ -1184,8 +1184,13 @@ public class ASTTest {
 		scanner.scan();
 		Parser parser = new Parser(scanner);
 		Expression el = parser.elem();
+		BinaryExpression b1 = (BinaryExpression)el;
+		assertEquals("2", b1.getE1().getFirstToken().getText());
+		//System.out.println(el.getFirstToken().getText());
+		BinaryExpression b0 = (BinaryExpression)b1.getE0();
+		assertEquals("5", b0.getE0().getFirstToken().getText());
+		assertEquals("4", b0.getE1().getFirstToken().getText());
         assertEquals(EOF, parser.t.kind);
-        assertEquals(INT_LIT, el.getFirstToken().kind);
 	}
 	
 	@Test
@@ -1836,8 +1841,54 @@ public class ASTTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
-        parser.chain();
+        ASTNode ast = parser.chain();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(BinaryChain.class, ast.getClass());
+		BinaryChain mainBC = (BinaryChain)ast;
+		Chain grayShowHide = mainBC.getE0();
+		ChainElem xloc = mainBC.getE1();
+		Token arrowEnd = mainBC.getArrow();
+		assertEquals(ARROW, arrowEnd.kind);
+		BinaryChain grayShowHideBC = (BinaryChain)grayShowHide;
+		Chain grayShow = grayShowHideBC.getE0();
+		ChainElem hide = mainBC.getE1();
+		Token arrowMiddle = grayShowHideBC.getArrow();
+		BinaryChain grayShowBC = (BinaryChain)grayShow;
+		Chain gray = grayShowBC.getE0();
+		ChainElem show = grayShowBC.getE1();
+		Token arrowLeft = grayShowBC.getArrow();
+		assertEquals(ARROW, arrowLeft.kind);
+		assertEquals(FilterOpChain.class, gray.getClass());
+		
+		
+		/*Chain grayShow = mainBC.getE0();
+		ChainElem hide = mainBC.getE1();
+		Token arrowRight = mainBC.getArrow();
+		assertEquals(ARROW, arrowRight.kind);
+		BinaryChain grayShowBC = (BinaryChain)grayShow;
+		Chain gray = grayShowBC.getE0();
+		ChainElem show = grayShowBC.getE1();
+		Token arrowLeft = grayShowBC.getArrow();
+		assertEquals(ARROW, arrowLeft.kind);
+		assertEquals(OP_GRAY, gray.firstToken.kind);
+		assertEquals(FilterOpChain.class, gray.getClass());
+		FilterOpChain grayFilter = (FilterOpChain)gray;
+		assertEquals(3, grayFilter.getArg().getExprList().size());
+		assertEquals(INT_LIT, grayFilter.getArg().getExprList().get(0).firstToken.kind);
+		assertEquals(INT_LIT, grayFilter.getArg().getExprList().get(1).firstToken.kind);
+		assertEquals(IDENT, grayFilter.getArg().getExprList().get(2).firstToken.kind);
+		assertEquals("2", grayFilter.getArg().getExprList().get(0).firstToken.getText());
+		assertEquals("chelsea", grayFilter.getArg().getExprList().get(2).firstToken.getText());
+		assertEquals(FrameOpChain.class, show.getClass());
+		FrameOpChain showFrame = (FrameOpChain)show;
+		assertEquals(2, showFrame.getArg().getExprList().size());
+		assertEquals(INT_LIT, showFrame.getArg().getExprList().get(0).firstToken.kind);
+		assertEquals(INT_LIT, showFrame.getArg().getExprList().get(1).firstToken.kind);
+		assertEquals("2", showFrame.getArg().getExprList().get(0).firstToken.getText());
+		assertEquals("2", showFrame.getArg().getExprList().get(1).firstToken.getText());
+		assertEquals(FrameOpChain.class, hide.getClass());
+		FrameOpChain hideFrame = (FrameOpChain)hide;
+		assertEquals(KW_HIDE, hideFrame.firstToken.kind);*/
 	}
 	
 	// statement ::=   OP_SLEEP expression ; | whileStatement | ifStatement | chain ; | assign ;
@@ -1915,8 +1966,10 @@ public class ASTTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
-        parser.statement();
+        WhileStatement s = (WhileStatement)parser.statement();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(WhileStatement.class, s.getClass());
+        assertEquals(KW_TRUE, s.getE().firstToken.kind);
 	}
 	
 	@Test
@@ -1925,10 +1978,10 @@ public class ASTTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
-        Statement s = parser.statement();
+        IfStatement s = (IfStatement) parser.statement();
         assertEquals(EOF, parser.t.kind);
         assertEquals(IfStatement.class, s.getClass());
-        assertEquals(KW_TRUE, s.firstToken.kind);
+        assertEquals(KW_TRUE, s.getE().firstToken.kind);
 	}
 	
 	@Test
@@ -2032,7 +2085,9 @@ public class ASTTest {
         assertEquals(EOF, parser.t.kind);
         assertEquals(WhileStatement.class, ws.getClass());
         assertEquals(KW_TRUE, ws.getE().getFirstToken().kind);
-        assertEquals(KW_INTEGER, ws.getB().getFirstToken().kind);
+        ArrayList<Dec> decList = ws.getB().getDecs();
+        assertEquals(KW_INTEGER, decList.get(0).getType().kind);
+        assertEquals(IDENT, decList.get(0).getIdent().kind);
 	}
 	
 	@Test
@@ -2095,7 +2150,9 @@ public class ASTTest {
         assertEquals(EOF, parser.t.kind);
         assertEquals(IfStatement.class, is.getClass());
         assertEquals(KW_TRUE, is.getE().getFirstToken().kind);
-        assertEquals(KW_INTEGER, is.getB().getFirstToken().kind);
+        ArrayList<Dec> decList = is.getB().getDecs();
+        assertEquals(KW_INTEGER, decList.get(0).getType().kind);
+        assertEquals(IDENT, decList.get(0).getIdent().kind);
 	}
 	
 	@Test
