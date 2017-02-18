@@ -81,6 +81,124 @@ public class ASTTest {
 		assertEquals(IntLitExpression.class, be.getE1().getClass());
 		assertEquals(LT, be.getOp().kind);
 	}
+	
+	@Test
+	public void testParseALL() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "programChelsea url varURL1 {sleep(3); \n"
+				+ "while (i <= 4) {boolean varBOOL1} \n"
+				+ "if (j + 2 == 4) {integer varINT1} \n"
+				+ "assignment1 <- 10; \n"
+				+ "gray (2,2,chelsea) -> show (2,2) -> hide; \n"
+				+ "image varIMAGE1 \n"
+				+ "frame varFRAME1"
+				+ "\n }";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		Program prog = (Program) parser.parse();
+		assertEquals(EOF, parser.t.kind);
+		// TESTING PRE-BLOCK: programChelsea url varURL1
+		assertEquals(KW_URL, prog.getParams().get(0).getType().kind);
+		assertEquals(IDENT, prog.getParams().get(0).getIdent().kind);
+		assertEquals("programChelsea", prog.getName());
+		assertEquals("varURL1", prog.getParams().get(0).getIdent().getText());
+		// TESTING IN THE BLOCK
+		ArrayList<Statement> statementList = prog.getB().getStatements();
+		// TESTING SLEEP: sleep(3);
+		assertEquals(OP_SLEEP, statementList.get(0).getFirstToken().kind);
+		assertEquals("sleep", statementList.get(0).getFirstToken().getText());
+		SleepStatement ss = (SleepStatement) statementList.get(0);
+		assertEquals(SleepStatement.class, ss.getClass());
+        assertEquals(INT_LIT, ss.getE().firstToken.kind);
+        assertEquals("3", ss.getE().firstToken.getText());
+        // TESTING WHILE: while (i <= 4) {boolean varBOOL1}
+        WhileStatement ws = (WhileStatement) statementList.get(1);
+        assertEquals(WhileStatement.class, ws.getClass());
+        assertEquals(IDENT, ws.getE().getFirstToken().kind);
+		BinaryExpression beWHILE = (BinaryExpression) ws.getE();
+		assertEquals(BinaryExpression.class, beWHILE.getClass());
+		assertEquals(IdentExpression.class, beWHILE.getE0().getClass());
+		assertEquals(IntLitExpression.class, beWHILE.getE1().getClass());
+		assertEquals(LE, beWHILE.getOp().kind);
+        ArrayList<Dec> decListWHILE = ws.getB().getDecs();
+        assertEquals(KW_BOOLEAN, decListWHILE.get(0).getType().kind);
+        assertEquals(IDENT, decListWHILE.get(0).getIdent().kind);
+        assertEquals("varBOOL1", decListWHILE.get(0).getIdent().getText());
+        // TESTING IF: if (j + 2 == 4) {integer varINT1}
+        IfStatement is = (IfStatement) statementList.get(2);
+        assertEquals(IfStatement.class, is.getClass());
+        assertEquals(IDENT, is.getE().getFirstToken().kind);
+		BinaryExpression beIF = (BinaryExpression) is.getE();
+		assertEquals(BinaryExpression.class, beIF.getClass());
+		assertEquals(BinaryExpression.class, beIF.getE0().getClass());
+		assertEquals(IntLitExpression.class, beIF.getE1().getClass());
+		assertEquals(EQUAL, beIF.getOp().kind);
+		BinaryExpression beIF2 = (BinaryExpression) beIF.getE0();
+		assertEquals(BinaryExpression.class, beIF2.getClass());
+		assertEquals(IdentExpression.class, beIF2.getE0().getClass());
+		assertEquals(IntLitExpression.class, beIF2.getE1().getClass());
+		assertEquals(PLUS, beIF2.getOp().kind);
+        ArrayList<Dec> decListIF = is.getB().getDecs();
+        assertEquals(KW_INTEGER, decListIF.get(0).getType().kind);
+        assertEquals(IDENT, decListIF.get(0).getIdent().kind);
+        assertEquals("varINT1", decListIF.get(0).getIdent().getText());
+        // TESTING ASSIGNMENT: assignment1 <- 10;
+        AssignmentStatement as = (AssignmentStatement) statementList.get(3);
+		assertEquals(IDENT, as.getVar().firstToken.kind);
+		assertEquals(IdentLValue.class, as.var.getClass());
+		assertEquals(INT_LIT, as.getE().firstToken.kind);
+		assertEquals(AssignmentStatement.class, as.getClass());
+		assertEquals("assignment1", as.getVar().firstToken.getText());
+		assertEquals("10", as.getE().firstToken.getText());
+		// TESTING CHAIN: gray (2,2,chelsea) -> show (2,2) -> hide;
+		BinaryChain allBC = (BinaryChain) statementList.get(4);
+        assertEquals(BinaryChain.class, allBC.getClass());
+		BinaryChain mainBC = (BinaryChain) allBC;
+		Chain grayShow = mainBC.getE0();
+		ChainElem hide = mainBC.getE1();
+		Token arrowRight = mainBC.getArrow();
+		assertEquals(ARROW, arrowRight.kind);
+		BinaryChain grayShowBC = (BinaryChain)grayShow;
+		Chain gray = grayShowBC.getE0();
+		ChainElem show = grayShowBC.getE1();
+		Token arrowLeft = grayShowBC.getArrow();
+		assertEquals(ARROW, arrowLeft.kind);
+		assertEquals(OP_GRAY, gray.firstToken.kind);
+		assertEquals(FilterOpChain.class, gray.getClass());
+		FilterOpChain grayFilter = (FilterOpChain)gray;
+		assertEquals(3, grayFilter.getArg().getExprList().size());
+		assertEquals(INT_LIT, grayFilter.getArg().getExprList().get(0).firstToken.kind);
+		assertEquals(INT_LIT, grayFilter.getArg().getExprList().get(1).firstToken.kind);
+		assertEquals(IDENT, grayFilter.getArg().getExprList().get(2).firstToken.kind);
+		assertEquals("2", grayFilter.getArg().getExprList().get(0).firstToken.getText());
+		assertEquals("chelsea", grayFilter.getArg().getExprList().get(2).firstToken.getText());
+		assertEquals(FrameOpChain.class, show.getClass());
+		FrameOpChain showFrame = (FrameOpChain)show;
+		assertEquals(2, showFrame.getArg().getExprList().size());
+		assertEquals(INT_LIT, showFrame.getArg().getExprList().get(0).firstToken.kind);
+		assertEquals(INT_LIT, showFrame.getArg().getExprList().get(1).firstToken.kind);
+		assertEquals("2", showFrame.getArg().getExprList().get(0).firstToken.getText());
+		assertEquals("2", showFrame.getArg().getExprList().get(1).firstToken.getText());
+		assertEquals(FrameOpChain.class, hide.getClass());
+		FrameOpChain hideFrame = (FrameOpChain)hide;
+		assertEquals(KW_HIDE, hideFrame.firstToken.kind);
+		// TESTING LIST<DEC>
+		ArrayList<Dec> decList = prog.getB().getDecs();
+		// TESTING: image varIMAGE1
+		Dec dImage = decList.get(0);
+		assertEquals(KW_IMAGE, dImage.getType().kind);
+		assertEquals(IDENT, dImage.getIdent().kind);
+		assertEquals("varIMAGE1", dImage.getIdent().getText());
+		assertEquals("image", dImage.getType().getText());
+		assertEquals(Dec.class, dImage.getClass());
+		// TESTING: frame varFRAME1
+		Dec dFrame = decList.get(1);
+		assertEquals(KW_FRAME, dFrame.getType().kind);
+		assertEquals(IDENT, dFrame.getIdent().kind);
+		assertEquals("varFRAME1", dFrame.getIdent().getText());
+		assertEquals("frame", dFrame.getType().getText());
+		assertEquals(Dec.class, dFrame.getClass());
+	}
 
 	@Test
 	public void testParse1() throws IllegalCharException, IllegalNumberException, SyntaxException {
@@ -1878,42 +1996,18 @@ public class ASTTest {
 		Chain grayShow = grayShowHideBC.getE0();
 		ChainElem hide = mainBC.getE1();
 		Token arrowMiddle = grayShowHideBC.getArrow();
+		assertEquals(ARROW, arrowMiddle.kind);
 		BinaryChain grayShowBC = (BinaryChain)grayShow;
 		Chain gray = grayShowBC.getE0();
 		ChainElem show = grayShowBC.getE1();
 		Token arrowLeft = grayShowBC.getArrow();
 		assertEquals(ARROW, arrowLeft.kind);
 		assertEquals(FilterOpChain.class, gray.getClass());
-		
-		
-		/*Chain grayShow = mainBC.getE0();
-		ChainElem hide = mainBC.getE1();
-		Token arrowRight = mainBC.getArrow();
-		assertEquals(ARROW, arrowRight.kind);
-		BinaryChain grayShowBC = (BinaryChain)grayShow;
-		Chain gray = grayShowBC.getE0();
-		ChainElem show = grayShowBC.getE1();
-		Token arrowLeft = grayShowBC.getArrow();
-		assertEquals(ARROW, arrowLeft.kind);
-		assertEquals(OP_GRAY, gray.firstToken.kind);
-		assertEquals(FilterOpChain.class, gray.getClass());
-		FilterOpChain grayFilter = (FilterOpChain)gray;
-		assertEquals(3, grayFilter.getArg().getExprList().size());
-		assertEquals(INT_LIT, grayFilter.getArg().getExprList().get(0).firstToken.kind);
-		assertEquals(INT_LIT, grayFilter.getArg().getExprList().get(1).firstToken.kind);
-		assertEquals(IDENT, grayFilter.getArg().getExprList().get(2).firstToken.kind);
-		assertEquals("2", grayFilter.getArg().getExprList().get(0).firstToken.getText());
-		assertEquals("chelsea", grayFilter.getArg().getExprList().get(2).firstToken.getText());
 		assertEquals(FrameOpChain.class, show.getClass());
-		FrameOpChain showFrame = (FrameOpChain)show;
-		assertEquals(2, showFrame.getArg().getExprList().size());
-		assertEquals(INT_LIT, showFrame.getArg().getExprList().get(0).firstToken.kind);
-		assertEquals(INT_LIT, showFrame.getArg().getExprList().get(1).firstToken.kind);
-		assertEquals("2", showFrame.getArg().getExprList().get(0).firstToken.getText());
-		assertEquals("2", showFrame.getArg().getExprList().get(1).firstToken.getText());
-		assertEquals(FrameOpChain.class, hide.getClass());
-		FrameOpChain hideFrame = (FrameOpChain)hide;
-		assertEquals(KW_HIDE, hideFrame.firstToken.kind);*/
+		FrameOpChain fshow = (FrameOpChain) show;
+		assertEquals(2, fshow.getArg().getExprList().size());
+		assertEquals("2", fshow.getArg().getExprList().get(0).firstToken.getText());
+		assertEquals("2", fshow.getArg().getExprList().get(1).firstToken.getText());
 	}
 	
 	// statement ::=   OP_SLEEP expression ; | whileStatement | ifStatement | chain ; | assign ;
