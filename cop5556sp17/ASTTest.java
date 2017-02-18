@@ -310,7 +310,6 @@ public class ASTTest {
 		String input = "  (3,5) ";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		//System.out.println(scanner);
 		Parser parser = new Parser(scanner);
         parser.arg();
         assertEquals(EOF, parser.t.kind);
@@ -1065,8 +1064,9 @@ public class ASTTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
-        parser.arg();
+        Tuple tuple = parser.arg();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(1, tuple.getExprList().size());
 	}
 	
 	@Test
@@ -1075,8 +1075,9 @@ public class ASTTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
-        parser.arg();
+        Tuple tuple = parser.arg();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(1, tuple.getExprList().size());
 	}
 	
 	@Test
@@ -1088,6 +1089,11 @@ public class ASTTest {
         Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(INT_LIT, el.getFirstToken().kind);
+        assertEquals(BinaryExpression.class, el.getClass());
+		BinaryExpression be = (BinaryExpression) el;
+		assertEquals(IntLitExpression.class, be.getE0().getClass());
+		assertEquals(IntLitExpression.class, be.getE1().getClass());
+		assertEquals(TIMES, be.getOp().kind);
 	}
 	
 	@Test
@@ -1110,6 +1116,11 @@ public class ASTTest {
 		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(INT_LIT, el.getFirstToken().kind);
+        assertEquals(BinaryExpression.class, el.getClass());
+		BinaryExpression be = (BinaryExpression) el;
+		assertEquals(IntLitExpression.class, be.getE0().getClass());
+		assertEquals(IntLitExpression.class, be.getE1().getClass());
+		assertEquals(DIV, be.getOp().kind);
 	}
 	
 	@Test
@@ -1121,6 +1132,11 @@ public class ASTTest {
 		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(INT_LIT, el.getFirstToken().kind);
+        assertEquals(BinaryExpression.class, el.getClass());
+		BinaryExpression be = (BinaryExpression) el;
+		assertEquals(IntLitExpression.class, be.getE0().getClass());
+		assertEquals(IntLitExpression.class, be.getE1().getClass());
+		assertEquals(AND, be.getOp().kind);
 	}
 	
 	@Test
@@ -1132,6 +1148,15 @@ public class ASTTest {
 		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(INT_LIT, el.getFirstToken().kind);
+        assertEquals(BinaryExpression.class, el.getClass());
+		BinaryExpression be = (BinaryExpression) el;
+		assertEquals(BinaryExpression.class, be.getE0().getClass());
+		assertEquals(IntLitExpression.class, be.getE1().getClass());
+		assertEquals(TIMES, be.getOp().kind);
+		BinaryExpression be2 = (BinaryExpression) be.getE0();
+		assertEquals(IntLitExpression.class, be2.getE0().getClass());
+		assertEquals(IntLitExpression.class, be2.getE1().getClass());
+		assertEquals(MOD, be2.getOp().kind);
 	}
 	
 	@Test
@@ -1937,7 +1962,7 @@ public class ASTTest {
 		Parser parser = new Parser(scanner);
         Statement s = parser.statement();
         assertEquals(EOF, parser.t.kind);
-        //assertEquals(Statement.class, s.getClass());
+        assertEquals(BinaryChain.class, s.getClass());
 	}
 	
 	@Test
@@ -1946,8 +1971,9 @@ public class ASTTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
-        parser.statement();
+        Statement s = parser.statement();
         assertEquals(EOF, parser.t.kind);
+        assertEquals(AssignmentStatement.class, s.getClass());
 	}
 	
 	@Test
@@ -1970,6 +1996,8 @@ public class ASTTest {
         assertEquals(EOF, parser.t.kind);
         assertEquals(WhileStatement.class, s.getClass());
         assertEquals(KW_TRUE, s.getE().firstToken.kind);
+        assertEquals(0, s.getB().getDecs().size());
+        assertEquals(0, s.getB().getStatements().size());
 	}
 	
 	@Test
@@ -1982,6 +2010,8 @@ public class ASTTest {
         assertEquals(EOF, parser.t.kind);
         assertEquals(IfStatement.class, s.getClass());
         assertEquals(KW_TRUE, s.getE().firstToken.kind);
+        assertEquals(0, s.getB().getDecs().size());
+        assertEquals(0, s.getB().getStatements().size());
 	}
 	
 	@Test
