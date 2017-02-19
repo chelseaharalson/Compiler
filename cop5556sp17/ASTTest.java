@@ -1296,6 +1296,10 @@ public class ASTTest {
 		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(IDENT, el.getFirstToken().kind);
+        BinaryExpression be = (BinaryExpression) el;
+        assertEquals("chelsea", be.getE0().getFirstToken().getText());
+		assertEquals("2", be.getE1().getFirstToken().getText());
+		assertEquals(DIV, be.getOp().kind);
 	}
 	
 	@Test
@@ -1307,6 +1311,10 @@ public class ASTTest {
 		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(KW_TRUE, el.getFirstToken().kind);
+        BinaryExpression be = (BinaryExpression) el;
+        assertEquals("true", be.getE0().getFirstToken().getText());
+		assertEquals("false", be.getE1().getFirstToken().getText());
+		assertEquals(AND, be.getOp().kind);
 	}
 	
 	@Test
@@ -1318,6 +1326,15 @@ public class ASTTest {
 		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(KW_SCREENWIDTH, el.getFirstToken().kind);
+        assertEquals(BinaryExpression.class, el.getClass());
+		BinaryExpression be = (BinaryExpression) el;
+		assertEquals(BinaryExpression.class, be.getE0().getClass());
+		assertEquals(IntLitExpression.class, be.getE1().getClass());
+		assertEquals(TIMES, be.getOp().kind);
+		BinaryExpression be2 = (BinaryExpression) be.getE0();
+		assertEquals(ConstantExpression.class, be2.getE0().getClass());
+		assertEquals(ConstantExpression.class, be2.getE1().getClass());
+		assertEquals(MOD, be2.getOp().kind);
 	}
 	
 	@Test
@@ -1329,7 +1346,6 @@ public class ASTTest {
 		Expression el = parser.elem();
 		BinaryExpression b1 = (BinaryExpression)el;
 		assertEquals("2", b1.getE1().getFirstToken().getText());
-		//System.out.println(el.getFirstToken().getText());
 		BinaryExpression b0 = (BinaryExpression)b1.getE0();
 		assertEquals("5", b0.getE0().getFirstToken().getText());
 		assertEquals("4", b0.getE1().getFirstToken().getText());
@@ -1345,6 +1361,10 @@ public class ASTTest {
 		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(INT_LIT, el.getFirstToken().kind);
+        BinaryExpression be = (BinaryExpression) el;
+        assertEquals("5", be.getE0().getFirstToken().getText());
+		assertEquals("4", be.getE1().getFirstToken().getText());
+		assertEquals(PLUS, be.getOp().kind);
 	}
 	
 	@Test
