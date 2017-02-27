@@ -1199,6 +1199,19 @@ public class ASTTest {
 	}
 	
 	@Test
+	public void testArg12() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		Tuple tuple = parser.arg();
+        assertEquals(EOF, parser.t.kind);
+        assertEquals(0, tuple.getExprList().size());
+        assertEquals(EOF, tuple.getFirstToken().kind);
+        assertEquals("eof", tuple.getFirstToken().getText());
+	}
+	
+	@Test
 	public void testElem1() throws IllegalCharException, IllegalNumberException, SyntaxException {
 		String input = "3 * 4";
 		Scanner scanner = new Scanner(input);

@@ -309,9 +309,9 @@ public class Parser {
 	}
 
 	WhileStatement whileStatement() throws SyntaxException {
+		Token startToken = t;
 		match(KW_WHILE);
 		Kind kind = t.kind;
-		Token startToken = t;
 		if (kind.equals(LPAREN)) {
 			consume();
 			Expression e = expression();
@@ -332,9 +332,9 @@ public class Parser {
 	}
 	
 	IfStatement ifStatement() throws SyntaxException {
+		Token startToken = t;
 		match(KW_IF);
 		Kind kind = t.kind;
-		Token startToken = t;
 		if (kind.equals(LPAREN)) {
 			consume();
 			Expression e = expression();

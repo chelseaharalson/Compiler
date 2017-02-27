@@ -122,6 +122,9 @@ public class Scanner {
 		//returns the text of this Token
 		public String getText() {
 			//TODO IMPLEMENT THIS
+			if (kind.equals(kind.EOF)) {
+				return "eof";
+			}
 			return chars.substring(pos,pos+length);
 			//return null;
 		}
