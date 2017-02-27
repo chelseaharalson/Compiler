@@ -295,7 +295,7 @@ public class Parser {
 	// ParamDec ∷= type ident
 	ParamDec paramDec() throws SyntaxException {
 		Token startToken = t;
-		match(KW_INTEGER, KW_BOOLEAN, KW_FRAME, KW_FILE, KW_URL);
+		match(KW_INTEGER, KW_BOOLEAN, KW_FILE, KW_URL);
         Token identToken = match(IDENT);
 		return new ParamDec(startToken, identToken);
 	}
