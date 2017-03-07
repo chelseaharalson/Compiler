@@ -11,7 +11,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import cop5556sp17.ParserHW3.SyntaxException;
+import cop5556sp17.Parser.SyntaxException;
 import cop5556sp17.Scanner.IllegalCharException;
 import cop5556sp17.Scanner.IllegalNumberException;
 import cop5556sp17.Scanner.Token;
@@ -21,7 +21,7 @@ import cop5556sp17.AST.*;
 //import cop5556sp17.AST.IdentExpression;
 //import cop5556sp17.AST.IntLitExpression;
 
-public class ASTTest {
+public class ASTTest2 {
 
 	static final boolean doPrint = true;
 	static void show (Object s) {
@@ -39,7 +39,7 @@ public class ASTTest {
 		String input = "abc";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		ASTNode ast = parser.expression();
 		assertEquals(IdentExpression.class, ast.getClass());
 	}
@@ -49,7 +49,7 @@ public class ASTTest {
 		String input = "123";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		ASTNode ast = parser.expression();
 		assertEquals(IntLitExpression.class, ast.getClass());
 	}
@@ -59,7 +59,7 @@ public class ASTTest {
 		String input = "1+abc";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		ASTNode ast = parser.expression();
 		assertEquals(BinaryExpression.class, ast.getClass());
 		BinaryExpression be = (BinaryExpression) ast;
@@ -73,7 +73,7 @@ public class ASTTest {
 		String input = "i<3";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		ASTNode ast = parser.expression();
 		assertEquals(BinaryExpression.class, ast.getClass());
 		BinaryExpression be = (BinaryExpression) ast;
@@ -88,13 +88,13 @@ public class ASTTest {
 				+ "while (i <= 4) {boolean varBOOL1} \n"
 				+ "if (j + 2 == 4) {integer varINT1} \n"
 				+ "assignment1 <- 10; \n"
-				+ "gray (2,2,chelsea) -> show (2,2) -> hide; \n"
+				+ "gray (2,2,chelsea) -> show (2,2) |-> hide; \n"
 				+ "image varIMAGE1 \n"
 				+ "frame varFRAME1"
 				+ "\n }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		Program prog = (Program) parser.parse();
 		assertEquals(EOF, parser.t.kind);
 		// TESTING PRE-BLOCK: programChelsea url varURL1
@@ -157,7 +157,7 @@ public class ASTTest {
 		Chain grayShow = mainBC.getE0();
 		ChainElem hide = mainBC.getE1();
 		Token arrowRight = mainBC.getArrow();
-		assertEquals(ARROW, arrowRight.kind);
+		assertEquals(BARARROW, arrowRight.kind);
 		BinaryChain grayShowBC = (BinaryChain)grayShow;
 		Chain gray = grayShowBC.getE0();
 		ChainElem show = grayShowBC.getE1();
@@ -205,7 +205,7 @@ public class ASTTest {
 		String input = "programChelsea {sleep(5+4*false/4-true%5&me);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		ASTNode ast = parser.parse();
 		assertEquals(EOF, parser.t.kind);
 		//System.out.println(ast);
@@ -218,7 +218,7 @@ public class ASTTest {
 		String input = "chelsea{\n while(i<3){\n if(a+b==3){\n boolean chelsea\n while(true){blur(2) |-> convolve(2,3); \n} \n}\n}\n}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		ASTNode ast = parser.parse();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -228,7 +228,7 @@ public class ASTTest {
 		String input = "chelsea{\n while(i<3){\n if(a+b==3){\n boolean chelsea}\n}\n}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		ASTNode ast = parser.parse();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -238,7 +238,7 @@ public class ASTTest {
 		String input = "method file x { }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		ASTNode ast = parser.parse();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -248,7 +248,7 @@ public class ASTTest {
 		String input = "chelsea {integer x \n sleep(x<2); \n if(x>y) {boolean t} \n blur(3) -> move(2,4); }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		ASTNode ast = parser.parse();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -258,7 +258,7 @@ public class ASTTest {
 		String input = "awesomeProgram file awesome {\n    integer i\n    i  <- 1;\n    integer j\n    j <- 5;\n    while(i < j){\n    i <- (i + 1);\n    }\n    frame f\n    if(f){\n    f <- (i + j);\n}    \n}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		ASTNode ast = parser.parse();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -268,7 +268,7 @@ public class ASTTest {
 		String input = "me {sleep(5+(4*(false/(4-(true%(5&(me)))))));}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		ASTNode ast = parser.parse();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -278,7 +278,7 @@ public class ASTTest {
 		String input = "chelsea{if(a<b <= c){}}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		ASTNode ast = parser.parse();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -288,7 +288,7 @@ public class ASTTest {
 		String input = "main {}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		ASTNode ast = parser.parse();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -298,7 +298,7 @@ public class ASTTest {
 		String input = "main { while(true) {integer c} }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		ASTNode ast = parser.parse();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -308,7 +308,7 @@ public class ASTTest {
 		String input = "main url x, boolean t {image c}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		ASTNode ast = parser.parse();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -318,7 +318,7 @@ public class ASTTest {
 		String input = "main url x {frame c}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		ASTNode ast = parser.parse();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -328,8 +328,8 @@ public class ASTTest {
 		String input = "chelsea{\n while(i<3){\n if(a+b==3){\n boolean chelsea\n while(true){blur3,2) |-> convolve(2,3); \n} \n}\n}\n}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -338,8 +338,8 @@ public class ASTTest {
 		String input = "chelsea{if(a<b <= c){};}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -348,8 +348,8 @@ public class ASTTest {
 		String input = "main url x {frame c";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -358,8 +358,8 @@ public class ASTTest {
 		String input = "main url x {frame 2}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -368,8 +368,8 @@ public class ASTTest {
 		String input = "";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -378,8 +378,8 @@ public class ASTTest {
 		String input = "22";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -388,8 +388,8 @@ public class ASTTest {
 		String input = "file";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -398,8 +398,8 @@ public class ASTTest {
 		String input = "main url x, {frame c}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -408,8 +408,8 @@ public class ASTTest {
 		String input = "main { while(true,2) {integer c} }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.parse();
 	}
 	
@@ -418,7 +418,7 @@ public class ASTTest {
 		String input = "abc";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		parser.factor();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -428,7 +428,7 @@ public class ASTTest {
 		String input = "  (3,5) ";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         parser.arg();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -438,8 +438,8 @@ public class ASTTest {
 		String input = "  (3,) ";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
 		parser.arg();
 	}
 
@@ -447,7 +447,7 @@ public class ASTTest {
 	@Test
 	public void testProgram0() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "prog0 {}";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		parser.parse();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -456,28 +456,28 @@ public class ASTTest {
 	@Test
 	public void testStrongOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "*";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.strongOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testStrongOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "/";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.strongOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testStrongOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "&";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.strongOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testStrongOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "%";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.strongOp(parser.t.kind));
 	}
 	
@@ -485,14 +485,14 @@ public class ASTTest {
 	public void testStrongOp5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "`";
 		thrown.expect(IllegalCharException.class);
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		parser.strongOp(parser.t.kind);
 	}
 	
 	@Test
 	public void testStrongOp6() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "c";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(false, parser.strongOp(parser.t.kind));
 	}
 	
@@ -500,28 +500,28 @@ public class ASTTest {
 	@Test
 	public void testWeakOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "+";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.weakOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testWeakOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "-";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.weakOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testWeakOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "|";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.weakOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testWeakOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "%";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(false, parser.weakOp(parser.t.kind));
 	}
 	
@@ -529,49 +529,49 @@ public class ASTTest {
 	@Test
 	public void testRelOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "<";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "<=";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = ">";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = ">=";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "==";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp6() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "!=";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.relOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testRelOp7() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(false, parser.relOp(parser.t.kind));
 	}
 	
@@ -579,21 +579,21 @@ public class ASTTest {
 	@Test
 	public void testArrowOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "->";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.arrowOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testArrowOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "|->";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.arrowOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testArrowOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(false, parser.arrowOp(parser.t.kind));
 	}
 	
@@ -601,28 +601,28 @@ public class ASTTest {
 	@Test
 	public void testFilterOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "blur";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.filterOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFilterOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "gray";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.filterOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFilterOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "convolve";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.filterOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFilterOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(false, parser.filterOp(parser.t.kind));
 	}
 	
@@ -630,42 +630,42 @@ public class ASTTest {
 	@Test
 	public void testFrameOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "show";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.frameOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFrameOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "hide";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.frameOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFrameOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "move";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.frameOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFrameOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "xloc";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.frameOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFrameOp5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "yloc";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.frameOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testFrameOp6() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(false, parser.frameOp(parser.t.kind));
 	}
 	
@@ -674,28 +674,28 @@ public class ASTTest {
 	@Test
 	public void testImageOp1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "width";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.imageOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testImageOp2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "height";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.imageOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testImageOp3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "scale";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(true, parser.imageOp(parser.t.kind));
 	}
 	
 	@Test
 	public void testImageOp4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		assertEquals(false, parser.imageOp(parser.t.kind));
 	}
 	
@@ -703,7 +703,7 @@ public class ASTTest {
 	@Test
 	public void testFactor_1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		Expression f = parser.factor();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(IDENT, f.getFirstToken().kind);
@@ -712,7 +712,7 @@ public class ASTTest {
 	@Test
 	public void testFactor2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "2";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		Expression f = parser.factor();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(INT_LIT, f.getFirstToken().kind);
@@ -721,7 +721,7 @@ public class ASTTest {
 	@Test
 	public void testFactor3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "true";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		Expression f = parser.factor();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(KW_TRUE, f.getFirstToken().kind);
@@ -730,7 +730,7 @@ public class ASTTest {
 	@Test
 	public void testFactor4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "false";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		Expression f = parser.factor();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(KW_FALSE, f.getFirstToken().kind);
@@ -739,7 +739,7 @@ public class ASTTest {
 	@Test
 	public void testFactor5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "screenwidth";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		Expression f = parser.factor();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(KW_SCREENWIDTH, f.getFirstToken().kind);
@@ -748,7 +748,7 @@ public class ASTTest {
 	@Test
 	public void testFactor6() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "screenheight";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		Expression f = parser.factor();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(KW_SCREENHEIGHT, f.getFirstToken().kind);
@@ -757,8 +757,8 @@ public class ASTTest {
 	@Test
 	public void testFactor7() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "integer";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.factor();
 		assertEquals(EOF, parser.t.kind);
 	}
@@ -766,7 +766,7 @@ public class ASTTest {
 	@Test
 	public void testFactor8() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "(true)";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		Expression f = parser.factor();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(KW_TRUE, f.getFirstToken().kind);
@@ -775,7 +775,7 @@ public class ASTTest {
 	@Test
 	public void testFactor9() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "  ( false)  ";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		Expression f = parser.factor();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(KW_FALSE, f.getFirstToken().kind);
@@ -784,32 +784,32 @@ public class ASTTest {
 	@Test
 	public void testFactor10() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "(xloc)";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.factor();
 	}
 	
 	@Test
 	public void testFactor11() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "()";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.factor();
 	}
 	
 	@Test
 	public void testFactor12() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "(true";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.factor();
 	}
 	
 	@Test
 	public void testFactor13() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "yloc)";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.factor();
 	}
 	
@@ -818,7 +818,7 @@ public class ASTTest {
 	@Test
 	public void testParamDec1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "url chelsea";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		ParamDec pd = parser.paramDec();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(KW_URL, pd.getType().kind);
@@ -829,7 +829,7 @@ public class ASTTest {
 	@Test
 	public void testParamDec2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "file chelsea";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		ParamDec pd = parser.paramDec();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(KW_FILE, pd.getType().kind);
@@ -840,7 +840,7 @@ public class ASTTest {
 	@Test
 	public void testParamDec3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "integer chelsea";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		ParamDec pd = parser.paramDec();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(KW_INTEGER, pd.getType().kind);
@@ -851,7 +851,7 @@ public class ASTTest {
 	@Test
 	public void testParamDec4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean chelsea";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		ParamDec pd = parser.paramDec();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(KW_BOOLEAN, pd.getType().kind);
@@ -862,55 +862,55 @@ public class ASTTest {
 	@Test
 	public void testParamDec5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "url";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.paramDec();
 	}
 	
 	@Test
 	public void testParamDec6() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "file";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.paramDec();
 	}
 	
 	@Test
 	public void testParamDec7() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "integer";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.paramDec();
 	}
 	
 	@Test
 	public void testParamDec8() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.paramDec();
 	}
 	
 	@Test
 	public void testParamDec9() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "xloc";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.paramDec();
 	}
 	
 	@Test
 	public void testParamDec10() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean yloc";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.paramDec();
 	}
 	
 	@Test
 	public void testParamDec11() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean chelsea metcalf";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		ParamDec pd = parser.paramDec();
 		assertEquals(IDENT, parser.t.kind);
 		assertEquals(KW_BOOLEAN, pd.getType().kind);
@@ -923,7 +923,7 @@ public class ASTTest {
 	@Test
 	public void testDec1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "integer chelsea";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		Dec d = parser.dec();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(KW_INTEGER, d.getType().kind);
@@ -934,7 +934,7 @@ public class ASTTest {
 	@Test
 	public void testDec2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean chelsea";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		Dec d = parser.dec();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(KW_BOOLEAN, d.getType().kind);
@@ -945,7 +945,7 @@ public class ASTTest {
 	@Test
 	public void testDec3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "image chelsea";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		Dec d = parser.dec();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(KW_IMAGE, d.getType().kind);
@@ -956,7 +956,7 @@ public class ASTTest {
 	@Test
 	public void testDec4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "frame chelsea";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		Dec d = parser.dec();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(KW_FRAME, d.getType().kind);
@@ -967,55 +967,55 @@ public class ASTTest {
 	@Test
 	public void testDec5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "integer";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testDec6() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testDec7() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "image";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testDec8() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "frame";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testDec9() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "xloc";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testDec10() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean yloc";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testDec11() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "boolean chelsea metcalf";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		Dec d = parser.dec();
 		assertEquals(IDENT, parser.t.kind);
 		assertEquals(KW_BOOLEAN, d.getType().kind);
@@ -1028,7 +1028,7 @@ public class ASTTest {
 	@Test
 	public void testAssign1() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea <- true";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
+		Parser parser = new Parser(new Scanner(input).scan());
 		AssignmentStatement as = parser.assign();
 		assertEquals(EOF, parser.t.kind);
 		assertEquals(IDENT, as.getVar().firstToken.kind);
@@ -1039,48 +1039,48 @@ public class ASTTest {
 	@Test
 	public void testAssign2() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testAssign3() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "<-";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testAssign4() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea <- ";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testAssign5() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea <- yloc";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testAssign7() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea *";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.dec();
 	}
 	
 	@Test
 	public void testAssign8() throws IllegalCharException, IllegalNumberException, SyntaxException{
 		String input = "chelsea <- true <- false";
-		ParserHW3 parser = new ParserHW3(new Scanner(input).scan());
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(new Scanner(input).scan());
+		thrown.expect(Parser.SyntaxException.class);
 		parser.dec();
 	}
 	
@@ -1089,7 +1089,7 @@ public class ASTTest {
 		String input = "  (3,5,3,4,7,8) ";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Tuple tuple = parser.arg();
         assertEquals(EOF, parser.t.kind);
         assertEquals(6, tuple.getExprList().size());
@@ -1101,8 +1101,8 @@ public class ASTTest {
 		String input = "  (3,2";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
 		parser.arg();
 	}
 	
@@ -1111,7 +1111,7 @@ public class ASTTest {
 		String input = "3,2)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		parser.arg();
 	}
 	
@@ -1120,8 +1120,8 @@ public class ASTTest {
 		String input = "()";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
 		parser.arg();
 	}
 	
@@ -1130,7 +1130,7 @@ public class ASTTest {
 		String input = "(3)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         parser.arg();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1140,7 +1140,7 @@ public class ASTTest {
 		String input = "(2 )";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         parser.arg();
         assertEquals(EOF, parser.t.kind);
 	}
@@ -1150,8 +1150,8 @@ public class ASTTest {
 		String input = "(yloc)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
 		parser.arg();
 	}
 	
@@ -1160,8 +1160,8 @@ public class ASTTest {
 		String input = "(2(*))";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.arg();
 	}
 	
@@ -1170,8 +1170,8 @@ public class ASTTest {
 		String input = "(2(+))";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.arg();
 	}
 	
@@ -1181,7 +1181,7 @@ public class ASTTest {
 		String input = "(2+(i>5))";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Tuple tuple = parser.arg();
         assertEquals(EOF, parser.t.kind);
         assertEquals(1, tuple.getExprList().size());
@@ -1192,7 +1192,7 @@ public class ASTTest {
 		String input = "(2+(i>=5))";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Tuple tuple = parser.arg();
         assertEquals(EOF, parser.t.kind);
         assertEquals(1, tuple.getExprList().size());
@@ -1203,7 +1203,7 @@ public class ASTTest {
 		String input = "";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		Tuple tuple = parser.arg();
         assertEquals(EOF, parser.t.kind);
         assertEquals(0, tuple.getExprList().size());
@@ -1216,7 +1216,7 @@ public class ASTTest {
 		String input = "3 * 4";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(INT_LIT, el.getFirstToken().kind);
@@ -1232,7 +1232,7 @@ public class ASTTest {
 		String input = "2";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(INT_LIT, el.getFirstToken().kind);
@@ -1243,7 +1243,7 @@ public class ASTTest {
 		String input = "3 / 4";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(INT_LIT, el.getFirstToken().kind);
@@ -1259,7 +1259,7 @@ public class ASTTest {
 		String input = "3&4";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(INT_LIT, el.getFirstToken().kind);
@@ -1275,7 +1275,7 @@ public class ASTTest {
 		String input = "3%4*2";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(INT_LIT, el.getFirstToken().kind);
@@ -1295,8 +1295,8 @@ public class ASTTest {
 		String input = "3*";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.elem();
 	}
 	
@@ -1305,7 +1305,7 @@ public class ASTTest {
 		String input = "chelsea / 2";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(IDENT, el.getFirstToken().kind);
@@ -1320,7 +1320,7 @@ public class ASTTest {
 		String input = "true&false";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(KW_TRUE, el.getFirstToken().kind);
@@ -1335,7 +1335,7 @@ public class ASTTest {
 		String input = "screenwidth%screenheight*2";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(KW_SCREENWIDTH, el.getFirstToken().kind);
@@ -1355,7 +1355,7 @@ public class ASTTest {
 		String input = "(5 != 4)*2";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		Expression el = parser.elem();
 		BinaryExpression b1 = (BinaryExpression)el;
 		assertEquals("2", b1.getE1().getFirstToken().getText());
@@ -1370,7 +1370,7 @@ public class ASTTest {
 		String input = "(5+4)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		Expression el = parser.elem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(INT_LIT, el.getFirstToken().kind);
@@ -1385,8 +1385,8 @@ public class ASTTest {
 		String input = "(c";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.elem();
 	}
 	
@@ -1395,8 +1395,8 @@ public class ASTTest {
 		String input = "(5->3)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.elem();
 	}
 	
@@ -1405,7 +1405,7 @@ public class ASTTest {
 		String input = "2+3";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression el = parser.elem();
         assertEquals(PLUS, parser.t.kind);
         assertEquals(INT_LIT, el.getFirstToken().kind);
@@ -1416,7 +1416,7 @@ public class ASTTest {
 		String input = "chelsea + screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
         assertEquals(IDENT, t.getFirstToken().kind);
@@ -1427,8 +1427,8 @@ public class ASTTest {
 		String input = "chelsea +";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.term();
 	}
 	
@@ -1437,7 +1437,7 @@ public class ASTTest {
 		String input = "chelsea < screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression t = parser.term();
         assertEquals(LT, parser.t.kind);
         assertEquals(IDENT, t.getFirstToken().kind);
@@ -1448,7 +1448,7 @@ public class ASTTest {
 		String input = "chelsea + screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
         assertEquals(IDENT, t.getFirstToken().kind);
@@ -1459,8 +1459,8 @@ public class ASTTest {
 		String input = "-";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.term();
 	}
 	
@@ -1469,7 +1469,7 @@ public class ASTTest {
 		String input = "true | screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
         assertEquals(KW_TRUE, t.getFirstToken().kind);
@@ -1480,7 +1480,7 @@ public class ASTTest {
 		String input = "true - screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
         assertEquals(KW_TRUE, t.getFirstToken().kind);
@@ -1491,7 +1491,7 @@ public class ASTTest {
 		String input = "true * screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
         assertEquals(KW_TRUE, t.getFirstToken().kind);
@@ -1502,7 +1502,7 @@ public class ASTTest {
 		String input = "true / screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
         assertEquals(KW_TRUE, t.getFirstToken().kind);
@@ -1513,7 +1513,7 @@ public class ASTTest {
 		String input = "true & screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
         assertEquals(KW_TRUE, t.getFirstToken().kind);
@@ -1524,7 +1524,7 @@ public class ASTTest {
 		String input = "true % screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
         assertEquals(KW_TRUE, t.getFirstToken().kind);
@@ -1535,7 +1535,7 @@ public class ASTTest {
 		String input = "true < screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression t = parser.term();
         assertEquals(LT, parser.t.kind);
         assertEquals(KW_TRUE, t.getFirstToken().kind);
@@ -1546,7 +1546,7 @@ public class ASTTest {
 		String input = "(true < screenheight)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression t = parser.term();
         assertEquals(EOF, parser.t.kind);
         assertEquals(KW_TRUE, t.getFirstToken().kind);
@@ -1557,8 +1557,8 @@ public class ASTTest {
 		String input = "image + chelsea";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.term();
 	}
 	
@@ -1568,7 +1568,7 @@ public class ASTTest {
 		String input = "true < screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         ASTNode ast = parser.expression();
         assertEquals(EOF, parser.t.kind);
         assertEquals(BinaryExpression.class, ast.getClass());
@@ -1584,7 +1584,7 @@ public class ASTTest {
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		//System.out.println(scanner);
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         ASTNode ast = parser.expression();
         assertEquals(EOF, parser.t.kind);
         assertEquals(BinaryExpression.class, ast.getClass());
@@ -1599,7 +1599,7 @@ public class ASTTest {
 		String input = "true <= screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
         assertEquals(BinaryExpression.class, e.getClass());
@@ -1614,7 +1614,7 @@ public class ASTTest {
 		String input = "true >= screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
         assertEquals(BinaryExpression.class, e.getClass());
@@ -1629,7 +1629,7 @@ public class ASTTest {
 		String input = "true > screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
         assertEquals(BinaryExpression.class, e.getClass());
@@ -1644,7 +1644,7 @@ public class ASTTest {
 		String input = "false == screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
         assertEquals(BinaryExpression.class, e.getClass());
@@ -1659,7 +1659,7 @@ public class ASTTest {
 		String input = "screenwidth != screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
         assertEquals(BinaryExpression.class, e.getClass());
@@ -1674,7 +1674,7 @@ public class ASTTest {
 		String input = "true < screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
         assertEquals(BinaryExpression.class, e.getClass());
@@ -1689,7 +1689,7 @@ public class ASTTest {
 		String input = "true - screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
         assertEquals(BinaryExpression.class, e.getClass());
@@ -1704,7 +1704,7 @@ public class ASTTest {
 		String input = "true % screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
         assertEquals(BinaryExpression.class, e.getClass());
@@ -1719,7 +1719,7 @@ public class ASTTest {
 		String input = "true & screenheight";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Expression e = parser.expression();
         assertEquals(EOF, parser.t.kind);
         assertEquals(BinaryExpression.class, e.getClass());
@@ -1734,8 +1734,8 @@ public class ASTTest {
 		String input = "url";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.expression();
 	}
 	
@@ -1744,7 +1744,7 @@ public class ASTTest {
 		String input = "int_lit * int_lit + int_lit ! int_lit ";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         parser.expression();
 	}
 	
@@ -1755,7 +1755,7 @@ public class ASTTest {
 		String input = "chelsea";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         ASTNode ast = parser.chainElem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(IdentChain.class, ast.getClass());
@@ -1768,7 +1768,7 @@ public class ASTTest {
 		String input = "blur (2)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         ASTNode ast = parser.chainElem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(FilterOpChain.class, ast.getClass());
@@ -1785,8 +1785,8 @@ public class ASTTest {
 		String input = "gray ()";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-        thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+        thrown.expect(Parser.SyntaxException.class);
         parser.chainElem();
 	}
 	
@@ -1795,7 +1795,7 @@ public class ASTTest {
 		String input = "convolve (2)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         ASTNode ast = parser.chainElem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(FilterOpChain.class, ast.getClass());
@@ -1812,7 +1812,7 @@ public class ASTTest {
 		String input = "gray";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         ChainElem ast = parser.chainElem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(FilterOpChain.class, ast.getClass());
@@ -1824,7 +1824,7 @@ public class ASTTest {
 		String input = "hide (2)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         ChainElem ast = parser.chainElem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(EOF, parser.t.kind);
@@ -1842,7 +1842,7 @@ public class ASTTest {
 		String input = "scale";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         ChainElem ast = parser.chainElem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(ImageOpChain.class, ast.getClass());
@@ -1854,7 +1854,7 @@ public class ASTTest {
 		String input = "gray (2,2,3)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         ASTNode ast = parser.chainElem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(FilterOpChain.class, ast.getClass());
@@ -1873,7 +1873,7 @@ public class ASTTest {
 		String input = "gray (2,2,chelsea)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         ASTNode ast = parser.chainElem();
         assertEquals(EOF, parser.t.kind);
         assertEquals(FilterOpChain.class, ast.getClass());
@@ -1894,8 +1894,8 @@ public class ASTTest {
 		String input = "show (2,2,)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.chainElem();
 	}
 	
@@ -1906,7 +1906,7 @@ public class ASTTest {
 		String input = "gray (2,2,chelsea) -> show (2,2)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         ASTNode ast = parser.chain();
         assertEquals(EOF, parser.t.kind);
         assertEquals(BinaryChain.class, ast.getClass());
@@ -1936,7 +1936,7 @@ public class ASTTest {
 		String input = "gray (2,2,chelsea) -> show (2,2) -> hide";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         ASTNode ast = parser.chain();
         assertEquals(EOF, parser.t.kind);
         assertEquals(BinaryChain.class, ast.getClass());
@@ -1976,8 +1976,8 @@ public class ASTTest {
 		String input = "gray (2,2,chelsea) -> show (2,2) ->";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.chain();
 	}
 	
@@ -1986,8 +1986,8 @@ public class ASTTest {
 		String input = "gray (2,2,chelsea) ->";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.chain();
 	}
 	
@@ -1996,8 +1996,8 @@ public class ASTTest {
 		String input = "gray (2,2,chelsea) ";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.chain();
 	}
 	
@@ -2006,8 +2006,8 @@ public class ASTTest {
 		String input = "boolean";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.chain();
 	}
 	
@@ -2016,7 +2016,7 @@ public class ASTTest {
 		String input = "gray (2,2,chelsea) -> show (2,2) -> hide -> xloc(1)";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         ASTNode ast = parser.chain();
         assertEquals(EOF, parser.t.kind);
         assertEquals(BinaryChain.class, ast.getClass());
@@ -2049,7 +2049,7 @@ public class ASTTest {
 		String input = "sleep(5);";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         //parser.statement();
 		SleepStatement ss = (SleepStatement)parser.statement();
         assertEquals(EOF, parser.t.kind);
@@ -2063,7 +2063,7 @@ public class ASTTest {
 		String input = "sleep 2;";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
 		SleepStatement ss = (SleepStatement)parser.statement();
         assertEquals(EOF, parser.t.kind);
         assertEquals(SleepStatement.class, ss.getClass());
@@ -2076,8 +2076,8 @@ public class ASTTest {
 		String input = "sleep;";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.statement();
 	}
 	
@@ -2086,7 +2086,7 @@ public class ASTTest {
 		String input = "gray (2,2,chelsea) -> show (2,2) -> hide -> xloc(1);";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Statement s = parser.statement();
         assertEquals(EOF, parser.t.kind);
         assertEquals(BinaryChain.class, s.getClass());
@@ -2097,7 +2097,7 @@ public class ASTTest {
 		String input = "chelsea <- 8;";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Statement s = parser.statement();
         assertEquals(EOF, parser.t.kind);
         assertEquals(AssignmentStatement.class, s.getClass());
@@ -2108,8 +2108,8 @@ public class ASTTest {
 		String input = "chelsea <- integer;";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.statement();
 	}
 	
@@ -2118,7 +2118,7 @@ public class ASTTest {
 		String input = "while(true) {}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         WhileStatement s = (WhileStatement)parser.statement();
         assertEquals(EOF, parser.t.kind);
         assertEquals(WhileStatement.class, s.getClass());
@@ -2132,7 +2132,7 @@ public class ASTTest {
 		String input = "if(true) {}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         IfStatement s = (IfStatement) parser.statement();
         assertEquals(EOF, parser.t.kind);
         assertEquals(IfStatement.class, s.getClass());
@@ -2146,7 +2146,7 @@ public class ASTTest {
 		String input = "{}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Block b = parser.block();
         assertEquals(EOF, parser.t.kind);
         ArrayList<Dec> decList = b.getDecs();
@@ -2160,7 +2160,7 @@ public class ASTTest {
 		String input = "{integer c}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Block b = parser.block();
         assertEquals(EOF, parser.t.kind);
         ArrayList<Dec> decList = b.getDecs();
@@ -2175,8 +2175,8 @@ public class ASTTest {
 		String input = "{";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.block();
 	}
 	
@@ -2185,7 +2185,7 @@ public class ASTTest {
 		String input = "{integer c sleep(5);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Block b = parser.block();
         assertEquals(EOF, parser.t.kind);
         ArrayList<Dec> decList = b.getDecs();
@@ -2200,7 +2200,7 @@ public class ASTTest {
 		String input = "{sleep(5); integer c}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Block b = parser.block();
         assertEquals(EOF, parser.t.kind);
         ArrayList<Dec> decList = b.getDecs();
@@ -2216,7 +2216,7 @@ public class ASTTest {
 		String input = "{sleep(5); integer c sleep(5); frame c}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         Block b = parser.block();
         assertEquals(EOF, parser.t.kind);
         ArrayList<Dec> decList = b.getDecs();
@@ -2237,7 +2237,7 @@ public class ASTTest {
 		String input = "while(true) { integer c }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         WhileStatement ws = parser.whileStatement();
         assertEquals(EOF, parser.t.kind);
         assertEquals(WhileStatement.class, ws.getClass());
@@ -2252,8 +2252,8 @@ public class ASTTest {
 		String input = "while(true) { integer c ";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.whileStatement();
 	}
 	
@@ -2262,8 +2262,8 @@ public class ASTTest {
 		String input = "while (true { integer c }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.whileStatement();
 	}
 	
@@ -2272,8 +2272,8 @@ public class ASTTest {
 		String input = "while true) { integer c }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.whileStatement();
 	}
 	
@@ -2282,8 +2282,8 @@ public class ASTTest {
 		String input = "while (true) integer c }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.whileStatement();
 	}
 	
@@ -2292,8 +2292,8 @@ public class ASTTest {
 		String input = "while";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.whileStatement();
 	}
 	
@@ -2302,7 +2302,7 @@ public class ASTTest {
 		String input = "if(true) { integer c }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
+		Parser parser = new Parser(scanner);
         IfStatement is = parser.ifStatement();
         assertEquals(EOF, parser.t.kind);
         assertEquals(IfStatement.class, is.getClass());
@@ -2317,8 +2317,8 @@ public class ASTTest {
 		String input = "if(true) { integer c ";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.ifStatement();
 	}
 	
@@ -2327,8 +2327,8 @@ public class ASTTest {
 		String input = "if (true { integer c }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.ifStatement();
 	}
 	
@@ -2337,8 +2337,8 @@ public class ASTTest {
 		String input = "if true) { integer c }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.ifStatement();
 	}
 	
@@ -2347,8 +2347,8 @@ public class ASTTest {
 		String input = "if (true) integer c }";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.ifStatement();
 	}
 	
@@ -2357,8 +2357,79 @@ public class ASTTest {
 		String input = "if";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
-		ParserHW3 parser = new ParserHW3(scanner);
-		thrown.expect(ParserHW3.SyntaxException.class);
+		Parser parser = new Parser(scanner);
+		thrown.expect(Parser.SyntaxException.class);
         parser.ifStatement();
+	}
+	
+	@Test
+	public void testCase1() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = " while (true) \n {x -> show |-> move (x,y) ;}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        WhileStatement ws = parser.whileStatement();
+        assertEquals(EOF, parser.t.kind);
+        assertEquals(WhileStatement.class, ws.getClass());
+	}
+	
+	@Test
+	public void testCase2() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		//String input = "  x -> show -> hide ;";
+		String input = "  x -> show -> hide";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode ast = parser.chain();
+        assertEquals(EOF, parser.t.kind);
+        assertEquals(BinaryChain.class, ast.getClass());
+		BinaryChain mainBC = (BinaryChain)ast;
+		Chain xShow = mainBC.getE0();
+		ChainElem hide = mainBC.getE1();
+		Token arrowRight = mainBC.getArrow();
+		assertEquals(ARROW, arrowRight.kind);
+		BinaryChain xShowBC = (BinaryChain)xShow;
+		Chain x = xShowBC.getE0();
+		ChainElem show = xShowBC.getE1();
+		Token arrowLeft = xShowBC.getArrow();
+		assertEquals(ARROW, arrowLeft.kind);
+		assertEquals(IDENT, x.firstToken.kind);	
+		assertEquals(FrameOpChain.class, show.getClass());
+		FrameOpChain hideFrame = (FrameOpChain)hide;
+		assertEquals(Tuple.class, hideFrame.getArg().getClass());
+		assertEquals(0, hideFrame.getArg().getExprList().size());
+		assertEquals(FrameOpChain.class, show.getClass());
+		FrameOpChain showFrame = (FrameOpChain)show;
+		assertEquals(0, showFrame.getArg().getExprList().size());
+		assertEquals(FrameOpChain.class, hide.getClass());
+		assertEquals(KW_HIDE, hideFrame.firstToken.kind);
+	}
+	
+	@Test
+	public void testCase3() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = " if (true) \n {x -> show |-> move (x,y) ;} ";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        IfStatement is = parser.ifStatement();
+        assertEquals(EOF, parser.t.kind);
+        assertEquals(IfStatement.class, is.getClass());
+	}
+	
+	@Test
+	public void testTest() throws IllegalCharException, IllegalNumberException, SyntaxException {
+		String input = "programChelsea url varURL1 {sleep(3); \n"
+				+ "while (true) \n {x -> show |-> move (x,y) ;} \n"
+				+ "if (true) \n {x -> show |-> move (x,y) ;} \n"
+				+ "assignment1 <- 10; \n"
+				+ "gray (2,2,chelsea) -> show (2,2) |-> hide; \n"
+				+ "image varIMAGE1 \n"
+				+ "frame varFRAME1"
+				+ "\n }";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		Program prog = (Program) parser.parse();
+		assertEquals(EOF, parser.t.kind);
 	}
 }

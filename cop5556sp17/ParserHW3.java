@@ -8,7 +8,7 @@ import java.util.List;
 
 import cop5556sp17.Scanner.Token;
 
-public class Parser {
+public class ParserHW3 {
 
 	/**
 	 * Exception to be thrown if a syntax error is detected in the input.
@@ -38,7 +38,7 @@ public class Parser {
 	Scanner scanner;
 	Token t;
 
-	Parser(Scanner scanner) {
+	ParserHW3(Scanner scanner) {
 		this.scanner = scanner;
 		t = scanner.nextToken();
 	}
@@ -499,8 +499,7 @@ public class Parser {
 			return new IdentChain(match(IDENT));
 		}
 		else if (filterOp(kind)) {
-			ArrayList<Expression> eList = new ArrayList<Expression>();
-			Tuple listExpressionTuple = new Tuple(startToken, eList);
+			Tuple listExpressionTuple = null;
 			consume();
 			kind = t.kind;
 			if (kind.equals(LPAREN)) {
@@ -509,8 +508,7 @@ public class Parser {
 			return new FilterOpChain(startToken, listExpressionTuple);
 		}
 		else if (frameOp(kind)) {
-			ArrayList<Expression> eList = new ArrayList<Expression>();
-			Tuple listExpressionTuple = new Tuple(startToken, eList);
+			Tuple listExpressionTuple = null;
 			consume();
 			kind = t.kind;
 			if (kind.equals(LPAREN)) {
@@ -519,8 +517,7 @@ public class Parser {
 			return new FrameOpChain(startToken, listExpressionTuple);
 		}
 		else if (imageOp(kind)) {
-			ArrayList<Expression> eList = new ArrayList<Expression>();
-			Tuple listExpressionTuple = new Tuple(startToken, eList);
+			Tuple listExpressionTuple = null;
 			consume();
 			kind = t.kind;
 			if (kind.equals(LPAREN)) {

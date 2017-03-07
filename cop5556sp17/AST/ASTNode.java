@@ -1,8 +1,11 @@
 package cop5556sp17.AST;
 
+import cop5556sp17.AST.Type.TypeName;
 import cop5556sp17.Scanner.Token;
 
 public abstract class ASTNode {
+	TypeName typeName;
+	
 	protected ASTNode(Token firstToken){
 		this.firstToken=firstToken;
 	}
@@ -46,6 +49,14 @@ public abstract class ASTNode {
 	}
 
 	public abstract Object visit(ASTVisitor v, Object arg) throws Exception;
+	
+	public TypeName get_TypeName() {
+		return typeName;
+	}
+	
+	public void set_TypeName(TypeName pTypeName) {
+		typeName = pTypeName;
+	}
 
 
 
