@@ -104,21 +104,21 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testVisit5() throws Exception {
-		String input = "chelsea{if(true){integer a}\n a <- 5}";
+		String input = "chelsea{if(true){integer a}\n a <- 5;}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
         ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
 		//a <- 5 is out of scope
-		//thrown.expect(TypeCheckVisitor.TypeCheckException.class);
+		thrown.expect(TypeCheckVisitor.TypeCheckException.class);
 		program.visit(v, null);
 	}
 	
 	//All the working combinations in the binary expression table
 	@Test
 	public void testExpTable1() throws Exception {
-		String input = "chelsea{integer a\n integer b\n integer c\n c <- (a + b)}";
+		String input = "chelsea{integer a\n integer b\n integer c\n c <- (a + b);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -129,7 +129,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testExpTable2() throws Exception {
-		String input = "chelsea{integer a\n integer b\n integer c\n c <- (a - b)}";
+		String input = "chelsea{integer a\n integer b\n integer c\n c <- (a - b);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -140,7 +140,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testExpTable3() throws Exception {
-		String input = "chelsea{image a\n image b\n image c\n c <- (a + b)}";
+		String input = "chelsea{image a\n image b\n image c\n c <- (a + b);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -151,7 +151,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testExpTable5() throws Exception {
-		String input = "chelsea{image a\n image b\n image c\n c <- (a - b)}";
+		String input = "chelsea{image a\n image b\n image c\n c <- (a - b);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -162,7 +162,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testExpTable6() throws Exception {
-		String input = "chelsea{integer a\n integer b\n integer c\n c <- (a * b)}";
+		String input = "chelsea{integer a\n integer b\n integer c\n c <- (a * b);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -173,7 +173,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testExpTable7() throws Exception {
-		String input = "chelsea{integer a\n integer b\n if(a / b){}}";
+		String input = "chelsea{integer a\n integer b\n integer c\n c <- (a / b);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -184,7 +184,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testExpTable8() throws Exception {
-		String input = "chelsea{integer a\n image b\n image c\n c <- (a * b)}";
+		String input = "chelsea{integer a\n image b\n image c\n c <- (a * b);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -195,7 +195,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testExpTable9() throws Exception {
-		String input = "chelsea{image a\n integer b\n image c\n c <- (a * b)}";
+		String input = "chelsea{image a\n integer b\n image c\n c <- (a * b);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -395,7 +395,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testExpTableNest3() throws Exception {
-		String input = "chelsea{integer a\n integer b\n integer c\n integer d\n while((a < b) >= (c <= c)){}}";
+		String input = "chelsea{integer a\n integer b\n integer c\n integer d\n while((a < b) >= (c <= d)){}}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -455,7 +455,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testExpTableBad5() throws Exception {
-		String input = "chelsea{image a\n integer b\n integer c\n c <- (a * b)}";
+		String input = "chelsea{image a\n integer b\n integer c\n c <- (a * b);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -467,7 +467,19 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testExpTableBad6() throws Exception {
-		String input = "chelsea{image a\n integer b\n integer c\n a <- (b * c)}";
+		String input = "chelsea{image a\n integer b\n integer c\n a <- (b * c);}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		thrown.expect(TypeCheckVisitor.TypeCheckException.class);
+		program.visit(v, null);
+	}
+	
+	@Test
+	public void testExpTableBad7() throws Exception {
+		String input = "chelsea{integer a\n integer b\n if(a / b){}}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -507,7 +519,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable3() throws Exception {
-		String input = "chelsea{yloc -> xloc(5);}";//type integer
+		String input = "chelsea{frame f \n f -> xloc(5);}";//type integer
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -518,7 +530,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable4() throws Exception {
-		String input = "chelsea{xloc -> yloc(3);}";//type integer
+		String input = "chelsea{frame f \n f -> yloc(3);}";//type integer
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -529,7 +541,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable5() throws Exception {
-		String input = "chelsea{move -> move;}";//type frame
+		String input = "chelsea{frame f \n f -> move;}";//type frame
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -540,7 +552,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable6() throws Exception {
-		String input = "chelsea{show(3) -> yloc;}";//type frame
+		String input = "chelsea{frame f \n f -> yloc;}";//type frame
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -551,7 +563,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable7() throws Exception {
-		String input = "chelsea{hide -> move(1);}";//type frame
+		String input = "chelsea{frame f \n f -> move(1);}";//type frame
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -562,7 +574,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable8() throws Exception {
-		String input = "chelsea{image i\n i -> width(5);}";//type image
+		String input = "chelsea{integer i\n i -> width(5);}";//type integer
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -573,7 +585,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable9() throws Exception {
-		String input = "chelsea{image i\n i -> height(9);}";//type image
+		String input = "chelsea{integer i\n i -> height(9);}";//type integer
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -584,7 +596,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable10() throws Exception {
-		String input = "chelsea{image i\n i -> show;}";//type frame
+		String input = "chelsea{frame f \n image i\n i -> f;}";//type frame
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -606,7 +618,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable12() throws Exception {
-		String input = "chelsea{image i\n i -> blur(3);}";//type image
+		String input = "chelsea{image i\n i -> blur;}";//type image
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -639,7 +651,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable15() throws Exception {
-		String input = "chelsea{image i\n i -> convolve(4);}";//type image
+		String input = "chelsea{image i\n i -> convolve;}";//type image
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -650,7 +662,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable16() throws Exception {
-		String input = "chelsea{image i\n i |-> blur(3);}";//type image
+		String input = "chelsea{image i\n i |-> blur;}";//type image
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -672,7 +684,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable18() throws Exception {
-		String input = "chelsea{image i\n i |-> convolve(4);}";//type image
+		String input = "chelsea{image i\n i |-> convolve;}";//type image
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -694,7 +706,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable20() throws Exception {
-		String input = "chelsea{image i\n boolean b\n i -> b})";//type image
+		String input = "chelsea{image i\n boolean b\n i -> b;}";//type image
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
