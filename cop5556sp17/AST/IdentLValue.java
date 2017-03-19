@@ -1,8 +1,10 @@
 package cop5556sp17.AST;
 
+import cop5556sp17.AST.Type.TypeName;
 import cop5556sp17.Scanner.Token;
 
 public class IdentLValue extends ASTNode {
+	Dec dec;
 	
 	public IdentLValue(Token firstToken) {
 		super(firstToken);
@@ -20,6 +22,14 @@ public class IdentLValue extends ASTNode {
 
 	public String getText() {
 		return firstToken.getText();
+	}
+	
+	public Dec get_Dec() {
+		return dec;
+	}
+	
+	public void set_Dec(Dec pDec) {
+		dec = pDec;
 	}
 
 }

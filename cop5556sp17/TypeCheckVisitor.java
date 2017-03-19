@@ -62,6 +62,8 @@ public class TypeCheckVisitor implements ASTVisitor {
 
 	@Override
 	public Object visitBinaryChain(BinaryChain binaryChain, Object arg) throws Exception {
+		binaryChain.getE0().visit(this, arg);
+		binaryChain.getE1().visit(this, arg);
 		if (binaryChain.getE0().get_TypeName() == TypeName.URL && binaryChain.getE1().get_TypeName() == TypeName.IMAGE
 				&& binaryChain.getArrow().kind == ARROW) {
 			binaryChain.set_TypeName(IMAGE);
@@ -92,7 +94,7 @@ public class TypeCheckVisitor implements ASTVisitor {
 				|| binaryChain.getE1().firstToken.kind == KW_MOVE)) {
 			binaryChain.set_TypeName(FRAME);
 		}
-		else if (binaryChain.getE0().get_TypeName() == TypeName.IMAGE
+		else if (binaryChain.getE0().get_TypeName() == TypeName.INTEGER
 				&& binaryChain.getArrow().kind == ARROW
 				&& binaryChain.getE1() instanceof ImageOpChain
 				&& (binaryChain.getE1().firstToken.kind == OP_WIDTH || binaryChain.getE1().firstToken.kind == OP_HEIGHT)) {
@@ -124,6 +126,11 @@ public class TypeCheckVisitor implements ASTVisitor {
 
 	@Override
 	public Object visitBinaryExpression(BinaryExpression binaryExpression, Object arg) throws Exception {
+		binaryExpression.getE0().visit(this, arg);
+		binaryExpression.getE1().visit(this, arg);
+		System.out.println("E0: " + binaryExpression.getE0().get_TypeName());
+		System.out.println("E1: " + binaryExpression.getE1().get_TypeName());
+		System.out.println("OP: " + binaryExpression.getOp().getText());
 		if (binaryExpression.getE0().get_TypeName() == TypeName.INTEGER && (binaryExpression.getOp().kind == PLUS
 				|| binaryExpression.getOp().kind == MINUS) && binaryExpression.getE1().get_TypeName() == TypeName.INTEGER) {
 			binaryExpression.set_TypeName(INTEGER);
@@ -174,10 +181,14 @@ public class TypeCheckVisitor implements ASTVisitor {
 	@Override
 	public Object visitBlock(Block block, Object arg) throws Exception {
 		symtab.enterScope();
+		System.out.println("Dec Count: " + block.getDecs().size());
 		for (int i = 0; i < block.getDecs().size(); i++) {
 			visitDec(block.getDecs().get(i), arg);
 		}
+		System.out.println("Statement Count: " + block.getStatements().size());
 		for (int i = 0; i < block.getStatements().size(); i++) {
+			block.getStatements().get(i).visit(this, arg);
+			System.out.println("getBlock: " + block.getStatements().get(i).getClass());
 			if (block.getStatements().get(i).getClass() == IfStatement.class) {
 				visitIfStatement((IfStatement)block.getStatements().get(i), arg);
 			}
@@ -223,6 +234,9 @@ public class TypeCheckVisitor implements ASTVisitor {
 
 	@Override
 	public Object visitFilterOpChain(FilterOpChain filterOpChain, Object arg) throws Exception {
+		// condition: Tuple.length == 0
+		// FilterOpChain.type <- IMAGE
+		// ??? Look here
 		if (filterOpChain.getArg().getExprList().size() == 0) {
 			filterOpChain.set_TypeName(IMAGE);
 		}
@@ -235,6 +249,7 @@ public class TypeCheckVisitor implements ASTVisitor {
 
 	@Override
 	public Object visitFrameOpChain(FrameOpChain frameOpChain, Object arg) throws Exception {
+		// FrameOpChain.kind <-  frameOp.kind
 		//frameOpChain.getFirstToken().kind = KW_FRAME;
 		
 		if (frameOpChain.getFirstToken().kind == KW_SHOW || frameOpChain.getFirstToken().kind == KW_HIDE) {
@@ -260,12 +275,21 @@ public class TypeCheckVisitor implements ASTVisitor {
 
 	@Override
 	public Object visitIdentChain(IdentChain identChain, Object arg) throws Exception {
+		//condition:  ident has been declared and is visible in the current scope
 		//IdentChain.type <- ident.type
 		//ident.type <- symtab.lookup(ident.getText()).getType()
 
-		//identChain.setTypeName(symtab.lookup(getTypeName(identChain.getFirstToken()).toString());
-		//getTypeName(identChain.getFirstToken())
-		
+		if (symtab.scopeTable != null) {
+			Dec lookupDec = symtab.lookup(identChain.firstToken.getText());
+			if (lookupDec == null) {
+				throw new TypeCheckException("Scope list empty in visitIdentChain()");
+			}
+			else {
+				identChain.set_TypeName(lookupDec.get_TypeName());
+				symtab.lookup(identChain.firstToken.getText()).set_TypeName(lookupDec.get_TypeName());
+				// look here ^
+			}
+		}
 		return null;
 	}
 
@@ -275,18 +299,14 @@ public class TypeCheckVisitor implements ASTVisitor {
 		//IdentExpression.type <- ident.type
 		//IdentExpression.dec <- Dec of ident
 		if (symtab.scopeTable != null) {
-			ArrayList<Integer> scopeList = symtab.scopeTable.get(identExpression);
-			if (scopeList.isEmpty()) {
-				throw new Exception("Scope list empty in visitIdentExpression()");
+			Dec lookupDec = symtab.lookup(identExpression.firstToken.getText());
+			if (lookupDec == null) {
+				throw new TypeCheckException("Scope list empty in visitIdentExpression()");
 			}
-			for (int i = 0; i < scopeList.size(); i++) {
-				if (scopeList.get(i) == symtab.currentScope) {
-					
-				}
-				else {
-					throw new Exception("Out of scope in visitIdentExpression()");
-				}
-			}
+			System.out.println("Lookup Dec: " + lookupDec.get_TypeName());
+			System.out.println("Lookup Dec: " + lookupDec.getIdent().getText());
+			identExpression.set_TypeName(lookupDec.get_TypeName());
+			identExpression.set_Dec(lookupDec);
 		}
 		return null;
 	}
@@ -294,10 +314,12 @@ public class TypeCheckVisitor implements ASTVisitor {
 	@Override
 	public Object visitIfStatement(IfStatement ifStatement, Object arg) throws Exception {
 		// condition:  Expression.type = Boolean
+		ifStatement.getE().visit(this, arg);
 		if (ifStatement.getE().get_TypeName() != TypeName.BOOLEAN) {
 			throw new TypeCheckException("Expected ifStatement to be boolean, but got: " + 
 					ifStatement.getE().get_TypeName());
 		}
+		ifStatement.getB().visit(this, arg);
 		return null;
 	}
 
@@ -310,6 +332,7 @@ public class TypeCheckVisitor implements ASTVisitor {
 
 	@Override
 	public Object visitSleepStatement(SleepStatement sleepStatement, Object arg) throws Exception {
+		sleepStatement.getE().visit(this, arg);
 		if (sleepStatement.getE().get_TypeName() != TypeName.INTEGER) {
 			throw new TypeCheckException("Expected integer in visitSleepStatement, but got: " + 
 					sleepStatement.getE().get_TypeName());
@@ -320,15 +343,32 @@ public class TypeCheckVisitor implements ASTVisitor {
 	@Override
 	public Object visitWhileStatement(WhileStatement whileStatement, Object arg) throws Exception {
 		// condition:  Expression.type = Boolean
+		whileStatement.getE().visit(this, arg);
 		if (whileStatement.getE().get_TypeName() != TypeName.BOOLEAN) {
 			throw new TypeCheckException("Expected whileStatement to be boolean, but got: " + 
 					whileStatement.getE().get_TypeName());
 		}
+		whileStatement.getB().visit(this, arg);
 		return null;
 	}
 
 	@Override
 	public Object visitDec(Dec declaration, Object arg) throws Exception {
+		System.out.println("Dec Kind: " + declaration.getType().kind);
+		if (declaration.getType().kind == KW_BOOLEAN) {
+			declaration.set_TypeName(BOOLEAN);
+		}
+		else if (declaration.getType().kind == KW_INTEGER) {
+			declaration.set_TypeName(INTEGER);
+		}
+		else if (declaration.getType().kind == KW_FRAME) {
+			declaration.set_TypeName(FRAME);
+		}
+		else if (declaration.getType().kind == KW_IMAGE) {
+			declaration.set_TypeName(IMAGE);
+		}
+		System.out.println("Declaration: " + declaration.getIdent().getText());
+		System.out.println("Declaration Type: " + declaration.get_TypeName());
 		symtab.insert(declaration.getIdent().getText(), declaration);
 		return null;
 	}
@@ -345,8 +385,12 @@ public class TypeCheckVisitor implements ASTVisitor {
 	@Override
 	public Object visitAssignmentStatement(AssignmentStatement assignStatement, Object arg) throws Exception {
 		// condition:  IdentLValue.type == Expression.type
-		if (assignStatement.getVar().get_TypeName() != assignStatement.getE().get_TypeName()) {
-			throw new TypeCheckException("Expected IdentLValue[" + assignStatement.getVar().get_TypeName() + "] "
+		assignStatement.getVar().visit(this, arg);
+		assignStatement.getE().visit(this, arg);
+		System.out.println("getVar: " + assignStatement.getVar().getText());
+		System.out.println("getE: " + assignStatement.getE().getFirstToken().getText());
+		if (assignStatement.getVar().get_Dec().get_TypeName() != assignStatement.getE().get_TypeName()) {
+			throw new TypeCheckException("Expected IdentLValue[" + assignStatement.getVar().get_Dec().get_TypeName() + "] "
 					+ "to be " + assignStatement.getE().get_TypeName());
 		}
 		return null;
@@ -357,24 +401,33 @@ public class TypeCheckVisitor implements ASTVisitor {
 		//condition:  ident has been declared and is visible in the current scope
 		//IdentLValue.dec <- Dec of ident
 		if (symtab.scopeTable != null) {
-			ArrayList<Integer> scopeList = symtab.scopeTable.get(identX);
-			if (scopeList.isEmpty()) {
-				throw new Exception("Scope list empty in visitIdentLValue()");
+			System.out.println("identX: " + identX.firstToken.getText());
+			Dec lookupDec = symtab.lookup(identX.firstToken.getText());
+			if (lookupDec == null) {
+				throw new TypeCheckException("Scope list empty in visitIdentLValue()");
 			}
-			for (int i = 0; i < scopeList.size(); i++) {
-				if (scopeList.get(i) == symtab.currentScope) {
-					
-				}
-				else {
-					throw new Exception("Out of scope in visitIdentLValue()");
-				}
-			}
+			System.out.println("lookupDec: " + lookupDec.get_TypeName());
+			//System.out.println("identX BEFORE: " + identX.get_Dec().get_TypeName());
+			identX.set_Dec(lookupDec);
+			System.out.println("identX AFTER: " + identX.get_Dec().get_TypeName());
 		}
 		return null;
 	}
 
 	@Override
 	public Object visitParamDec(ParamDec paramDec, Object arg) throws Exception {
+		if (paramDec.getType().kind == KW_BOOLEAN) {
+			paramDec.set_TypeName(BOOLEAN);
+		}
+		else if (paramDec.getType().kind == KW_INTEGER) {
+			paramDec.set_TypeName(INTEGER);
+		}
+		else if (paramDec.getType().kind == KW_URL) {
+			paramDec.set_TypeName(URL);
+		}
+		else if (paramDec.getType().kind == KW_FILE) {
+			paramDec.set_TypeName(FILE);
+		}
 		symtab.insert(paramDec.getIdent().getText(), paramDec);
 		return null;
 	}
@@ -411,6 +464,7 @@ public class TypeCheckVisitor implements ASTVisitor {
 		// condition:  for all expression in List<Expression>: Expression.type == INTEGER
 		List<Expression> exprList = tuple.getExprList();
 		for (int i = 0; i < exprList.size(); i++) {
+			exprList.get(i).visit(this, arg);
 			if (exprList.get(i).get_TypeName() != INTEGER) {
 				throw new Exception("Expected integer in visitTuple() but got: " + exprList.get(i).get_TypeName());
 			}

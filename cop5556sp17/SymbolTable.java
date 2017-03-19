@@ -17,6 +17,7 @@ public class SymbolTable {
 		currentScope = 0;
 		nextScope = 0;
 		scopeTable = new HashMap<String, ArrayList<Integer>>();
+		scopeStack.push(currentScope);
 	}
 
 	/** 
@@ -32,7 +33,8 @@ public class SymbolTable {
 	 * leaves scope
 	 */
 	public void leaveScope() {
-		currentScope = scopeStack.pop();	
+		scopeStack.pop();
+		currentScope = scopeStack.peek();	
 	}
 	
 	public boolean insert(String ident, Dec dec) {
@@ -55,7 +57,7 @@ public class SymbolTable {
 	}
 	
 	public Dec lookup(String ident) {
-		//return null if no declaration exists 
+		// return null if no declaration exists 
 		if (symbolTable.isEmpty()) {
 			return null;
 		}
