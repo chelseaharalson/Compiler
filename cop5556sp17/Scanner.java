@@ -1,6 +1,21 @@
 package cop5556sp17;
 
+import static cop5556sp17.AST.Type.TypeName.BOOLEAN;
+import static cop5556sp17.AST.Type.TypeName.FILE;
+import static cop5556sp17.AST.Type.TypeName.FRAME;
+import static cop5556sp17.AST.Type.TypeName.IMAGE;
+import static cop5556sp17.AST.Type.TypeName.INTEGER;
+import static cop5556sp17.AST.Type.TypeName.URL;
+import static cop5556sp17.Scanner.Kind.KW_BOOLEAN;
+import static cop5556sp17.Scanner.Kind.KW_FILE;
+import static cop5556sp17.Scanner.Kind.KW_FRAME;
+import static cop5556sp17.Scanner.Kind.KW_IMAGE;
+import static cop5556sp17.Scanner.Kind.KW_INTEGER;
+import static cop5556sp17.Scanner.Kind.KW_URL;
+
 import java.util.ArrayList;
+
+import cop5556sp17.AST.Type.TypeName;
 
 // Chelsea Metcalf
 
@@ -121,17 +136,14 @@ public class Scanner {
 
 		//returns the text of this Token
 		public String getText() {
-			//TODO IMPLEMENT THIS
 			if (kind.equals(kind.EOF)) {
 				return "eof";
 			}
 			return chars.substring(pos,pos+length);
-			//return null;
 		}
 		
 		//returns a LinePos object representing the line and column of this Token
 		LinePos getLinePos(){
-			//TODO IMPLEMENT THIS
 			int lineNum = 0;
 			int col = 0;
 			for (int i = 0; i < pos; i++) {
@@ -143,13 +155,34 @@ public class Scanner {
 			}
 			LinePos lp = new LinePos(lineNum, col);
 			return lp;
-			//return null;
 		}
 
 		Token(Kind kind, int pos, int length) {
 			this.kind = kind;
 			this.pos = pos;
 			this.length = length;
+		}
+		
+		public TypeName get_TypeName() {
+			if (kind == KW_BOOLEAN) {
+				return BOOLEAN;
+			}
+			else if (kind == KW_INTEGER) {
+				return INTEGER;
+			}
+			else if (kind == KW_URL) {
+				return URL;
+			}
+			else if (kind == KW_FILE) {
+				return FILE;
+			}
+			else if (kind == KW_FRAME) {
+				return FRAME;
+			}
+			else if (kind == KW_IMAGE) {
+				return IMAGE;
+			}
+			return null;
 		}
 
 		/** 
@@ -161,10 +194,8 @@ public class Scanner {
 		 * @throws NumberFormatException
 		 */
 		public int intVal() throws NumberFormatException{
-			//TODO IMPLEMENT THIS
 			assert kind == Kind.INT_LIT : "Cannot get value of a non-digit token.";
 			return Integer.valueOf(getText());
-			//return 0;
 		}
 		
 		/* Addition for HW3 */

@@ -714,6 +714,26 @@ public class TypeCheckVisitorTest {
 		TypeCheckVisitor v = new TypeCheckVisitor();
 		program.visit(v, null);
 	}
+
+	@Test
+	public void testChainNested1() throws Exception {
+		String input = "chelsea{image i\n i -> scale(5) -> blur;}";//type image
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		program.visit(v, null);
+	}
 	
-	//TODO more for the chains
+	@Test
+	public void testChainNested2() throws Exception {
+		String input = "chelsea url u{image i\n image i2\n i -> u -> i2;}";//type image
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		program.visit(v, null);
+	}
 }

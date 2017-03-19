@@ -285,8 +285,8 @@ public class TypeCheckVisitor implements ASTVisitor {
 				throw new TypeCheckException("Scope list empty in visitIdentChain()");
 			}
 			else {
-				identChain.set_TypeName(lookupDec.get_TypeName());
-				symtab.lookup(identChain.firstToken.getText()).set_TypeName(lookupDec.get_TypeName());
+				identChain.set_TypeName(lookupDec.firstToken.get_TypeName());
+				//symtab.lookup(identChain.firstToken.getText()).set_TypeName(lookupDec.firstToken.get_TypeName());
 				// look here ^
 			}
 		}
@@ -305,7 +305,7 @@ public class TypeCheckVisitor implements ASTVisitor {
 			}
 			//System.out.println("Lookup Dec: " + lookupDec.get_TypeName());
 			//System.out.println("Lookup Dec: " + lookupDec.getIdent().getText());
-			identExpression.set_TypeName(lookupDec.get_TypeName());
+			identExpression.set_TypeName(lookupDec.firstToken.get_TypeName());
 			identExpression.set_Dec(lookupDec);
 		}
 		return null;
@@ -355,18 +355,6 @@ public class TypeCheckVisitor implements ASTVisitor {
 	@Override
 	public Object visitDec(Dec declaration, Object arg) throws Exception {
 		//System.out.println("Dec Kind: " + declaration.getType().kind);
-		if (declaration.getType().kind == KW_BOOLEAN) {
-			declaration.set_TypeName(BOOLEAN);
-		}
-		else if (declaration.getType().kind == KW_INTEGER) {
-			declaration.set_TypeName(INTEGER);
-		}
-		else if (declaration.getType().kind == KW_FRAME) {
-			declaration.set_TypeName(FRAME);
-		}
-		else if (declaration.getType().kind == KW_IMAGE) {
-			declaration.set_TypeName(IMAGE);
-		}
 		//System.out.println("Declaration: " + declaration.getIdent().getText());
 		//System.out.println("Declaration Type: " + declaration.get_TypeName());
 		symtab.insert(declaration.getIdent().getText(), declaration);
@@ -389,8 +377,8 @@ public class TypeCheckVisitor implements ASTVisitor {
 		assignStatement.getE().visit(this, arg);
 		//System.out.println("getVar: " + assignStatement.getVar().getText());
 		//System.out.println("getE: " + assignStatement.getE().getFirstToken().getText());
-		if (assignStatement.getVar().get_Dec().get_TypeName() != assignStatement.getE().get_TypeName()) {
-			throw new TypeCheckException("Expected IdentLValue[" + assignStatement.getVar().get_Dec().get_TypeName() + "] "
+		if (assignStatement.getVar().get_Dec().firstToken.get_TypeName() != assignStatement.getE().get_TypeName()) {
+			throw new TypeCheckException("Expected IdentLValue[" + assignStatement.getVar().get_Dec().firstToken.get_TypeName() + "] "
 					+ "to be " + assignStatement.getE().get_TypeName());
 		}
 		return null;
@@ -416,18 +404,6 @@ public class TypeCheckVisitor implements ASTVisitor {
 
 	@Override
 	public Object visitParamDec(ParamDec paramDec, Object arg) throws Exception {
-		if (paramDec.getType().kind == KW_BOOLEAN) {
-			paramDec.set_TypeName(BOOLEAN);
-		}
-		else if (paramDec.getType().kind == KW_INTEGER) {
-			paramDec.set_TypeName(INTEGER);
-		}
-		else if (paramDec.getType().kind == KW_URL) {
-			paramDec.set_TypeName(URL);
-		}
-		else if (paramDec.getType().kind == KW_FILE) {
-			paramDec.set_TypeName(FILE);
-		}
 		symtab.insert(paramDec.getIdent().getText(), paramDec);
 		return null;
 	}
