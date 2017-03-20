@@ -62,29 +62,40 @@ public class TypeCheckVisitor implements ASTVisitor {
 
 	@Override
 	public Object visitBinaryChain(BinaryChain binaryChain, Object arg) throws Exception {
+		TypeName tn = null;
 		binaryChain.getE0().visit(this, arg);
 		binaryChain.getE1().visit(this, arg);
 		if (binaryChain.getE0().get_TypeName() == TypeName.URL && binaryChain.getE1().get_TypeName() == TypeName.IMAGE
 				&& binaryChain.getArrow().kind == ARROW) {
+			//System.out.println("1");
 			binaryChain.set_TypeName(IMAGE);
+			tn = IMAGE;
 		}
 		else if (binaryChain.getE0().get_TypeName() == TypeName.FILE && binaryChain.getE1().get_TypeName() == TypeName.IMAGE
 				&& binaryChain.getArrow().kind == ARROW) {
+			//System.out.println("2");
 			binaryChain.set_TypeName(IMAGE);
+			tn = IMAGE;
 		}
 		else if (binaryChain.getE0().get_TypeName() == TypeName.IMAGE && binaryChain.getE1().get_TypeName() == TypeName.FRAME
 				&& binaryChain.getArrow().kind == ARROW) {
+			//System.out.println("3");
 			binaryChain.set_TypeName(FRAME);
+			tn = FRAME;
 		}
 		else if (binaryChain.getE0().get_TypeName() == TypeName.IMAGE && binaryChain.getE1().get_TypeName() == TypeName.FILE
 				&& binaryChain.getArrow().kind == ARROW) {
+			//System.out.println("4");
 			binaryChain.set_TypeName(NONE);
+			tn = NONE;
 		}
 		else if (binaryChain.getE0().get_TypeName() == TypeName.FRAME 
 				&& isFrameOp(binaryChain.getE1().firstToken.kind)
 				&& binaryChain.getArrow().kind == ARROW
 				&& (binaryChain.getE1().firstToken.kind == KW_XLOC || binaryChain.getE1().firstToken.kind == KW_YLOC)) {
+			//System.out.println("5");
 			binaryChain.set_TypeName(INTEGER);
+			tn = INTEGER;
 		}
 		else if (binaryChain.getE0().get_TypeName() == TypeName.FRAME 
 				//&& isFrameOp(binaryChain.getE1().firstToken.kind)
@@ -92,40 +103,51 @@ public class TypeCheckVisitor implements ASTVisitor {
 				&& binaryChain.getArrow().kind == ARROW
 				&& (binaryChain.getE1().firstToken.kind == KW_SHOW || binaryChain.getE1().firstToken.kind == KW_HIDE
 				|| binaryChain.getE1().firstToken.kind == KW_MOVE)) {
+			//System.out.println("6");
 			binaryChain.set_TypeName(FRAME);
+			tn = FRAME;
 		}
 		else if (binaryChain.getE0().get_TypeName() == TypeName.INTEGER
 				&& binaryChain.getArrow().kind == ARROW
 				&& binaryChain.getE1() instanceof ImageOpChain
 				&& (binaryChain.getE1().firstToken.kind == OP_WIDTH || binaryChain.getE1().firstToken.kind == OP_HEIGHT)) {
+			//System.out.println("7");
 			binaryChain.set_TypeName(IMAGE);
+			tn = IMAGE;
 		}
 		else if (binaryChain.getE0().get_TypeName() == TypeName.IMAGE
 				&& (binaryChain.getArrow().kind == ARROW || binaryChain.getArrow().kind == BARARROW)
 				&& binaryChain.getE1() instanceof FilterOpChain
 				&& (binaryChain.getE1().firstToken.kind == OP_GRAY || binaryChain.getE1().firstToken.kind == OP_BLUR
 						|| binaryChain.getE1().firstToken.kind == OP_CONVOLVE)) {
+			//System.out.println("8");
 			binaryChain.set_TypeName(IMAGE);
+			tn = IMAGE;
 		}
 		else if (binaryChain.getE0().get_TypeName() == TypeName.IMAGE
 				&& binaryChain.getArrow().kind == ARROW
 				&& binaryChain.getE1() instanceof ImageOpChain
 				&& binaryChain.getE1().firstToken.kind == KW_SCALE) {
+			//System.out.println("9");
 			binaryChain.set_TypeName(IMAGE);
+			tn = IMAGE;
 		}
 		else if (binaryChain.getE0().get_TypeName() == TypeName.IMAGE
 				&& binaryChain.getArrow().kind == ARROW
 				&& binaryChain.getE1() instanceof IdentChain) {
+			//System.out.println("10");
 			binaryChain.set_TypeName(IMAGE);
+			tn = IMAGE;
 		}
 		else {
 			throw new TypeCheckException("Unable to set type in visitBinaryChain");
 		}
-		return null;
+		return tn;
 	}
 
 	@Override
 	public Object visitBinaryExpression(BinaryExpression binaryExpression, Object arg) throws Exception {
+		TypeName tn = null;
 		binaryExpression.getE0().visit(this, arg);
 		binaryExpression.getE1().visit(this, arg);
 		//System.out.println("E0: " + binaryExpression.getE0().get_TypeName());
@@ -134,22 +156,27 @@ public class TypeCheckVisitor implements ASTVisitor {
 		if (binaryExpression.getE0().get_TypeName() == TypeName.INTEGER && (binaryExpression.getOp().kind == PLUS
 				|| binaryExpression.getOp().kind == MINUS) && binaryExpression.getE1().get_TypeName() == TypeName.INTEGER) {
 			binaryExpression.set_TypeName(INTEGER);
+			tn = INTEGER;
 		}
 		else if (binaryExpression.getE0().get_TypeName() == TypeName.IMAGE && (binaryExpression.getOp().kind == PLUS
 				|| binaryExpression.getOp().kind == MINUS) && binaryExpression.getE1().get_TypeName() == TypeName.IMAGE) {
 			binaryExpression.set_TypeName(IMAGE);
+			tn = IMAGE;
 		}
 		else if (binaryExpression.getE0().get_TypeName() == TypeName.INTEGER && (binaryExpression.getOp().kind == TIMES
 				|| binaryExpression.getOp().kind == DIV) && binaryExpression.getE1().get_TypeName() == TypeName.INTEGER) {
 			binaryExpression.set_TypeName(INTEGER);
+			tn = INTEGER;
 		}
 		else if (binaryExpression.getE0().get_TypeName() == TypeName.INTEGER && (binaryExpression.getOp().kind == TIMES) 
 				&& binaryExpression.getE1().get_TypeName() == TypeName.IMAGE) {
 			binaryExpression.set_TypeName(IMAGE);
+			tn = IMAGE;
 		}
 		else if (binaryExpression.getE0().get_TypeName() == TypeName.IMAGE && (binaryExpression.getOp().kind == TIMES) 
 				&& binaryExpression.getE1().get_TypeName() == TypeName.INTEGER) {
 			binaryExpression.set_TypeName(IMAGE);
+			tn = IMAGE;
 		}
 		else if (binaryExpression.getE0().get_TypeName() == TypeName.INTEGER && 
 				(binaryExpression.getOp().kind == LT
@@ -158,6 +185,7 @@ public class TypeCheckVisitor implements ASTVisitor {
 				|| binaryExpression.getOp().kind == GE) 
 				&& binaryExpression.getE1().get_TypeName() == TypeName.INTEGER) {
 			binaryExpression.set_TypeName(BOOLEAN);
+			tn = BOOLEAN;
 		}
 		else if (binaryExpression.getE0().get_TypeName() == TypeName.BOOLEAN && 
 				(binaryExpression.getOp().kind == LT
@@ -166,21 +194,24 @@ public class TypeCheckVisitor implements ASTVisitor {
 				|| binaryExpression.getOp().kind == GE) 
 				&& binaryExpression.getE1().get_TypeName() == TypeName.BOOLEAN) {
 			binaryExpression.set_TypeName(BOOLEAN);
+			tn = BOOLEAN;
 		}
 		else if (binaryExpression.getE0().get_TypeName() == binaryExpression.getE1().get_TypeName() && 
 				(binaryExpression.getOp().kind == EQUAL
 				|| binaryExpression.getOp().kind == NOTEQUAL)) {
 			binaryExpression.set_TypeName(BOOLEAN);
+			tn = BOOLEAN;
 		}
 		else {
 			throw new TypeCheckException("Unable to set type in visitBinaryExpression()");
 		}
-		return null;
+		return tn;
 	}
 
 	@Override
 	public Object visitBlock(Block block, Object arg) throws Exception {
 		symtab.enterScope();
+		//System.out.println("Scope Number in visitBlock: " + symtab.currentScope);
 		//System.out.println("Dec Count: " + block.getDecs().size());
 		for (int i = 0; i < block.getDecs().size(); i++) {
 			visitDec(block.getDecs().get(i), arg);
@@ -228,49 +259,53 @@ public class TypeCheckVisitor implements ASTVisitor {
 	@Override
 	public Object visitBooleanLitExpression(BooleanLitExpression booleanLitExpression, Object arg) throws Exception {
 		// BooleanLitExpression.type <- BOOLEAN
+		TypeName tn = null;
 		booleanLitExpression.set_TypeName(BOOLEAN);
-		return null;
+		tn = BOOLEAN;
+		return tn;
 	}
 
 	@Override
 	public Object visitFilterOpChain(FilterOpChain filterOpChain, Object arg) throws Exception {
 		// condition: Tuple.length == 0
 		// FilterOpChain.type <- IMAGE
-		// ??? Look here
+		TypeName tn = null;
 		if (filterOpChain.getArg().getExprList().size() == 0) {
 			filterOpChain.set_TypeName(IMAGE);
+			tn = IMAGE;
 		}
 		else {
 			throw new TypeCheckException("Expected tuple size to be 0, but got: " 
 					+ filterOpChain.getArg().getExprList().size());
 		}
-		return null;
+		return tn;
 	}
 
 	@Override
 	public Object visitFrameOpChain(FrameOpChain frameOpChain, Object arg) throws Exception {
-		// FrameOpChain.kind <-  frameOp.kind
-		//frameOpChain.getFirstToken().kind = KW_FRAME;
-		
+		TypeName tn = null;
 		if (frameOpChain.getFirstToken().kind == KW_SHOW || frameOpChain.getFirstToken().kind == KW_HIDE) {
 			if (frameOpChain.getArg().getExprList().size() == 0) {
 				frameOpChain.set_TypeName(NONE);
+				tn = NONE;
 			}
 		}
 		else if (frameOpChain.getFirstToken().kind == KW_XLOC || frameOpChain.getFirstToken().kind == KW_YLOC) {
 			if (frameOpChain.getArg().getExprList().size() == 0) {
 				frameOpChain.set_TypeName(INTEGER);
+				tn = INTEGER;
 			}
 		}
 		else if (frameOpChain.getFirstToken().kind == KW_MOVE) {
 			if (frameOpChain.getArg().getExprList().size() == 2) {
 				frameOpChain.set_TypeName(NONE);
+				tn = NONE;
 			}
 		}
 		else {
 			throw new TypeCheckException("BUG IN PARSER!! visitFrameOpChain()");
 		}
-		return null;
+		return tn;
 	}
 
 	@Override
@@ -278,7 +313,7 @@ public class TypeCheckVisitor implements ASTVisitor {
 		//condition:  ident has been declared and is visible in the current scope
 		//IdentChain.type <- ident.type
 		//ident.type <- symtab.lookup(ident.getText()).getType()
-
+		TypeName tn = null;
 		if (symtab.scopeTable != null) {
 			Dec lookupDec = symtab.lookup(identChain.firstToken.getText());
 			if (lookupDec == null) {
@@ -286,11 +321,10 @@ public class TypeCheckVisitor implements ASTVisitor {
 			}
 			else {
 				identChain.set_TypeName(lookupDec.firstToken.get_TypeName());
-				//symtab.lookup(identChain.firstToken.getText()).set_TypeName(lookupDec.firstToken.get_TypeName());
-				// look here ^
+				tn = lookupDec.firstToken.get_TypeName();
 			}
 		}
-		return null;
+		return tn;
 	}
 
 	@Override
@@ -298,6 +332,7 @@ public class TypeCheckVisitor implements ASTVisitor {
 		//condition:  ident has been declared and is visible in the current scope
 		//IdentExpression.type <- ident.type
 		//IdentExpression.dec <- Dec of ident
+		TypeName tn = null;
 		if (symtab.scopeTable != null) {
 			Dec lookupDec = symtab.lookup(identExpression.firstToken.getText());
 			if (lookupDec == null) {
@@ -307,8 +342,9 @@ public class TypeCheckVisitor implements ASTVisitor {
 			//System.out.println("Lookup Dec: " + lookupDec.getIdent().getText());
 			identExpression.set_TypeName(lookupDec.firstToken.get_TypeName());
 			identExpression.set_Dec(lookupDec);
+			tn = lookupDec.firstToken.get_TypeName();
 		}
-		return null;
+		return tn;
 	}
 
 	@Override
@@ -326,8 +362,10 @@ public class TypeCheckVisitor implements ASTVisitor {
 	@Override
 	public Object visitIntLitExpression(IntLitExpression intLitExpression, Object arg) throws Exception {
 		// IntLitExpression.type <- INTEGER
+		TypeName tn = null;
 		intLitExpression.set_TypeName(INTEGER);
-		return null;
+		tn = INTEGER;
+		return tn;
 	}
 
 	@Override
@@ -357,7 +395,19 @@ public class TypeCheckVisitor implements ASTVisitor {
 		//System.out.println("Dec Kind: " + declaration.getType().kind);
 		//System.out.println("Declaration: " + declaration.getIdent().getText());
 		//System.out.println("Declaration Type: " + declaration.get_TypeName());
-		symtab.insert(declaration.getIdent().getText(), declaration);
+		if (symtab.scopeTable != null) {
+			Dec lookupDec = symtab.lookup(declaration.getIdent().getText());
+			if (lookupDec == null) {
+				symtab.insert(declaration.getIdent().getText(), declaration);
+			}
+			else if (symtab.lookupScope(declaration.getIdent().getText()) == symtab.currentScope) {
+					throw new TypeCheckException("Has already been declared in this scope: " + 
+							declaration.getIdent().getText());
+			}
+			else {
+				symtab.insert(declaration.getIdent().getText(), declaration);
+			}
+		}
 		return null;
 	}
 
@@ -404,6 +454,7 @@ public class TypeCheckVisitor implements ASTVisitor {
 
 	@Override
 	public Object visitParamDec(ParamDec paramDec, Object arg) throws Exception {
+		//System.out.println("Scope Number in visitPararmDec: " + symtab.currentScope);
 		symtab.insert(paramDec.getIdent().getText(), paramDec);
 		return null;
 	}
@@ -411,28 +462,31 @@ public class TypeCheckVisitor implements ASTVisitor {
 	@Override
 	public Object visitConstantExpression(ConstantExpression constantExpression, Object arg) {
 		// ConstantExpression.type <- INTEGER
+		TypeName tn = null;
 		constantExpression.set_TypeName(INTEGER);
-		return null;
+		tn = INTEGER;
+		return tn;
 	}
 
 	@Override
 	public Object visitImageOpChain(ImageOpChain imageOpChain, Object arg) throws Exception {
-		//imageOpChain.getFirstToken().kind = KW_IMAGE;
-		
+		TypeName tn = null;
 		if (imageOpChain.getFirstToken().kind == OP_WIDTH || imageOpChain.getFirstToken().kind == OP_HEIGHT) {
 			if (imageOpChain.getArg().getExprList().size() == 0) {
 				imageOpChain.set_TypeName(INTEGER);
+				tn = INTEGER;
 			}
 		}
 		else if (imageOpChain.getFirstToken().kind == KW_SCALE) {
 			if (imageOpChain.getArg().getExprList().size() == 1) {
 				imageOpChain.set_TypeName(IMAGE);
+				tn = IMAGE;
 			}
 		}
 		else {
 			throw new TypeCheckException("BUG IN PARSER!! visitImageOpChain()");
 		}
-		return null;
+		return tn;
 	}
 
 	@Override

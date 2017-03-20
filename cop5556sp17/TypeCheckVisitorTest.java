@@ -9,6 +9,9 @@ package cop5556sp17;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Map.Entry;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -136,6 +139,7 @@ public class TypeCheckVisitorTest {
         ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
 		program.visit(v, null);
+		//System.out.println(v.symtab.toString());
 	}
 	
 	@Test
@@ -147,6 +151,7 @@ public class TypeCheckVisitorTest {
         ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
 		program.visit(v, null);
+		//System.out.println(v.symtab.toString());
 	}
 	
 	@Test
@@ -202,6 +207,7 @@ public class TypeCheckVisitorTest {
         ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
 		program.visit(v, null);
+		//System.out.println(v.symtab.toString());
 	}
 	
 	@Test
@@ -717,7 +723,31 @@ public class TypeCheckVisitorTest {
 
 	@Test
 	public void testChainNested1() throws Exception {
-		String input = "chelsea{image i\n i -> scale(5) -> blur;}";//type image
+		String input = "chelsea{image i\n i -> scale(5) -> blur;}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		program.visit(v, null);
+		//System.out.println(v.symtab.toString());
+	}
+	
+	@Test
+	public void testChainNested2() throws Exception {
+		String input = "chelsea url u{image i\n image i2\n i -> u -> i2;}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		program.visit(v, null);
+		//System.out.println(v.symtab.toString());
+	}
+	
+	@Test
+	public void testChainNested3() throws Exception {
+		String input = "chelsea{image i\n i -> blur -> scale(5);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -727,13 +757,131 @@ public class TypeCheckVisitorTest {
 	}
 	
 	@Test
-	public void testChainNested2() throws Exception {
-		String input = "chelsea url u{image i\n image i2\n i -> u -> i2;}";//type image
+	public void testChainNested4() throws Exception {
+		String input = "chelsea file openFile{image someImage \n someImage -> scale (2) -> openFile;}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
         ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
+		program.visit(v, null);
+		//System.out.println(v.symtab.toString());
+	}
+	
+	@Test
+	public void testChainBadNested1() throws Exception {
+		String input = "chelsea url u{image i\n u -> i -> gray -> height(5) -> scale(2);}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		thrown.expect(TypeCheckVisitor.TypeCheckException.class);
+		program.visit(v, null);
+	}
+	
+	@Test
+	public void testChainBadNested2() throws Exception {
+		String input = "chelsea {integer i\n frame f\n i -> f -> xloc(5);}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		thrown.expect(TypeCheckVisitor.TypeCheckException.class);
+		program.visit(v, null);
+	}
+	
+	@Test
+	public void testScope1() throws Exception {
+		String input = "chelsea url u{integer i\n if(true){integer i\n i <- 5;}\n i <- 2;}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		program.visit(v, null);
+		//System.out.println(v.symtab.toString());
+	}
+	
+	@Test
+	public void testScope2() throws Exception {
+		String input = "chelsea{if(true){integer i}i <- 3;}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		thrown.expect(TypeCheckVisitor.TypeCheckException.class);
+		program.visit(v, null);
+	}
+	
+	@Test
+	public void testScope3() throws Exception {
+		String input = "chelsea{integer i\n if(true){integer i2} i <- i2;}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		thrown.expect(TypeCheckVisitor.TypeCheckException.class);
+		program.visit(v, null);
+	}
+	
+	@Test
+	public void testScope4() throws Exception {
+		String input = "chelsea{integer i\n if(true){integer i\n integer i \n i <- 5;}\n i <- 2;}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		thrown.expect(TypeCheckVisitor.TypeCheckException.class);
+		program.visit(v, null);
+	}
+	
+	@Test
+	public void testScope5() throws Exception {
+		String input = "chelsea {y <- 1; \ninteger x\n y <- 0; \ninteger y}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		program.visit(v, null);
+	}
+	
+	@Test
+	public void testConstantExpression1() throws Exception {
+		String input = "chelsea{integer i \n i <- screenwidth;}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		program.visit(v, null);
+	}
+	
+	@Test
+	public void testAssignment1() throws Exception {
+		String input = "chelsea{integer i \n integer c \n i <- c;}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		program.visit(v, null);
+	}
+	
+	@Test
+	public void testBadAssignment1() throws Exception {
+		String input = "chelsea{integer i \n boolean c \n i <- c;}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		thrown.expect(TypeCheckVisitor.TypeCheckException.class);
 		program.visit(v, null);
 	}
 }
