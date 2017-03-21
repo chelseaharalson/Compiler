@@ -90,7 +90,7 @@ public class TypeCheckVisitor implements ASTVisitor {
 			tn = NONE;
 		}
 		else if (binaryChain.getE0().get_TypeName() == TypeName.FRAME 
-				&& isFrameOp(binaryChain.getE1().firstToken.kind)
+				&& binaryChain.getE1() instanceof FrameOpChain
 				&& binaryChain.getArrow().kind == ARROW
 				&& (binaryChain.getE1().firstToken.kind == KW_XLOC || binaryChain.getE1().firstToken.kind == KW_YLOC)) {
 			//System.out.println("5");
@@ -98,8 +98,7 @@ public class TypeCheckVisitor implements ASTVisitor {
 			tn = INTEGER;
 		}
 		else if (binaryChain.getE0().get_TypeName() == TypeName.FRAME 
-				//&& isFrameOp(binaryChain.getE1().firstToken.kind)
-				&& binaryChain.getE1() instanceof FrameOpChain // ???
+				&& binaryChain.getE1() instanceof FrameOpChain
 				&& binaryChain.getArrow().kind == ARROW
 				&& (binaryChain.getE1().firstToken.kind == KW_SHOW || binaryChain.getE1().firstToken.kind == KW_HIDE
 				|| binaryChain.getE1().firstToken.kind == KW_MOVE)) {
@@ -107,13 +106,13 @@ public class TypeCheckVisitor implements ASTVisitor {
 			binaryChain.set_TypeName(FRAME);
 			tn = FRAME;
 		}
-		else if (binaryChain.getE0().get_TypeName() == TypeName.INTEGER
+		else if (binaryChain.getE0().get_TypeName() == TypeName.IMAGE
 				&& binaryChain.getArrow().kind == ARROW
 				&& binaryChain.getE1() instanceof ImageOpChain
 				&& (binaryChain.getE1().firstToken.kind == OP_WIDTH || binaryChain.getE1().firstToken.kind == OP_HEIGHT)) {
 			//System.out.println("7");
-			binaryChain.set_TypeName(IMAGE);
-			tn = IMAGE;
+			binaryChain.set_TypeName(INTEGER);
+			tn = INTEGER;
 		}
 		else if (binaryChain.getE0().get_TypeName() == TypeName.IMAGE
 				&& (binaryChain.getArrow().kind == ARROW || binaryChain.getArrow().kind == BARARROW)
@@ -289,17 +288,26 @@ public class TypeCheckVisitor implements ASTVisitor {
 				frameOpChain.set_TypeName(NONE);
 				tn = NONE;
 			}
+			else {
+				throw new TypeCheckException("Error in visitFrameOpChain(): " + frameOpChain.firstToken);
+			}
 		}
 		else if (frameOpChain.getFirstToken().kind == KW_XLOC || frameOpChain.getFirstToken().kind == KW_YLOC) {
 			if (frameOpChain.getArg().getExprList().size() == 0) {
 				frameOpChain.set_TypeName(INTEGER);
 				tn = INTEGER;
 			}
+			else {
+				throw new TypeCheckException("Error in visitFrameOpChain(): " + frameOpChain.firstToken);
+			}
 		}
 		else if (frameOpChain.getFirstToken().kind == KW_MOVE) {
 			if (frameOpChain.getArg().getExprList().size() == 2) {
 				frameOpChain.set_TypeName(NONE);
 				tn = NONE;
+			}
+			else {
+				throw new TypeCheckException("Error in visitFrameOpChain(): " + frameOpChain.firstToken);
 			}
 		}
 		else {
@@ -321,6 +329,7 @@ public class TypeCheckVisitor implements ASTVisitor {
 			}
 			else {
 				identChain.set_TypeName(lookupDec.firstToken.get_TypeName());
+				identChain.set_Dec(lookupDec);
 				tn = lookupDec.firstToken.get_TypeName();
 			}
 		}
@@ -500,13 +509,5 @@ public class TypeCheckVisitor implements ASTVisitor {
 			}
 		}
 		return null;
-	}
-
-	public boolean isFrameOp(Kind kind) {
-		switch (kind) {
-		case KW_SHOW: case KW_HIDE: case KW_MOVE: case KW_XLOC: case KW_YLOC: 
-			return true;
-		}
-		return false;
 	}
 }

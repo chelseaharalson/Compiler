@@ -525,7 +525,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable3() throws Exception {
-		String input = "chelsea{frame f \n f -> xloc(5);}";//type integer
+		String input = "chelsea{frame f \n f -> xloc;}";//type integer
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -536,7 +536,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable4() throws Exception {
-		String input = "chelsea{frame f \n f -> yloc(3);}";//type integer
+		String input = "chelsea{frame f \n f -> yloc;}";//type integer
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -547,7 +547,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable5() throws Exception {
-		String input = "chelsea{frame f \n f -> move;}";//type frame
+		String input = "chelsea{frame f \n f -> move(1,2);}";//type frame
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -569,7 +569,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable7() throws Exception {
-		String input = "chelsea{frame f \n f -> move(1);}";//type frame
+		String input = "chelsea{frame f \n f -> move(1,9);}";//type frame
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -580,7 +580,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable8() throws Exception {
-		String input = "chelsea{integer i\n i -> width(5);}";//type integer
+		String input = "chelsea{image i\n i -> width;}";//type image
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -591,7 +591,7 @@ public class TypeCheckVisitorTest {
 	
 	@Test
 	public void testChainTable9() throws Exception {
-		String input = "chelsea{integer i\n i -> height(9);}";//type integer
+		String input = "chelsea{image i\n i -> height;}";//type image
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
