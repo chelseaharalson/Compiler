@@ -464,7 +464,19 @@ public class TypeCheckVisitor implements ASTVisitor {
 	@Override
 	public Object visitParamDec(ParamDec paramDec, Object arg) throws Exception {
 		//System.out.println("Scope Number in visitPararmDec: " + symtab.currentScope);
-		symtab.insert(paramDec.getIdent().getText(), paramDec);
+		if (symtab.scopeTable != null) {
+			Dec lookupDec = symtab.lookup(paramDec.getIdent().getText());
+			if (lookupDec == null) {
+				symtab.insert(paramDec.getIdent().getText(), paramDec);
+			}
+			else if (symtab.lookupScope(paramDec.getIdent().getText()) == symtab.currentScope) {
+					throw new TypeCheckException("Has already been declared in this scope: " + 
+							paramDec.getIdent().getText());
+			}
+			else {
+				symtab.insert(paramDec.getIdent().getText(), paramDec);
+			}
+		}
 		return null;
 	}
 

@@ -852,6 +852,18 @@ public class TypeCheckVisitorTest {
 	}
 	
 	@Test
+	public void testScope6() throws Exception {
+		String input = "abc integer x, integer x {} ";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+        ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		thrown.expect(TypeCheckVisitor.TypeCheckException.class);
+		program.visit(v, null);
+	}
+	
+	@Test
 	public void testConstantExpression1() throws Exception {
 		String input = "chelsea{integer i \n i <- screenwidth;}";
 		Scanner scanner = new Scanner(input);
