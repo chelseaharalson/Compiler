@@ -180,7 +180,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	public Object visitAssignmentStatement(AssignmentStatement assignStatement, Object arg) throws Exception {
 		assignStatement.getE().visit(this, arg);
 		CodeGenUtils.genPrint(DEVEL, mv, "\nassignment: " + assignStatement.var.getText() + "=");
-		CodeGenUtils.genPrintTOS(GRADE, mv, assignStatement.getE().getType());
+		CodeGenUtils.genPrintTOS(GRADE, mv, assignStatement.getE().get_TypeName());
 		assignStatement.getVar().visit(this, arg);
 		return null;
 	}
@@ -190,23 +190,135 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		assert false : "not yet implemented";
 		return null;
 	}
-
+	
+	// Visit children to generate code to leave values of arguments on stack
+    // perform operation, leaving result on top of the stack.  Expressions should
+    // be evaluated from left to right consistent with the structure of the AST.
 	@Override
 	public Object visitBinaryExpression(BinaryExpression binaryExpression, Object arg) throws Exception {
-      //TODO  Implement this
-		return null;
+		Kind opKind = binaryExpression.getOp().kind;
+		String e0Type = (String) binaryExpression.getE0().visit(this, arg);
+		String e1Type = (String) binaryExpression.getE1().visit(this, arg);
+		if (opKind.equals(PLUS)) {
+			if (e0Type.equals("I") && e1Type.equals("I")) {
+				mv.visitInsn(IADD);
+			}
+			// IMAGE + IMAGE goes here
+		}
+		else if (opKind.equals(MINUS)) {
+			if (e0Type.equals("I") && e1Type.equals("I")) {
+				mv.visitInsn(ISUB);
+			}
+			// IMAGE - IMAGE goes here
+		}
+		else if (opKind.equals(TIMES)) {
+			if (e0Type.equals("I") && e1Type.equals("I")) {
+				mv.visitInsn(IMUL);
+			}
+			// IMAGE * INTEGER goes here
+			// INTEGER * IMAGE goes here
+		}
+		else if (opKind.equals(DIV)) {
+			if (e0Type.equals("I") && e1Type.equals("I")) {
+				mv.visitInsn(IDIV);
+			}
+		}
+		else if (opKind.equals(LT)) {
+			if ( (e0Type.equals("I") && e1Type.equals("I")) || (e0Type.equals("Z") && e1Type.equals("Z")) ) {
+				Label ltLabel = new Label();
+				Label finishLabel = new Label();
+				mv.visitJumpInsn(IF_ICMPLT, ltLabel);
+				mv.visitInsn(ICONST_0);
+				mv.visitJumpInsn(GOTO, finishLabel);
+				mv.visitLabel(ltLabel);
+				mv.visitInsn(ICONST_1);
+				mv.visitLabel(finishLabel);
+			}
+		}
+		else if (opKind.equals(GT)) {
+			if ( (e0Type.equals("I") && e1Type.equals("I")) || (e0Type.equals("Z") && e1Type.equals("Z")) ) {
+				Label gtLabel = new Label();
+				Label finishLabel = new Label();
+				mv.visitJumpInsn(IF_ICMPGT, gtLabel);
+				mv.visitInsn(ICONST_0);
+				mv.visitJumpInsn(GOTO, finishLabel);
+				mv.visitLabel(gtLabel);
+				mv.visitInsn(ICONST_1);
+				mv.visitLabel(finishLabel);
+			}
+		}
+		else if (opKind.equals(LE)) {
+			if ( (e0Type.equals("I") && e1Type.equals("I")) || (e0Type.equals("Z") && e1Type.equals("Z")) ) {
+				Label leLabel = new Label();
+				Label finishLabel = new Label();
+				mv.visitJumpInsn(IF_ICMPLE, leLabel);
+				mv.visitInsn(ICONST_0);
+				mv.visitJumpInsn(GOTO, finishLabel);
+				mv.visitLabel(leLabel);
+				mv.visitInsn(ICONST_1);
+				mv.visitLabel(finishLabel);
+			}
+		}
+		else if (opKind.equals(GE)) {
+			if ( (e0Type.equals("I") && e1Type.equals("I")) || (e0Type.equals("Z") && e1Type.equals("Z")) ) {
+				Label geLabel = new Label();
+				Label finishLabel = new Label();
+				mv.visitJumpInsn(IF_ICMPGE, geLabel);
+				mv.visitInsn(ICONST_0);
+				mv.visitJumpInsn(GOTO, finishLabel);
+				mv.visitLabel(geLabel);
+				mv.visitInsn(ICONST_1);
+				mv.visitLabel(finishLabel);
+			}
+		}
+		else if (opKind.equals(EQUAL)) {
+			if (e0Type.equals(e1Type)) {
+				Label eqLabel = new Label();
+				Label finishLabel = new Label();
+				mv.visitJumpInsn(IF_ICMPEQ, eqLabel);
+				mv.visitInsn(ICONST_0);
+				mv.visitJumpInsn(GOTO, finishLabel);
+				mv.visitLabel(eqLabel);
+				mv.visitInsn(ICONST_1);
+				mv.visitLabel(finishLabel);
+			}
+		}
+		else if (opKind.equals(NOTEQUAL)) {
+			if (e0Type.equals(e1Type)) {
+				Label neqLabel = new Label();
+				Label finishLabel = new Label();
+				mv.visitJumpInsn(IF_ICMPNE, neqLabel);
+				mv.visitInsn(ICONST_0);
+				mv.visitJumpInsn(GOTO, finishLabel);
+				mv.visitLabel(neqLabel);
+				mv.visitInsn(ICONST_1);
+				mv.visitLabel(finishLabel);
+			}
+		}
+		return "Z";
 	}
 
+	// Block ∷= List<Dec>  List<Statement>
+	//			Decs are local variables in current scope of run method
+	//			Statements are executed in run method
+	//			Must label beginning and end of scope, and keep track of local variables, 
+	//					their slot in the local variable array, and their range of visibility.
 	@Override
 	public Object visitBlock(Block block, Object arg) throws Exception {
-		//TODO  Implement this
+		
 		return null;
 	}
 
+	// load constant
 	@Override
 	public Object visitBooleanLitExpression(BooleanLitExpression booleanLitExpression, Object arg) throws Exception {
-		//TODO Implement this
-		return null;
+		if (booleanLitExpression.getValue().booleanValue()) {
+			mv.visitInsn(ICONST_1);
+		}
+		else {
+			mv.visitInsn(ICONST_0);
+		}
+		return "Z";
 	}
 
 	@Override
@@ -215,9 +327,13 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		return null;
 	}
 
+	// Assign a slot in the local variable array to this variable and save it in the new slot attribute in the Dec class
 	@Override
 	public Object visitDec(Dec declaration, Object arg) throws Exception {
-		//TODO Implement this
+		String variableName = declaration.getFirstToken().getText();
+		className = declaration.getFirstToken().get_TypeName().getJVMClass();
+		classDesc = declaration.getFirstToken().get_TypeName().getJVMTypeDesc();
+		mv.visitFieldInsn(PUTSTATIC, className, variableName, classDesc);
 		return null;
 	}
 
@@ -239,22 +355,39 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		return null;
 	}
 
+	// Load value of variable (this could be a field or a local var)
 	@Override
 	public Object visitIdentExpression(IdentExpression identExpression, Object arg) throws Exception {
-		//TODO Implement this
+		String variableName = identExpression.getFirstToken().getText();
+		className = identExpression.getFirstToken().get_TypeName().getJVMClass();
+		classDesc = identExpression.getFirstToken().get_TypeName().getJVMTypeDesc();
+		mv.visitFieldInsn(GETSTATIC, className, variableName, classDesc);
 		return null;
 	}
 
+	// Store value on top of stack to this variable (which could be a field or local var)
 	@Override
 	public Object visitIdentLValue(IdentLValue identX, Object arg) throws Exception {
-		//TODO Implement this
+		String variableName = identX.getFirstToken().getText();
+		className = identX.getFirstToken().get_TypeName().getJVMClass();
+		classDesc = identX.getFirstToken().get_TypeName().getJVMTypeDesc();
+		mv.visitFieldInsn(PUTSTATIC, className, variableName, classDesc);
 		return null;
 
 	}
 
+	// IfStatement ∷= Expression Block
+    //				Expression
+    //				IFEQ AFTER
+	//			Block
+	//     AFTER …
 	@Override
 	public Object visitIfStatement(IfStatement ifStatement, Object arg) throws Exception {
-		//TODO Implement this
+		ifStatement.getE().visit(this, arg);
+		Label ifeqLabel = new Label();
+		mv.visitJumpInsn(IFEQ, ifeqLabel);
+		ifStatement.getB().visit(this, arg);
+		mv.visitLabel(ifeqLabel);
 		return null;
 	}
 
@@ -264,17 +397,18 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		return null;
 	}
 
+	// Load constant
 	@Override
 	public Object visitIntLitExpression(IntLitExpression intLitExpression, Object arg) throws Exception {
-		//TODO Implement this
-		return null;
+		mv.visitLdcInsn(intLitExpression.getFirstToken().intVal());
+		return "I";
 	}
 
-
+	// Instance variable in class, initialized with values from arg array
 	@Override
 	public Object visitParamDec(ParamDec paramDec, Object arg) throws Exception {
-		//TODO Implement this
 		//For assignment 5, only needs to handle integers and booleans
+		
 		return null;
 
 	}
@@ -291,9 +425,23 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		return null;
 	}
 
+	// WhileStatement ∷= Expression Block
+    // 			goto GUARD
+	//    BODY     Block
+	//    GUARD  Expression
+	// 		     IFNE  BODY
 	@Override
 	public Object visitWhileStatement(WhileStatement whileStatement, Object arg) throws Exception {
-		//TODO Implement this
+		Label expressionLabel = new Label();
+		Label finishLabel = new Label();
+		mv.visitLabel(expressionLabel);
+		whileStatement.getE().visit(this, arg);
+		// check expression, if not equal go to finish label
+		mv.visitJumpInsn(IFNE, finishLabel);
+		// if equal, continue and visit block
+		whileStatement.getB().visit(this, arg);
+		mv.visitJumpInsn(GOTO, expressionLabel);
+		mv.visitLabel(finishLabel);
 		return null;
 	}
 
