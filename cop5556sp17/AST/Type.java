@@ -46,9 +46,9 @@ public class Type  {
 		}
 
 		//precondition: is not I or Z
-		public String getJVMClass(){
+		public String getJVMClass() {
 			return jvmType.substring(1,jvmType.length()-1);  //removes L and ;
-	}
+		}
 
 
 }

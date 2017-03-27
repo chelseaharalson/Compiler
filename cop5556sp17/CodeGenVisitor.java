@@ -5,6 +5,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.objectweb.asm.ClassReader;
@@ -76,6 +77,8 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	/** Indicates whether genPrint and genPrintTOS should generate code. */
 	final boolean DEVEL;
 	final boolean GRADE;
+	
+	Integer slotCount = 0;
 
 	@Override
 	public Object visitProgram(Program program, Object arg) throws Exception {
@@ -174,8 +177,10 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		return cw.toByteArray();
 	}
 
-
-
+	// Store value of Expression into location indicated by IdentLValue
+	// IMPORTANT:  
+	// insert the following statement into your code for an Assignment Statement
+	// after value of expression is put on top of stack and before it is written into the IdentLValue
 	@Override
 	public Object visitAssignmentStatement(AssignmentStatement assignStatement, Object arg) throws Exception {
 		assignStatement.getE().visit(this, arg);
@@ -197,8 +202,10 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	@Override
 	public Object visitBinaryExpression(BinaryExpression binaryExpression, Object arg) throws Exception {
 		Kind opKind = binaryExpression.getOp().kind;
-		String e0Type = (String) binaryExpression.getE0().visit(this, arg);
-		String e1Type = (String) binaryExpression.getE1().visit(this, arg);
+		binaryExpression.getE0().visit(this, arg);
+		binaryExpression.getE1().visit(this, arg);
+		String e0Type = binaryExpression.getE0().get_TypeName().getJVMTypeDesc();
+		String e1Type = binaryExpression.getE1().get_TypeName().getJVMTypeDesc();
 		if (opKind.equals(PLUS)) {
 			if (e0Type.equals("I") && e1Type.equals("I")) {
 				mv.visitInsn(IADD);
@@ -305,11 +312,22 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	//					their slot in the local variable array, and their range of visibility.
 	@Override
 	public Object visitBlock(Block block, Object arg) throws Exception {
-		
+		Label startLabel = new Label();
+		Label finishLabel = new Label();
+		mv.visitLabel(startLabel);
+		for (Dec d : block.getDecs()) {
+			d.visit(this, arg);
+			classDesc = d.getFirstToken().get_TypeName().getJVMTypeDesc();
+			mv.visitLocalVariable(d.getIdent().getText(), classDesc, null, startLabel, finishLabel, d.getSlotNumber());
+		}
+		for (Statement s : block.getStatements()) {
+			s.visit(this, arg);
+		}
+		mv.visitLabel(finishLabel);
 		return null;
 	}
 
-	// load constant
+	// Load constant
 	@Override
 	public Object visitBooleanLitExpression(BooleanLitExpression booleanLitExpression, Object arg) throws Exception {
 		if (booleanLitExpression.getValue().booleanValue()) {
@@ -330,10 +348,12 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	// Assign a slot in the local variable array to this variable and save it in the new slot attribute in the Dec class
 	@Override
 	public Object visitDec(Dec declaration, Object arg) throws Exception {
-		String variableName = declaration.getFirstToken().getText();
+		declaration.setSlotNumber(slotCount);
+		slotCount++;
+		/*String variableName = declaration.getFirstToken().getText();
 		className = declaration.getFirstToken().get_TypeName().getJVMClass();
 		classDesc = declaration.getFirstToken().get_TypeName().getJVMTypeDesc();
-		mv.visitFieldInsn(PUTSTATIC, className, variableName, classDesc);
+		mv.visitFieldInsn(PUTSTATIC, className, variableName, classDesc);*/
 		return null;
 	}
 
@@ -359,9 +379,24 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	@Override
 	public Object visitIdentExpression(IdentExpression identExpression, Object arg) throws Exception {
 		String variableName = identExpression.getFirstToken().getText();
-		className = identExpression.getFirstToken().get_TypeName().getJVMClass();
-		classDesc = identExpression.getFirstToken().get_TypeName().getJVMTypeDesc();
-		mv.visitFieldInsn(GETSTATIC, className, variableName, classDesc);
+		Dec d = identExpression.get_Dec();
+		if (d instanceof ParamDec) {
+			classDesc = identExpression.getFirstToken().get_TypeName().getJVMTypeDesc();
+			if (identExpression.getFirstToken().get_TypeName() == TypeName.INTEGER) {
+				mv.visitFieldInsn(GETFIELD, "I", variableName, classDesc);
+			}
+			else if (identExpression.getFirstToken().get_TypeName() == TypeName.BOOLEAN) {
+				mv.visitFieldInsn(GETFIELD, "Z", variableName, classDesc);
+			}
+			else {
+				className = identExpression.getFirstToken().get_TypeName().getJVMClass();
+				mv.visitFieldInsn(GETFIELD, className, variableName, classDesc);
+			}
+		}
+		else {
+			int slot = identExpression.get_Dec().getSlotNumber();
+			mv.visitVarInsn(ILOAD, slot);
+		}
 		return null;
 	}
 
@@ -369,18 +404,32 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	@Override
 	public Object visitIdentLValue(IdentLValue identX, Object arg) throws Exception {
 		String variableName = identX.getFirstToken().getText();
-		className = identX.getFirstToken().get_TypeName().getJVMClass();
-		classDesc = identX.getFirstToken().get_TypeName().getJVMTypeDesc();
-		mv.visitFieldInsn(PUTSTATIC, className, variableName, classDesc);
+		Dec d = identX.get_Dec();
+		if (d instanceof ParamDec) {
+			classDesc = identX.getFirstToken().get_TypeName().getJVMTypeDesc();
+			if (identX.getFirstToken().get_TypeName() == TypeName.INTEGER) {
+				mv.visitFieldInsn(PUTFIELD, "I", variableName, classDesc);
+			}
+			else if (identX.getFirstToken().get_TypeName() == TypeName.BOOLEAN) {
+				mv.visitFieldInsn(PUTFIELD, "Z", variableName, classDesc);
+			}
+			else {
+				className = identX.getFirstToken().get_TypeName().getJVMClass();
+				mv.visitFieldInsn(PUTFIELD, className, variableName, classDesc);
+			}
+		}
+		else {
+			int slot = identX.get_Dec().getSlotNumber();
+			mv.visitVarInsn(ISTORE, slot);
+		}
 		return null;
-
 	}
 
-	// IfStatement ∷= Expression Block
+	// IfStatement ::= Expression Block
     //				Expression
     //				IFEQ AFTER
 	//			Block
-	//     AFTER …
+	//     AFTER ...
 	@Override
 	public Object visitIfStatement(IfStatement ifStatement, Object arg) throws Exception {
 		ifStatement.getE().visit(this, arg);
@@ -407,10 +456,20 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	// Instance variable in class, initialized with values from arg array
 	@Override
 	public Object visitParamDec(ParamDec paramDec, Object arg) throws Exception {
-		//For assignment 5, only needs to handle integers and booleans
-		
+		// For assignment 5, only needs to handle integers and booleans
+		String variableName = paramDec.getFirstToken().getText();
+		classDesc = paramDec.getFirstToken().get_TypeName().getJVMTypeDesc();
+		if (paramDec.getFirstToken().get_TypeName() == TypeName.INTEGER) {
+			mv.visitFieldInsn(PUTFIELD, "I", variableName, classDesc);
+		}
+		else if (paramDec.getFirstToken().get_TypeName() == TypeName.BOOLEAN) {
+			mv.visitFieldInsn(PUTFIELD, "Z", variableName, classDesc);
+		}
+		else {
+			className = paramDec.getFirstToken().get_TypeName().getJVMClass();
+			mv.visitFieldInsn(PUTFIELD, className, variableName, classDesc);
+		}
 		return null;
-
 	}
 
 	@Override
@@ -425,7 +484,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		return null;
 	}
 
-	// WhileStatement ∷= Expression Block
+	// WhileStatement ::= Expression Block
     // 			goto GUARD
 	//    BODY     Block
 	//    GUARD  Expression
@@ -444,5 +503,40 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		mv.visitLabel(finishLabel);
 		return null;
 	}
+	
+	/*static class Name implements Runnable {
+		// Variables declared in List<ParamDec> are instance variables of the class
+
+		public Name(String[] args) {
+			// Initialize instance variables with values from args.
+			for (int i = 0; i < args.length; i++) {
+				boolean isInteger = false;
+				try { 
+			        Integer.parseInt(args[i]); 
+			        isInteger = true;
+			    } catch(NumberFormatException e) {
+			    } catch(NullPointerException e) {
+			    }
+				
+				if (isInteger == false) {
+					try { 
+				        Boolean.parseBoolean(args[i]); 
+				    } catch(Exception e) { 
+				    }
+				}
+			}
+		}
+		
+		public static void main(String[] args) {
+			Name instance = new Name(args);
+			instance.run();
+		}
+
+		@Override
+		public void run() {
+			// Declarations and statements from block
+			
+		}
+	}*/
 
 }

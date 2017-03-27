@@ -5,6 +5,7 @@ import cop5556sp17.Scanner.Token;
 public class Dec extends ASTNode {
 	
 	final Token ident;
+	Integer slotNumber;
 
 	public Dec(Token firstToken, Token ident) {
 		super(firstToken);
@@ -60,6 +61,14 @@ public class Dec extends ASTNode {
 	@Override
 	public Object visit(ASTVisitor v, Object arg) throws Exception {
 		return v.visitDec(this,arg);
+	}
+	
+	public Integer getSlotNumber() {
+		return slotNumber;
+	}
+	
+	public void setSlotNumber(Integer pSlotNumber) {
+		slotNumber = pSlotNumber;
 	}
 
 }
