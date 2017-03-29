@@ -78,7 +78,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	final boolean DEVEL;
 	final boolean GRADE;
 	
-	Integer slotCount = 0;
+	Integer slotCount = 2;
 
 	@Override
 	public Object visitProgram(Program program, Object arg) throws Exception {
@@ -184,6 +184,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	@Override
 	public Object visitAssignmentStatement(AssignmentStatement assignStatement, Object arg) throws Exception {
 		assignStatement.getE().visit(this, arg);
+		//System.out.println("ASSIGN STATEMENT: " + assignStatement.e.firstToken.getText());
 		CodeGenUtils.genPrint(DEVEL, mv, "\nassignment: " + assignStatement.var.getText() + "=");
 		CodeGenUtils.genPrintTOS(GRADE, mv, assignStatement.getE().get_TypeName());
 		assignStatement.getVar().visit(this, arg);
@@ -312,18 +313,19 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	//					their slot in the local variable array, and their range of visibility.
 	@Override
 	public Object visitBlock(Block block, Object arg) throws Exception {
+		//System.out.println("VISITING BLOCK");
 		Label startLabel = new Label();
 		Label finishLabel = new Label();
 		mv.visitLabel(startLabel);
+		mv.visitLabel(finishLabel);
 		for (Dec d : block.getDecs()) {
 			d.visit(this, arg);
-			classDesc = d.getFirstToken().get_TypeName().getJVMTypeDesc();
-			mv.visitLocalVariable(d.getIdent().getText(), classDesc, null, startLabel, finishLabel, d.getSlotNumber());
+			String localDesc = d.getFirstToken().get_TypeName().getJVMTypeDesc();
+			mv.visitLocalVariable(d.getIdent().getText(), localDesc, null, startLabel, finishLabel, d.getSlotNumber());
 		}
 		for (Statement s : block.getStatements()) {
 			s.visit(this, arg);
 		}
-		mv.visitLabel(finishLabel);
 		return null;
 	}
 
@@ -349,11 +351,8 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	@Override
 	public Object visitDec(Dec declaration, Object arg) throws Exception {
 		declaration.setSlotNumber(slotCount);
+		//System.out.println("Dec was set as: " + slotCount + "\n" + declaration.getIdent().getText());
 		slotCount++;
-		/*String variableName = declaration.getFirstToken().getText();
-		className = declaration.getFirstToken().get_TypeName().getJVMClass();
-		classDesc = declaration.getFirstToken().get_TypeName().getJVMTypeDesc();
-		mv.visitFieldInsn(PUTSTATIC, className, variableName, classDesc);*/
 		return null;
 	}
 
@@ -378,23 +377,16 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	// Load value of variable (this could be a field or a local var)
 	@Override
 	public Object visitIdentExpression(IdentExpression identExpression, Object arg) throws Exception {
-		String variableName = identExpression.getFirstToken().getText();
 		Dec d = identExpression.get_Dec();
+		//System.out.println("### " + d);
 		if (d instanceof ParamDec) {
-			classDesc = identExpression.getFirstToken().get_TypeName().getJVMTypeDesc();
-			if (identExpression.getFirstToken().get_TypeName() == TypeName.INTEGER) {
-				mv.visitFieldInsn(GETFIELD, "I", variableName, classDesc);
-			}
-			else if (identExpression.getFirstToken().get_TypeName() == TypeName.BOOLEAN) {
-				mv.visitFieldInsn(GETFIELD, "Z", variableName, classDesc);
-			}
-			else {
-				className = identExpression.getFirstToken().get_TypeName().getJVMClass();
-				mv.visitFieldInsn(GETFIELD, className, variableName, classDesc);
-			}
+			String variableName = d.getIdent().getText();
+			String localDesc = d.getFirstToken().get_TypeName().getJVMTypeDesc();
+			//System.out.println("@@@: " + variableName + "\n" + classDesc);
+			cw.visitField(GETFIELD, variableName, localDesc, null, null);
 		}
 		else {
-			int slot = identExpression.get_Dec().getSlotNumber();
+			int slot = d.getSlotNumber();
 			mv.visitVarInsn(ILOAD, slot);
 		}
 		return null;
@@ -403,23 +395,17 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	// Store value on top of stack to this variable (which could be a field or local var)
 	@Override
 	public Object visitIdentLValue(IdentLValue identX, Object arg) throws Exception {
-		String variableName = identX.getFirstToken().getText();
 		Dec d = identX.get_Dec();
+		//System.out.println("### " + d);
 		if (d instanceof ParamDec) {
-			classDesc = identX.getFirstToken().get_TypeName().getJVMTypeDesc();
-			if (identX.getFirstToken().get_TypeName() == TypeName.INTEGER) {
-				mv.visitFieldInsn(PUTFIELD, "I", variableName, classDesc);
-			}
-			else if (identX.getFirstToken().get_TypeName() == TypeName.BOOLEAN) {
-				mv.visitFieldInsn(PUTFIELD, "Z", variableName, classDesc);
-			}
-			else {
-				className = identX.getFirstToken().get_TypeName().getJVMClass();
-				mv.visitFieldInsn(PUTFIELD, className, variableName, classDesc);
-			}
+			String variableName = d.getIdent().getText();
+			String localDesc = d.getFirstToken().get_TypeName().getJVMTypeDesc();
+			//System.out.println("@@@: " + variableName + "\n" + classDesc);
+			cw.visitField(PUTFIELD, variableName, localDesc, null, null);
 		}
 		else {
-			int slot = identX.get_Dec().getSlotNumber();
+			int slot = d.getSlotNumber();
+			//System.out.println("SLOT NUM: " + slot + "\n IDENT NAME: " + identX.firstToken.getText());
 			mv.visitVarInsn(ISTORE, slot);
 		}
 		return null;
@@ -457,18 +443,9 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	@Override
 	public Object visitParamDec(ParamDec paramDec, Object arg) throws Exception {
 		// For assignment 5, only needs to handle integers and booleans
-		String variableName = paramDec.getFirstToken().getText();
-		classDesc = paramDec.getFirstToken().get_TypeName().getJVMTypeDesc();
-		if (paramDec.getFirstToken().get_TypeName() == TypeName.INTEGER) {
-			mv.visitFieldInsn(PUTFIELD, "I", variableName, classDesc);
-		}
-		else if (paramDec.getFirstToken().get_TypeName() == TypeName.BOOLEAN) {
-			mv.visitFieldInsn(PUTFIELD, "Z", variableName, classDesc);
-		}
-		else {
-			className = paramDec.getFirstToken().get_TypeName().getJVMClass();
-			mv.visitFieldInsn(PUTFIELD, className, variableName, classDesc);
-		}
+		String variableName = paramDec.getIdent().getText();
+		String localDesc = paramDec.getFirstToken().get_TypeName().getJVMTypeDesc();
+		cw.visitField(ACC_PUBLIC, variableName, localDesc, null, null);
 		return null;
 	}
 

@@ -475,6 +475,7 @@ public class TypeCheckVisitor implements ASTVisitor {
 			}
 			else {
 				symtab.insert(paramDec.getIdent().getText(), paramDec);
+				//System.out.println("Inserting in symbol table " + paramDec.firstToken.getText() + " with scope " + symtab.currentScope);
 			}
 		}
 		return null;
