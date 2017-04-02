@@ -79,6 +79,8 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	final boolean GRADE;
 	
 	Integer slotCount = 2;
+	Integer globalsVisited = 0;
+	ArrayList<String> globalsList = new ArrayList<String>();
 
 	@Override
 	public Object visitProgram(Program program, Object arg) throws Exception {
@@ -167,6 +169,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		mv.visitLabel(endRun);
 		mv.visitLocalVariable("this", classDesc, null, startRun, endRun, 0);
 //TODO  visit the local variables
+		
 		mv.visitMaxs(1, 1);
 		mv.visitEnd(); // end of run method
 		
@@ -183,6 +186,10 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	// after value of expression is put on top of stack and before it is written into the IdentLValue
 	@Override
 	public Object visitAssignmentStatement(AssignmentStatement assignStatement, Object arg) throws Exception {
+		if(assignStatement.getVar().get_Dec() instanceof ParamDec){
+			mv.visitVarInsn(ALOAD, 0);//load "this" to later be used for PUTFIELD as objRef
+		}
+		
 		assignStatement.getE().visit(this, arg);
 		//System.out.println("ASSIGN STATEMENT: " + assignStatement.e.firstToken.getText());
 		CodeGenUtils.genPrint(DEVEL, mv, "\nassignment: " + assignStatement.var.getText() + "=");
@@ -313,7 +320,6 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	//					their slot in the local variable array, and their range of visibility.
 	@Override
 	public Object visitBlock(Block block, Object arg) throws Exception {
-		//System.out.println("VISITING BLOCK");
 		Label startLabel = new Label();
 		Label finishLabel = new Label();
 		mv.visitLabel(startLabel);
@@ -351,7 +357,6 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	@Override
 	public Object visitDec(Dec declaration, Object arg) throws Exception {
 		declaration.setSlotNumber(slotCount);
-		//System.out.println("Dec was set as: " + slotCount + "\n" + declaration.getIdent().getText());
 		slotCount++;
 		return null;
 	}
@@ -378,12 +383,11 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	@Override
 	public Object visitIdentExpression(IdentExpression identExpression, Object arg) throws Exception {
 		Dec d = identExpression.get_Dec();
-		//System.out.println("### " + d);
 		if (d instanceof ParamDec) {
 			String variableName = d.getIdent().getText();
 			String localDesc = d.getFirstToken().get_TypeName().getJVMTypeDesc();
-			//System.out.println("@@@: " + variableName + "\n" + classDesc);
-			cw.visitField(GETFIELD, variableName, localDesc, null, null);
+			mv.visitVarInsn(ALOAD, 0);//load "this" to later be used for GETREF as objRef
+			mv.visitFieldInsn(GETFIELD, className, variableName, localDesc);
 		}
 		else {
 			int slot = d.getSlotNumber();
@@ -396,16 +400,13 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	@Override
 	public Object visitIdentLValue(IdentLValue identX, Object arg) throws Exception {
 		Dec d = identX.get_Dec();
-		//System.out.println("### " + d);
 		if (d instanceof ParamDec) {
 			String variableName = d.getIdent().getText();
 			String localDesc = d.getFirstToken().get_TypeName().getJVMTypeDesc();
-			//System.out.println("@@@: " + variableName + "\n" + classDesc);
-			cw.visitField(PUTFIELD, variableName, localDesc, null, null);
+			mv.visitFieldInsn(PUTFIELD, className, variableName, localDesc);
 		}
 		else {
 			int slot = d.getSlotNumber();
-			//System.out.println("SLOT NUM: " + slot + "\n IDENT NAME: " + identX.firstToken.getText());
 			mv.visitVarInsn(ISTORE, slot);
 		}
 		return null;
@@ -445,7 +446,27 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		// For assignment 5, only needs to handle integers and booleans
 		String variableName = paramDec.getIdent().getText();
 		String localDesc = paramDec.getFirstToken().get_TypeName().getJVMTypeDesc();
+		globalsList.add(variableName);
 		cw.visitField(ACC_PUBLIC, variableName, localDesc, null, null);
+		
+		mv.visitVarInsn(ALOAD, 0);//load "this" to later be used for PUTFIELD as objRef
+		//System.out.println("Visiting the globals[" + globalsVisited + "]");
+		mv.visitVarInsn(ALOAD, 1);//load args[]
+		mv.visitLdcInsn(globalsVisited);//load globalsVisited index
+		mv.visitInsn(AALOAD);//put the args[globalsVistied] onto the stack
+		
+		//check type of string (int/bool)
+		if(localDesc == "I"){
+			//System.out.println("Putting the integer value into " + variableName);
+			mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "parseInt", "(Ljava/lang/String;)I", false);
+			mv.visitFieldInsn(PUTFIELD, className, variableName, "I");//put the value into the variable
+		}else if(localDesc == "Z"){
+			//System.out.println("Putting the boolean value into " + variableName);
+			mv.visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "parseBoolean", "(Ljava/lang/String;)Z", false);
+			mv.visitFieldInsn(PUTFIELD, className, variableName, "Z");//put the value into the variable
+		}
+		
+		globalsVisited++;
 		return null;
 	}
 

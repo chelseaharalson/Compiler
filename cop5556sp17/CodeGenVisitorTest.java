@@ -1,4 +1,3 @@
-
 package cop5556sp17;
 
 import java.io.FileOutputStream;
@@ -197,7 +196,8 @@ public class CodeGenVisitorTest {
 	public void prog5() throws Exception {
 		//scan, parse, and type check the program
 		String progname = "prog5";
-		String input = progname + " integer a, boolean b {a <- 5;}";		
+		//should print 115
+		String input = progname + " integer a, boolean b, boolean b2 {integer c if(b){c <- 5 + a;} if(b2){c <- 10 + a;} a <- 5;}";//c should = 11
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -222,7 +222,7 @@ public class CodeGenVisitorTest {
 		System.out.println("wrote classfile to " + classFileName);
 		
 		// directly execute bytecode
-		String[] args = new String[0]; //create command line argument array to initialize params, none in this case
+		String[] args = new String[]{"1", "false", "true"}; //create command line argument array to initialize params		
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		instance.run();
 	}

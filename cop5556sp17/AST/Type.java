@@ -5,7 +5,6 @@ import cop5556sp17.Parser.SyntaxException;
 import cop5556sp17.Scanner.Token;
 
 public class Type  {
-	
 
 	public static TypeName getTypeName(Token token) throws SyntaxException{
 		switch (token.kind){
@@ -49,7 +48,5 @@ public class Type  {
 		public String getJVMClass() {
 			return jvmType.substring(1,jvmType.length()-1);  //removes L and ;
 		}
-
-
-}
+	}
 }
