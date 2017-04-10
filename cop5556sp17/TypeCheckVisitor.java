@@ -133,10 +133,20 @@ public class TypeCheckVisitor implements ASTVisitor {
 		}
 		else if (binaryChain.getE0().get_TypeName() == TypeName.IMAGE
 				&& binaryChain.getArrow().kind == ARROW
-				&& binaryChain.getE1() instanceof IdentChain) {
+				&& binaryChain.getE1() instanceof IdentChain
+				&& binaryChain.getE1().get_TypeName() == TypeName.IMAGE) {	// Added for assignment 6
 			//System.out.println("10");
 			binaryChain.set_TypeName(IMAGE);
 			tn = IMAGE;
+		}
+		// Added for assignment 6
+		else if (binaryChain.getE0().get_TypeName() == TypeName.INTEGER
+				&& binaryChain.getArrow().kind == ARROW
+				&& binaryChain.getE1() instanceof IdentChain
+				&& binaryChain.getE1().get_TypeName() == TypeName.INTEGER) {
+			//System.out.println("11");
+			binaryChain.set_TypeName(INTEGER);
+			tn = INTEGER;
 		}
 		else {
 			throw new TypeCheckException("Unable to set type in visitBinaryChain");
@@ -163,7 +173,8 @@ public class TypeCheckVisitor implements ASTVisitor {
 			tn = IMAGE;
 		}
 		else if (binaryExpression.getE0().get_TypeName() == TypeName.INTEGER && (binaryExpression.getOp().kind == TIMES
-				|| binaryExpression.getOp().kind == DIV) && binaryExpression.getE1().get_TypeName() == TypeName.INTEGER) {
+				|| binaryExpression.getOp().kind == DIV || binaryExpression.getOp().kind == MOD) 
+				&& binaryExpression.getE1().get_TypeName() == TypeName.INTEGER) {
 			binaryExpression.set_TypeName(INTEGER);
 			tn = INTEGER;
 		}
@@ -197,7 +208,10 @@ public class TypeCheckVisitor implements ASTVisitor {
 		}
 		else if (binaryExpression.getE0().get_TypeName() == binaryExpression.getE1().get_TypeName() && 
 				(binaryExpression.getOp().kind == EQUAL
-				|| binaryExpression.getOp().kind == NOTEQUAL)) {
+				|| binaryExpression.getOp().kind == NOTEQUAL
+				|| binaryExpression.getOp().kind == AND
+				|| binaryExpression.getOp().kind == OR
+				)) {
 			binaryExpression.set_TypeName(BOOLEAN);
 			tn = BOOLEAN;
 		}

@@ -180,6 +180,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	// IMPORTANT:  
 	// insert the following statement into your code for an Assignment Statement
 	// after value of expression is put on top of stack and before it is written into the IdentLValue
+	// if the type of elements is image, this should copy the image. use PLPRuntimeImageOps.copyImage
 	@Override
 	public Object visitAssignmentStatement(AssignmentStatement assignStatement, Object arg) throws Exception {
 		if (assignStatement.getVar().get_Dec() instanceof ParamDec) {
@@ -305,6 +306,44 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 				mv.visitLabel(finishLabel);
 			}
 		}
+		// Added for assignment 6
+		else if (opKind.equals(AND)) {
+			if ( (e0Type.equals("Z") && e1Type.equals("Z")) ) {
+				Label firstFalseLabel = new Label();
+				Label secFalseLabel = new Label();
+				mv.visitJumpInsn(IFEQ, firstFalseLabel);
+				mv.visitJumpInsn(IFEQ, secFalseLabel);
+				mv.visitInsn(ICONST_1);
+				Label finishLabel = new Label();
+				mv.visitJumpInsn(GOTO, finishLabel);
+				mv.visitLabel(firstFalseLabel);
+				mv.visitInsn(POP);
+				mv.visitLabel(secFalseLabel);
+				mv.visitInsn(ICONST_0);
+				mv.visitLabel(finishLabel);
+			}
+		}
+		else if (opKind.equals(OR)) {
+			if ( (e0Type.equals("Z") && e1Type.equals("Z")) ) {
+				Label firstTrueLabel = new Label();
+				Label secTrueLabel = new Label();
+				mv.visitJumpInsn(IFNE, firstTrueLabel);
+				mv.visitJumpInsn(IFNE, secTrueLabel);
+				mv.visitInsn(ICONST_0);
+				Label finishLabel = new Label();
+				mv.visitJumpInsn(GOTO, finishLabel);
+				mv.visitLabel(firstTrueLabel);
+				mv.visitInsn(POP);
+				mv.visitLabel(secTrueLabel);
+				mv.visitInsn(ICONST_1);
+				mv.visitLabel(finishLabel);
+			}
+		}
+		else if (opKind.equals(MOD)) {
+			if ( (e0Type.equals("I") && e1Type.equals("I")) ) {
+				mv.visitInsn(IREM);
+			}
+		}
 		return "Z";
 	}
 
@@ -313,8 +352,11 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	//			Statements are executed in run method
 	//			Must label beginning and end of scope, and keep track of local variables, 
 	//					their slot in the local variable array, and their range of visibility.
+	//			If a statement was a BinaryChain, it will have left a value on top of the stack. 
+	//			Check for this and pop it if necessary.
 	@Override
 	public Object visitBlock(Block block, Object arg) throws Exception {
+		int numVisitedBinaryChain = 0;
 		Label startLabel = new Label();
 		Label finishLabel = new Label();
 		mv.visitLabel(startLabel);
@@ -326,6 +368,12 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		}
 		for (Statement s : block.getStatements()) {
 			s.visit(this, arg);
+			if (s instanceof BinaryChain) {
+				numVisitedBinaryChain++;
+			}
+		}
+		for (int i = 0; i < numVisitedBinaryChain; i++) {
+			mv.visitInsn(POP);
 		}
 		return null;
 	}
@@ -349,6 +397,8 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	}
 
 	// Assign a slot in the local variable array to this variable and save it in the new slot attribute in the Dec class
+	// frame maps to cop5556sp17.PLPRuntimeFrame
+	// image maps to java.awt.image.BufferedImage
 	@Override
 	public Object visitDec(Dec declaration, Object arg) throws Exception {
 		declaration.setSlotNumber(slotCount);
@@ -356,18 +406,72 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		return null;
 	}
 
+	// Assume that a reference to a BufferedImage is on top of the stack.
+	// Generate code to invoke the appropriate method from PLPRuntimeFilterOps.
 	@Override
 	public Object visitFilterOpChain(FilterOpChain filterOpChain, Object arg) throws Exception {
-		assert false : "not yet implemented";
+		// Visit the expressions
+		for (int i = 0; i < filterOpChain.getArg().getExprList().size(); i++) {
+			filterOpChain.getArg().getExprList().get(i).visit(this, arg);
+		}
+		
+		// Generate code to invoke the appropriate method for PLPRuntimeFilterOps
+		if (PLPRuntimeLog.getString() == "blurOp") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "blurOp", PLPRuntimeFilterOps.opSig, false);
+		}
+		else if (PLPRuntimeLog.getString() == "convolve") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "convolveOp", PLPRuntimeFilterOps.opSig, false);
+		}
+		else if (PLPRuntimeLog.getString() == "grayOp") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "grayOp", PLPRuntimeFilterOps.opSig, false);
+		}
 		return null;
 	}
 
+	// Assume that a reference to a PLPRuntimeFrame is on top of the stack.
+	// Visit the tuple elements to generate code to leave their values on top of the stack.
+	// Generate code to invokethe appropriate method from PLPRuntimeFrame.
 	@Override
 	public Object visitFrameOpChain(FrameOpChain frameOpChain, Object arg) throws Exception {
-		assert false : "not yet implemented";
+		// Visit the expressions
+		for (int i = 0; i < frameOpChain.getArg().getExprList().size(); i++) {
+			frameOpChain.getArg().getExprList().get(i).visit(this, arg);
+		}
+		
+		// Generate code to invoke the appropriate method for PLPRuntimeFrame
+		if (PLPRuntimeLog.getString() == "createOrSetFrame") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "createOrSetFrame", PLPRuntimeFrame.createOrSetFrameSig, false);
+		}
+		else if (PLPRuntimeLog.getString() == "moveFrame") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "moveFrame", PLPRuntimeFrame.createOrSetFrameSig, false);
+		}
+		/*else if (PLPRuntimeLog.getString() == "setImage") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "setImage", PLPRuntimeFrame.createOrSetFrameSig, false);
+		}*/
+		else if (PLPRuntimeLog.getString() == "showImage") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "showImage", PLPRuntimeFrame.createOrSetFrameSig, false);
+		}
+		else if (PLPRuntimeLog.getString() == "hideImage") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "hideImage", PLPRuntimeFrame.createOrSetFrameSig, false);
+		}
+		else if (PLPRuntimeLog.getString() == "getX") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getXVal", PLPRuntimeFrame.createOrSetFrameSig, false);
+		}
+		else if (PLPRuntimeLog.getString() == "getY") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getYVal", PLPRuntimeFrame.createOrSetFrameSig, false);
+		}
+		else if (PLPRuntimeLog.getString() == "getScreenWidth") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getScreenWidth", PLPRuntimeFrame.createOrSetFrameSig, false);
+		}
+		else if (PLPRuntimeLog.getString() == "getScreenHeight") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getScreenHeight", PLPRuntimeFrame.createOrSetFrameSig, false);
+		}
 		return null;
 	}
 
+	// Assume that a reference to a BufferedImage is on top of the stack.
+	// Visit the tuple elements to generate code to leave their values on top of the stack.
+	// Generate code to invoke the appropriate method from PLPRuntimeImageOps or PLPRuntimeImageIO.
 	@Override
 	public Object visitIdentChain(IdentChain identChain, Object arg) throws Exception {
 		assert false : "not yet implemented";
@@ -398,10 +502,16 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		if (d instanceof ParamDec) {
 			String variableName = d.getIdent().getText();
 			String localDesc = d.getFirstToken().get_TypeName().getJVMTypeDesc();
+			if (d.getIdent().get_TypeName() == IMAGE) {
+				mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "copyImage", PLPRuntimeImageOps.copyImageSig, false);
+			}
 			mv.visitFieldInsn(PUTFIELD, className, variableName, localDesc);
 		}
 		else {
 			int slot = d.getSlotNumber();
+			if (d.getIdent().get_TypeName() == IMAGE) {
+				mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "copyImage", PLPRuntimeImageOps.copyImageSig, false);
+			}
 			mv.visitVarInsn(ISTORE, slot);
 		}
 		return null;
@@ -465,9 +575,13 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		return null;
 	}
 
+	// SleepStatement ∷= Expression
+    //      invoke java/lang/Thread/sleep
 	@Override
 	public Object visitSleepStatement(SleepStatement sleepStatement, Object arg) throws Exception {
-		assert false : "not yet implemented";
+		sleepStatement.getE().visit(this, arg);
+		mv.visitInsn(I2L);
+		mv.visitMethodInsn(INVOKESTATIC, "java/lang/Thread", "sleep", "(J)V", false);
 		return null;
 	}
 

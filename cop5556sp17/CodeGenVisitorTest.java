@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -23,9 +25,19 @@ public class CodeGenVisitorTest {
 			System.out.println(s);
 		}
 	}
-
+	
 	boolean devel = false;
 	boolean grade = true;
+	
+	@Before
+	public void initLog() {
+		if (devel || grade) PLPRuntimeLog.initLog();
+	}
+
+	@After
+	public void printLog() {
+		System.out.println(PLPRuntimeLog.getString());
+	}
 	
 
 	@Test
@@ -72,6 +84,7 @@ public class CodeGenVisitorTest {
 		Parser parser = new Parser(scanner);
 		ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
 		program.visit(v, null);
 		show(program);
 		
@@ -99,7 +112,7 @@ public class CodeGenVisitorTest {
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
 	    instance.run();
-	    assertEquals(expOut, outContent.toString());
+	    assertEquals(expOut, PLPRuntimeLog.getString());
 	    System.setOut(oldStream);
 		
 		instance.run();
@@ -115,6 +128,7 @@ public class CodeGenVisitorTest {
 		Parser parser = new Parser(scanner);
 		ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
 		program.visit(v, null);
 		show(program);
 		
@@ -142,7 +156,7 @@ public class CodeGenVisitorTest {
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
 	    instance.run();
-	    assertEquals(expOut, outContent.toString());
+	    assertEquals(expOut, PLPRuntimeLog.getString());
 	    System.setOut(oldStream);
 		
 		instance.run();
@@ -158,6 +172,7 @@ public class CodeGenVisitorTest {
 		Parser parser = new Parser(scanner);
 		ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
 		program.visit(v, null);
 		show(program);
 		
@@ -185,7 +200,7 @@ public class CodeGenVisitorTest {
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
 	    instance.run();
-	    assertEquals(expOut, outContent.toString());
+	    assertEquals(expOut, PLPRuntimeLog.getString());
 	    System.setOut(oldStream);
 		
 		instance.run();
@@ -201,6 +216,7 @@ public class CodeGenVisitorTest {
 		Parser parser = new Parser(scanner);
 		ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
 		program.visit(v, null);
 		show(program);
 		
@@ -228,7 +244,7 @@ public class CodeGenVisitorTest {
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
 	    instance.run();
-	    assertEquals(expOut, outContent.toString());
+	    assertEquals(expOut, PLPRuntimeLog.getString());
 	    System.setOut(oldStream);
 		
 		instance.run();
@@ -245,6 +261,7 @@ public class CodeGenVisitorTest {
 		Parser parser = new Parser(scanner);
 		ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
 		program.visit(v, null);
 		show(program);
 		
@@ -272,7 +289,7 @@ public class CodeGenVisitorTest {
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
 	    instance.run();
-	    assertEquals(expOut, outContent.toString());
+	    assertEquals(expOut, PLPRuntimeLog.getString());
 	    System.setOut(oldStream);
 		
 		instance.run();
@@ -303,6 +320,7 @@ public class CodeGenVisitorTest {
 		Parser parser = new Parser(scanner);
 		ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
 		program.visit(v, null);
 		show(program);
 		
@@ -330,7 +348,7 @@ public class CodeGenVisitorTest {
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
 	    instance.run();
-	    assertEquals(expOut, outContent.toString());
+	    assertEquals(expOut, PLPRuntimeLog.getString());
 	    System.setOut(oldStream);
 		
 		instance.run();
@@ -360,6 +378,7 @@ public class CodeGenVisitorTest {
 		Parser parser = new Parser(scanner);
 		ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
 		program.visit(v, null);
 		show(program);
 		
@@ -387,7 +406,7 @@ public class CodeGenVisitorTest {
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
 	    instance.run();
-	    assertEquals(expOut, outContent.toString());
+	    assertEquals(expOut, PLPRuntimeLog.getString());
 	    System.setOut(oldStream);
 		
 		instance.run();
@@ -418,6 +437,7 @@ public class CodeGenVisitorTest {
 		Parser parser = new Parser(scanner);
 		ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
 		program.visit(v, null);
 		show(program);
 		
@@ -445,7 +465,7 @@ public class CodeGenVisitorTest {
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
 	    instance.run();
-	    assertEquals(expOut, outContent.toString());
+	    assertEquals(expOut, PLPRuntimeLog.getString());
 	    System.setOut(oldStream);
 		
 		instance.run();
@@ -476,6 +496,7 @@ public class CodeGenVisitorTest {
 		Parser parser = new Parser(scanner);
 		ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
 		program.visit(v, null);
 		show(program);
 		
@@ -503,7 +524,7 @@ public class CodeGenVisitorTest {
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
 	    instance.run();
-	    assertEquals(expOut, outContent.toString());
+	    assertEquals(expOut, PLPRuntimeLog.getString());
 	    System.setOut(oldStream);
 		
 		instance.run();
@@ -531,6 +552,7 @@ public class CodeGenVisitorTest {
 		Parser parser = new Parser(scanner);
 		ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
 		program.visit(v, null);
 		show(program);
 		
@@ -558,7 +580,7 @@ public class CodeGenVisitorTest {
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
 	    instance.run();
-	    assertEquals(expOut, outContent.toString());
+	    assertEquals(expOut, PLPRuntimeLog.getString());
 	    System.setOut(oldStream);
 		
 		instance.run();
@@ -587,6 +609,7 @@ public class CodeGenVisitorTest {
 		Parser parser = new Parser(scanner);
 		ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
 		program.visit(v, null);
 		show(program);
 		
@@ -614,7 +637,7 @@ public class CodeGenVisitorTest {
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
 	    instance.run();
-	    assertEquals(expOut, outContent.toString());
+	    assertEquals(expOut, PLPRuntimeLog.getString());
 	    System.setOut(oldStream);
 		
 		instance.run();
@@ -646,6 +669,7 @@ public class CodeGenVisitorTest {
 		Parser parser = new Parser(scanner);
 		ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
 		program.visit(v, null);
 		show(program);
 		
@@ -673,7 +697,7 @@ public class CodeGenVisitorTest {
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
 	    instance.run();
-	    assertEquals(expOut, outContent.toString());
+	    assertEquals(expOut, PLPRuntimeLog.getString());
 	    System.setOut(oldStream);
 		
 		instance.run();
@@ -712,6 +736,7 @@ public class CodeGenVisitorTest {
 		Parser parser = new Parser(scanner);
 		ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
 		program.visit(v, null);
 		show(program);
 		
@@ -739,7 +764,7 @@ public class CodeGenVisitorTest {
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
 	    instance.run();
-	    assertEquals(expOut, outContent.toString());
+	    assertEquals(expOut, PLPRuntimeLog.getString());
 	    System.setOut(oldStream);
 		
 		instance.run();
@@ -778,6 +803,7 @@ public class CodeGenVisitorTest {
 		Parser parser = new Parser(scanner);
 		ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
 		program.visit(v, null);
 		show(program);
 		
@@ -805,7 +831,7 @@ public class CodeGenVisitorTest {
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
 	    instance.run();
-	    assertEquals(expOut, outContent.toString());
+	    assertEquals(expOut, PLPRuntimeLog.getString());
 	    System.setOut(oldStream);
 	    
 		instance.run();
@@ -844,6 +870,7 @@ public class CodeGenVisitorTest {
 		Parser parser = new Parser(scanner);
 		ASTNode program = parser.parse();
 		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
 		program.visit(v, null);
 		show(program);
 		
@@ -871,7 +898,499 @@ public class CodeGenVisitorTest {
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
 	    instance.run();
-	    assertEquals(expOut, outContent.toString());
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+		
+		instance.run();
+	}
+	
+	@Test
+	public void prog16() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "prog16";
+		//should print 115
+		String input = progname + " boolean a {boolean b integer c b<-true; if(a&b){c<-10;}}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"true"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "true10";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+		
+		instance.run();
+	}
+	
+	@Test
+	public void prog17() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "prog17";
+		//should print 115
+		String input = progname + " boolean a {boolean b integer c b<-true; if(a|b){c<-10;}}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"false"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "true10";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+		
+		instance.run();
+	}
+	
+	@Test
+	public void prog18() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "prog18";
+		//should print 115
+		String input = progname + " boolean a {boolean b integer c b<-false; if(a&b){c<-10;}}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"true"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "false";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+		
+		instance.run();
+	}
+	
+	@Test
+	public void prog19() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "prog19";
+		//should print 115
+		String input = progname + " boolean a {boolean b integer c b<-false; if(a|b){c<-10;}}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"true"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "false10";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+		
+		instance.run();
+	}
+	
+	@Test
+	public void prog20() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "prog20";
+		//should print 115
+		String input = progname + " boolean a {boolean b integer c b<-true; if(a&b){c<-10;}}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"false"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "true";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+		
+		instance.run();
+	}
+	
+	@Test
+	public void prog21() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "prog21";
+		//should print 115
+		String input = progname + " boolean a {boolean b integer c b<-false; if(a&b){c<-10;}}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"false"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "false";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+		
+		instance.run();
+	}
+	
+	@Test
+	public void prog22() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "prog22";
+		//should print 115
+		String input = progname + " boolean a {boolean b integer c b<-true; if(a|b){c<-10;}}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"true"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "true10";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+		
+		instance.run();
+	}
+	
+	@Test
+	public void prog23() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "prog23";
+		//should print 115
+		String input = progname + " boolean a {boolean b integer c b<-false; if(a|b){c<-10;}}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"false"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "false";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+		
+		instance.run();
+	}
+	
+	@Test
+	public void prog24() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "prog24";
+		String input = progname + " {integer a \n integer b \n a <- 22; \n b <- 3; \n if(b%2 == 1){b <- 1;}}";		
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[0]; //create command line argument array to initialize params, none in this case
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "2231";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+		
+		instance.run();
+	}
+	
+	@Test
+	public void prog25() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "prog25";
+		String input = progname + " {integer a \n integer b \n a <- 22; \n b <- 2; \n if(b%2 == 0){b <- 1;}}";		
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[0]; //create command line argument array to initialize params, none in this case
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "2221";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+		
+		instance.run();
+	}
+	
+	@Test
+	public void prog26() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "prog26";
+		String input = progname + " {sleep(5);}";		
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[0]; //create command line argument array to initialize params, none in this case
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
 	    System.setOut(oldStream);
 		
 		instance.run();
