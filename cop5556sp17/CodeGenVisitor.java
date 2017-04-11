@@ -80,6 +80,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	
 	Integer slotCount = 2;
 	Integer globalsVisited = 0;
+	boolean saveExpression = false;
 
 	@Override
 	public Object visitProgram(Program program, Object arg) throws Exception {
@@ -196,7 +197,23 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 
 	@Override
 	public Object visitBinaryChain(BinaryChain binaryChain, Object arg) throws Exception {
-		assert false : "not yet implemented";
+		binaryChain.getE0().visit(this, arg);
+		if (binaryChain.getE0().get_TypeName() == TypeName.URL) {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.URLDesc, "readFromURL", PLPRuntimeImageIO.getURLSig, false);
+		}
+		else if (binaryChain.getE0().get_TypeName() == TypeName.FILE) {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.FileDesc, "readFromFile", PLPRuntimeImageIO.readFromFileDesc, false);
+		}
+		
+		saveExpression = true;
+		binaryChain.getE1().visit(this, arg);
+		if (binaryChain.getE1().get_TypeName() == TypeName.URL) {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.URLDesc, "readFromURL", PLPRuntimeImageIO.getURLSig, false);
+		}
+		else if (binaryChain.getE1().get_TypeName() == TypeName.FILE) {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.FileDesc, "readFromFile", PLPRuntimeImageIO.readFromFileDesc, false);
+		}
+		saveExpression = false;
 		return null;
 	}
 	
@@ -215,12 +232,18 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 				mv.visitInsn(IADD);
 			}
 			// IMAGE + IMAGE goes here
+			else if (e0Type == TypeName.IMAGE.getJVMTypeDesc() && e1Type == TypeName.IMAGE.getJVMTypeDesc()) {
+				mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "add", PLPRuntimeImageOps.addSig, false);
+			}
 		}
 		else if (opKind.equals(MINUS)) {
 			if (e0Type.equals("I") && e1Type.equals("I")) {
 				mv.visitInsn(ISUB);
 			}
 			// IMAGE - IMAGE goes here
+			else if (e0Type == TypeName.IMAGE.getJVMTypeDesc() && e1Type == TypeName.IMAGE.getJVMTypeDesc()) {
+				mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "sub", PLPRuntimeImageOps.subSig, false);
+			}
 		}
 		else if (opKind.equals(TIMES)) {
 			if (e0Type.equals("I") && e1Type.equals("I")) {
@@ -228,6 +251,12 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 			}
 			// IMAGE * INTEGER goes here
 			// INTEGER * IMAGE goes here
+			else if (
+					(e0Type == TypeName.IMAGE.getJVMTypeDesc() && e1Type == TypeName.INTEGER.getJVMTypeDesc())
+					|| (e0Type == TypeName.INTEGER.getJVMTypeDesc() && e1Type == TypeName.IMAGE.getJVMTypeDesc())
+			) {
+				mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "mul", PLPRuntimeImageOps.mulSig, false);
+			}
 		}
 		else if (opKind.equals(DIV)) {
 			if (e0Type.equals("I") && e1Type.equals("I")) {
@@ -375,6 +404,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		for (int i = 0; i < numVisitedBinaryChain; i++) {
 			mv.visitInsn(POP);
 		}
+		// TODO may only need to do this if binary chain combination is NONE
 		return null;
 	}
 
@@ -390,9 +420,15 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		return "Z";
 	}
 
+	// Generate code to invoke PLPRuntimeFrame.getScreenWidth or PLPRuntimeFrame.getScreenHeight
 	@Override
 	public Object visitConstantExpression(ConstantExpression constantExpression, Object arg) {
-		assert false : "not yet implemented";
+		if (constantExpression.firstToken.kind.equals(KW_SCREENHEIGHT) ) {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getScreenHeight", PLPRuntimeFrame.getScreenHeightSig, false);
+		}
+		else if (constantExpression.firstToken.kind.equals(KW_SCREENWIDTH) ) {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getScreenWidth", PLPRuntimeFrame.getScreenWidthSig, false);
+		}
 		return null;
 	}
 
@@ -403,9 +439,16 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	public Object visitDec(Dec declaration, Object arg) throws Exception {
 		declaration.setSlotNumber(slotCount);
 		slotCount++;
+		
+		String localDesc = declaration.firstToken.get_TypeName().getJVMTypeDesc();
+		if (localDesc == TypeName.FRAME.getJVMTypeDesc()) {
+			mv.visitInsn(ACONST_NULL);
+			int slot = declaration.getSlotNumber();
+			mv.visitVarInsn(ISTORE, slot);
+		}
 		return null;
 	}
-
+	
 	// Assume that a reference to a BufferedImage is on top of the stack.
 	// Generate code to invoke the appropriate method from PLPRuntimeFilterOps.
 	@Override
@@ -443,38 +486,71 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "createOrSetFrame", PLPRuntimeFrame.createOrSetFrameSig, false);
 		}
 		else if (PLPRuntimeLog.getString() == "moveFrame") {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "moveFrame", PLPRuntimeFrame.createOrSetFrameSig, false);
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "moveFrame", PLPRuntimeFrame.moveFrameDesc, false);
 		}
 		/*else if (PLPRuntimeLog.getString() == "setImage") {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "setImage", PLPRuntimeFrame.createOrSetFrameSig, false);
 		}*/
 		else if (PLPRuntimeLog.getString() == "showImage") {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "showImage", PLPRuntimeFrame.createOrSetFrameSig, false);
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "showImage", PLPRuntimeFrame.showImageDesc, false);
 		}
 		else if (PLPRuntimeLog.getString() == "hideImage") {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "hideImage", PLPRuntimeFrame.createOrSetFrameSig, false);
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "hideImage", PLPRuntimeFrame.hideImageDesc, false);
 		}
 		else if (PLPRuntimeLog.getString() == "getX") {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getXVal", PLPRuntimeFrame.createOrSetFrameSig, false);
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getXVal", PLPRuntimeFrame.getXValDesc, false);
 		}
 		else if (PLPRuntimeLog.getString() == "getY") {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getYVal", PLPRuntimeFrame.createOrSetFrameSig, false);
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getYVal", PLPRuntimeFrame.getYValDesc, false);
 		}
 		else if (PLPRuntimeLog.getString() == "getScreenWidth") {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getScreenWidth", PLPRuntimeFrame.createOrSetFrameSig, false);
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getScreenWidth", PLPRuntimeFrame.getScreenWidthSig, false);
 		}
 		else if (PLPRuntimeLog.getString() == "getScreenHeight") {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getScreenHeight", PLPRuntimeFrame.createOrSetFrameSig, false);
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getScreenHeight", PLPRuntimeFrame.getScreenHeightSig, false);
 		}
 		return null;
 	}
 
-	// Assume that a reference to a BufferedImage is on top of the stack.
-	// Visit the tuple elements to generate code to leave their values on top of the stack.
-	// Generate code to invoke the appropriate method from PLPRuntimeImageOps or PLPRuntimeImageIO.
 	@Override
 	public Object visitIdentChain(IdentChain identChain, Object arg) throws Exception {
-		assert false : "not yet implemented";
+		Dec d = identChain.get_Dec();
+		if (saveExpression == true) {
+			if (d.getFirstToken().get_TypeName() == TypeName.INTEGER || d.getFirstToken().get_TypeName() == TypeName.IMAGE) {
+				if (d instanceof ParamDec) {
+					String variableName = d.getIdent().getText();
+					String localDesc = d.getFirstToken().get_TypeName().getJVMTypeDesc();
+					mv.visitVarInsn(ALOAD, 0); // load "this" to later be used for PUTFIELD as objRef
+					mv.visitInsn(SWAP);
+					mv.visitFieldInsn(PUTFIELD, className, variableName, localDesc);
+				}
+				else {
+					int slot = d.getSlotNumber();
+					if (d.getIdent().get_TypeName() == IMAGE) {
+						mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "copyImage", PLPRuntimeImageOps.copyImageSig, false);
+					}
+					mv.visitVarInsn(ISTORE, slot);
+				}
+			}
+			else if (d.getFirstToken().get_TypeName() == TypeName.FILE) {
+				mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "write", PLPRuntimeImageIO.writeImageDesc, false);
+			}
+			else if (d.getFirstToken().get_TypeName() == TypeName.FRAME) {
+				mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "createOrSetFrame", PLPRuntimeFrame.createOrSetFrameSig, false);
+			}
+		}
+		else {
+			if (d instanceof ParamDec) {
+				String variableName = d.getIdent().getText();
+				String localDesc = d.getFirstToken().get_TypeName().getJVMTypeDesc();
+				mv.visitVarInsn(ALOAD, 0); // load "this" to later be used for GETFIELD as objRef
+				mv.visitFieldInsn(GETFIELD, className, variableName, localDesc);
+			}
+			else {
+				int slot = d.getSlotNumber();
+				mv.visitVarInsn(ILOAD, slot);
+			}
+		}
 		return null;
 	}
 
@@ -502,9 +578,6 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		if (d instanceof ParamDec) {
 			String variableName = d.getIdent().getText();
 			String localDesc = d.getFirstToken().get_TypeName().getJVMTypeDesc();
-			if (d.getIdent().get_TypeName() == IMAGE) {
-				mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "copyImage", PLPRuntimeImageOps.copyImageSig, false);
-			}
 			mv.visitFieldInsn(PUTFIELD, className, variableName, localDesc);
 		}
 		else {
@@ -532,9 +605,35 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		return null;
 	}
 
+	// Assume that a reference to a BufferedImage  is on top of the stack.  
+	// Visit the tuple elements to generate code to leave their values on top of the stack.
+	// Generate code to invoke the appropriate method from PLPRuntimeImageOps or PLPRuntimeImageIO.
 	@Override
 	public Object visitImageOpChain(ImageOpChain imageOpChain, Object arg) throws Exception {
-		assert false : "not yet implemented";
+		// Visit the expressions
+		for (int i = 0; i < imageOpChain.getArg().getExprList().size(); i++) {
+			imageOpChain.getArg().getExprList().get(i).visit(this, arg);
+		}
+		
+		// Generate code to invoke the appropriate method from PLPRuntimeImageOps or PLPRuntimeImageIO
+		if (PLPRuntimeLog.getString() == "scale") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "scale", PLPRuntimeImageOps.scaleSig, false);
+		}
+		else if (PLPRuntimeLog.getString() == "add") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "add", PLPRuntimeImageOps.addSig, false);
+		}
+		else if (PLPRuntimeLog.getString() == "sub") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "sub", PLPRuntimeImageOps.subSig, false);
+		}
+		else if (PLPRuntimeLog.getString() == "mul") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "mul", PLPRuntimeImageOps.mulSig, false);
+		}
+		else if (PLPRuntimeLog.getString() == "div") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "div", PLPRuntimeImageOps.divSig, false);
+		}
+		else if (PLPRuntimeLog.getString() == "mod") {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "mod", PLPRuntimeImageOps.modSig, false);
+		}
 		return null;
 	}
 
@@ -570,6 +669,15 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 			mv.visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "parseBoolean", "(Ljava/lang/String;)Z", false);
 			mv.visitFieldInsn(PUTFIELD, className, variableName, "Z"); // put the value into the variable
 		}
+		// Added for assignment 6
+		else if (localDesc == PLPRuntimeImageIO.FileDesc) {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.FileDesc, "readFromFile", PLPRuntimeImageIO.readFromFileDesc, false);
+			mv.visitFieldInsn(PUTFIELD, className, variableName, PLPRuntimeImageIO.FileDesc); // put the value into the variable
+		}
+		else if (localDesc == PLPRuntimeImageIO.URLDesc) {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.URLDesc, "readFromURL", PLPRuntimeImageIO.getURLSig, false);
+			mv.visitFieldInsn(PUTFIELD, className, variableName, PLPRuntimeImageIO.URLDesc); // put the value into the variable
+		}
 		
 		globalsVisited++;
 		return null;
@@ -585,9 +693,12 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		return null;
 	}
 
+	// Visit expressions to generate code to leave values on top of the stack
 	@Override
 	public Object visitTuple(Tuple tuple, Object arg) throws Exception {
-		assert false : "not yet implemented";
+		for (int i = 0; i < tuple.getExprList().size(); i++) {
+			tuple.getExprList().get(i).visit(this, arg);
+		}
 		return null;
 	}
 
