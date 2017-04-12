@@ -197,21 +197,22 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 
 	@Override
 	public Object visitBinaryChain(BinaryChain binaryChain, Object arg) throws Exception {
+		System.out.println("visitBinaryChain");
 		binaryChain.getE0().visit(this, arg);
 		if (binaryChain.getE0().get_TypeName() == TypeName.URL) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.URLDesc, "readFromURL", PLPRuntimeImageIO.getURLSig, false);
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "readFromURL", PLPRuntimeImageIO.getURLSig, false);
 		}
 		else if (binaryChain.getE0().get_TypeName() == TypeName.FILE) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.FileDesc, "readFromFile", PLPRuntimeImageIO.readFromFileDesc, false);
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "readFromFile", PLPRuntimeImageIO.readFromFileDesc, false);
 		}
 		
 		saveExpression = true;
 		binaryChain.getE1().visit(this, arg);
 		if (binaryChain.getE1().get_TypeName() == TypeName.URL) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.URLDesc, "readFromURL", PLPRuntimeImageIO.getURLSig, false);
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "readFromURL", PLPRuntimeImageIO.getURLSig, false);
 		}
 		else if (binaryChain.getE1().get_TypeName() == TypeName.FILE) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.FileDesc, "readFromFile", PLPRuntimeImageIO.readFromFileDesc, false);
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "readFromFile", PLPRuntimeImageIO.readFromFileDesc, false);
 		}
 		saveExpression = false;
 		return null;
@@ -222,6 +223,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
     // be evaluated from left to right consistent with the structure of the AST.
 	@Override
 	public Object visitBinaryExpression(BinaryExpression binaryExpression, Object arg) throws Exception {
+		System.out.println("visitBinaryExpression");
 		Kind opKind = binaryExpression.getOp().kind;
 		binaryExpression.getE0().visit(this, arg);
 		binaryExpression.getE1().visit(this, arg);
@@ -476,6 +478,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	// Generate code to invokethe appropriate method from PLPRuntimeFrame.
 	@Override
 	public Object visitFrameOpChain(FrameOpChain frameOpChain, Object arg) throws Exception {
+		System.out.println("visitFrameOpChain");
 		// Visit the expressions
 		for (int i = 0; i < frameOpChain.getArg().getExprList().size(); i++) {
 			frameOpChain.getArg().getExprList().get(i).visit(this, arg);
@@ -488,9 +491,6 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		else if (PLPRuntimeLog.getString() == "moveFrame") {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "moveFrame", PLPRuntimeFrame.moveFrameDesc, false);
 		}
-		/*else if (PLPRuntimeLog.getString() == "setImage") {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "setImage", PLPRuntimeFrame.createOrSetFrameSig, false);
-		}*/
 		else if (PLPRuntimeLog.getString() == "showImage") {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "showImage", PLPRuntimeFrame.showImageDesc, false);
 		}
@@ -514,6 +514,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 
 	@Override
 	public Object visitIdentChain(IdentChain identChain, Object arg) throws Exception {
+		System.out.println("visitIdentChain");
 		Dec d = identChain.get_Dec();
 		if (saveExpression == true) {
 			if (d.getFirstToken().get_TypeName() == TypeName.INTEGER || d.getFirstToken().get_TypeName() == TypeName.IMAGE) {
@@ -605,19 +606,26 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		return null;
 	}
 
-	// Assume that a reference to a BufferedImage  is on top of the stack.  
+	// Assume that a reference to a BufferedImage is on top of the stack.  
 	// Visit the tuple elements to generate code to leave their values on top of the stack.
 	// Generate code to invoke the appropriate method from PLPRuntimeImageOps or PLPRuntimeImageIO.
 	@Override
 	public Object visitImageOpChain(ImageOpChain imageOpChain, Object arg) throws Exception {
+		System.out.println("visitImageOpChain");
 		// Visit the expressions
 		for (int i = 0; i < imageOpChain.getArg().getExprList().size(); i++) {
 			imageOpChain.getArg().getExprList().get(i).visit(this, arg);
 		}
 		
 		// Generate code to invoke the appropriate method from PLPRuntimeImageOps or PLPRuntimeImageIO
-		if (PLPRuntimeLog.getString() == "scale") {
+		if (imageOpChain.firstToken.kind == KW_SCALE) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "scale", PLPRuntimeImageOps.scaleSig, false);
+		}
+		else if (imageOpChain.firstToken.kind == OP_HEIGHT) {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "getHeight", PLPRuntimeImageOps.getHeightSig, false);
+		}
+		else if (imageOpChain.firstToken.kind == OP_WIDTH) {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "getWidth", PLPRuntimeImageOps.getWidthSig, false);
 		}
 		else if (PLPRuntimeLog.getString() == "add") {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "add", PLPRuntimeImageOps.addSig, false);
@@ -634,6 +642,18 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		else if (PLPRuntimeLog.getString() == "mod") {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "mod", PLPRuntimeImageOps.modSig, false);
 		}
+		else if (PLPRuntimeLog.getString().startsWith("getURL")) {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "getURL", PLPRuntimeImageIO.getURLSig, false);
+		}
+		else if (PLPRuntimeLog.getString().startsWith("readFromFile")) {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "readFromFile", PLPRuntimeImageIO.readFromFileDesc, false);
+		}
+		else if (PLPRuntimeLog.getString().startsWith("write")) {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "write", PLPRuntimeImageIO.writeImageDesc, false);
+		}
+		else if (PLPRuntimeLog.getString().startsWith("readFromURL")) {
+			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "readFromURL", PLPRuntimeImageIO.readFromURLSig, false);
+		}
 		return null;
 	}
 
@@ -642,6 +662,12 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	public Object visitIntLitExpression(IntLitExpression intLitExpression, Object arg) throws Exception {
 		mv.visitLdcInsn(intLitExpression.getFirstToken().intVal());
 		return "I";
+	}
+	
+	public void loadParam() {
+		mv.visitVarInsn(ALOAD, 1); // load args[]
+		mv.visitLdcInsn(globalsVisited); // load globalsVisited index
+		mv.visitInsn(AALOAD); // put the args[globalsVistied] onto the stack
 	}
 
 	// Instance variable in class, initialized with values from arg array
@@ -660,22 +686,40 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		
 		// check type of string (int/bool)
 		if (localDesc == "I") {
+			loadParam();
 			//System.out.println("Putting the integer value into " + variableName);
 			mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "parseInt", "(Ljava/lang/String;)I", false);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitInsn(SWAP);
 			mv.visitFieldInsn(PUTFIELD, className, variableName, "I"); // put the value into the variable
 		}
 		else if (localDesc == "Z") {
+			loadParam();
 			//System.out.println("Putting the boolean value into " + variableName);
 			mv.visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "parseBoolean", "(Ljava/lang/String;)Z", false);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitInsn(SWAP);
 			mv.visitFieldInsn(PUTFIELD, className, variableName, "Z"); // put the value into the variable
 		}
 		// Added for assignment 6
 		else if (localDesc == PLPRuntimeImageIO.FileDesc) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.FileDesc, "readFromFile", PLPRuntimeImageIO.readFromFileDesc, false);
+			mv.visitTypeInsn(NEW, "java/io/File");
+			mv.visitInsn(DUP);
+			loadParam();
+			mv.visitMethodInsn(INVOKESPECIAL, "java/io/File", "<init>", "(Ljava/lang/String;)V", false);
+			//mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "readFromFile", PLPRuntimeImageIO.readFromFileDesc, false);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitInsn(SWAP);
 			mv.visitFieldInsn(PUTFIELD, className, variableName, PLPRuntimeImageIO.FileDesc); // put the value into the variable
 		}
 		else if (localDesc == PLPRuntimeImageIO.URLDesc) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.URLDesc, "readFromURL", PLPRuntimeImageIO.getURLSig, false);
+			mv.visitTypeInsn(NEW, "java/io/URL");
+			mv.visitInsn(DUP);
+			loadParam();
+			mv.visitMethodInsn(INVOKESPECIAL, "java/io/URL", "<init>", "(Ljava/lang/String;)V", false);
+			//mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "readFromURL", PLPRuntimeImageIO.getURLSig, false);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitInsn(SWAP);
 			mv.visitFieldInsn(PUTFIELD, className, variableName, PLPRuntimeImageIO.URLDesc); // put the value into the variable
 		}
 		
@@ -696,6 +740,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	// Visit expressions to generate code to leave values on top of the stack
 	@Override
 	public Object visitTuple(Tuple tuple, Object arg) throws Exception {
+		System.out.println("visitTuple");
 		for (int i = 0; i < tuple.getExprList().size(); i++) {
 			tuple.getExprList().get(i).visit(this, arg);
 		}

@@ -1400,7 +1400,7 @@ public class CodeGenVisitorTest {
 	public void prog27() throws Exception {
 		//scan, parse, and type check the program
 		String progname = "prog27";
-		String input = progname + " {sleep(5);}";		
+		String input = progname + " file in, file out{image i \n in -> i; \n integer h \n i -> height -> h;} ";		
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -1426,7 +1426,7 @@ public class CodeGenVisitorTest {
 		System.out.println("wrote classfile to " + classFileName);
 		
 		// directly execute bytecode
-		String[] args = new String[0]; //create command line argument array to initialize params, none in this case
+		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG","/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
 		String expOut = "";
