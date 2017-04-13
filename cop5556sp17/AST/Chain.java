@@ -5,6 +5,7 @@ import cop5556sp17.Scanner.Token;
 
 public abstract class Chain extends Statement {
 	TypeName typeName;
+	boolean saveExpr = false;
 	
 	public Chain(Token firstToken) {
 		super(firstToken);
@@ -16,6 +17,14 @@ public abstract class Chain extends Statement {
 	
 	public void set_TypeName(TypeName pTypeName) {
 		typeName = pTypeName;
+	}
+	
+	public boolean getSave() {
+		return saveExpr;
+	}
+	
+	public void setSave(boolean s) {
+		saveExpr = s;
 	}
 
 }

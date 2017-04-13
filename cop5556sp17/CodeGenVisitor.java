@@ -80,7 +80,6 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	
 	Integer slotCount = 2;
 	Integer globalsVisited = 0;
-	boolean saveExpression = false;
 
 	@Override
 	public Object visitProgram(Program program, Object arg) throws Exception {
@@ -198,6 +197,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	@Override
 	public Object visitBinaryChain(BinaryChain binaryChain, Object arg) throws Exception {
 		System.out.println("visitBinaryChain");
+		binaryChain.getE0().setSave(false);
 		binaryChain.getE0().visit(this, arg);
 		if (binaryChain.getE0().get_TypeName() == TypeName.URL) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "readFromURL", PLPRuntimeImageIO.getURLSig, false);
@@ -206,15 +206,14 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "readFromFile", PLPRuntimeImageIO.readFromFileDesc, false);
 		}
 		
-		saveExpression = true;
+		binaryChain.getE1().setSave(true);
 		binaryChain.getE1().visit(this, arg);
-		if (binaryChain.getE1().get_TypeName() == TypeName.URL) {
+		/*if (binaryChain.getE1().get_TypeName() == TypeName.URL) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "readFromURL", PLPRuntimeImageIO.getURLSig, false);
 		}
 		else if (binaryChain.getE1().get_TypeName() == TypeName.FILE) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "readFromFile", PLPRuntimeImageIO.readFromFileDesc, false);
-		}
-		saveExpression = false;
+		}*/
 		return null;
 	}
 	
@@ -404,7 +403,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 			}
 		}
 		for (int i = 0; i < numVisitedBinaryChain; i++) {
-			mv.visitInsn(POP);
+			//mv.visitInsn(POP);
 		}
 		// TODO may only need to do this if binary chain combination is NONE
 		return null;
@@ -459,15 +458,18 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		for (int i = 0; i < filterOpChain.getArg().getExprList().size(); i++) {
 			filterOpChain.getArg().getExprList().get(i).visit(this, arg);
 		}
-		
+
 		// Generate code to invoke the appropriate method for PLPRuntimeFilterOps
-		if (PLPRuntimeLog.getString() == "blurOp") {
+		if (filterOpChain.getFirstToken().kind == OP_BLUR) {
+			mv.visitInsn(ACONST_NULL);
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "blurOp", PLPRuntimeFilterOps.opSig, false);
 		}
-		else if (PLPRuntimeLog.getString() == "convolve") {
+		else if (filterOpChain.getFirstToken().kind == OP_CONVOLVE) {
+			mv.visitInsn(ACONST_NULL);
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "convolveOp", PLPRuntimeFilterOps.opSig, false);
 		}
-		else if (PLPRuntimeLog.getString() == "grayOp") {
+		else if (filterOpChain.getFirstToken().kind == OP_GRAY) {
+			mv.visitInsn(ACONST_NULL);
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "grayOp", PLPRuntimeFilterOps.opSig, false);
 		}
 		return null;
@@ -485,28 +487,28 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		}
 		
 		// Generate code to invoke the appropriate method for PLPRuntimeFrame
-		if (PLPRuntimeLog.getString() == "createOrSetFrame") {
+		if (frameOpChain.firstToken.kind == KW_FRAME) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "createOrSetFrame", PLPRuntimeFrame.createOrSetFrameSig, false);
 		}
-		else if (PLPRuntimeLog.getString() == "moveFrame") {
+		else if (frameOpChain.firstToken.kind == KW_MOVE) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "moveFrame", PLPRuntimeFrame.moveFrameDesc, false);
 		}
-		else if (PLPRuntimeLog.getString() == "showImage") {
+		else if (frameOpChain.firstToken.kind == KW_SHOW) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "showImage", PLPRuntimeFrame.showImageDesc, false);
 		}
-		else if (PLPRuntimeLog.getString() == "hideImage") {
+		else if (frameOpChain.firstToken.kind == KW_HIDE) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "hideImage", PLPRuntimeFrame.hideImageDesc, false);
 		}
-		else if (PLPRuntimeLog.getString() == "getX") {
+		else if (frameOpChain.firstToken.kind == KW_XLOC) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getXVal", PLPRuntimeFrame.getXValDesc, false);
 		}
-		else if (PLPRuntimeLog.getString() == "getY") {
+		else if (frameOpChain.firstToken.kind == KW_YLOC) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getYVal", PLPRuntimeFrame.getYValDesc, false);
 		}
-		else if (PLPRuntimeLog.getString() == "getScreenWidth") {
+		else if (frameOpChain.firstToken.kind == KW_SCREENWIDTH) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getScreenWidth", PLPRuntimeFrame.getScreenWidthSig, false);
 		}
-		else if (PLPRuntimeLog.getString() == "getScreenHeight") {
+		else if (frameOpChain.firstToken.kind == KW_SCREENHEIGHT) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFrame.JVMClassName, "getScreenHeight", PLPRuntimeFrame.getScreenHeightSig, false);
 		}
 		return null;
@@ -516,7 +518,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 	public Object visitIdentChain(IdentChain identChain, Object arg) throws Exception {
 		System.out.println("visitIdentChain");
 		Dec d = identChain.get_Dec();
-		if (saveExpression == true) {
+		if (identChain.getSave() == true) {
 			if (d.getFirstToken().get_TypeName() == TypeName.INTEGER || d.getFirstToken().get_TypeName() == TypeName.IMAGE) {
 				if (d instanceof ParamDec) {
 					String variableName = d.getIdent().getText();
@@ -527,13 +529,21 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 				}
 				else {
 					int slot = d.getSlotNumber();
-					if (d.getIdent().get_TypeName() == IMAGE) {
+					if (d.getFirstToken().get_TypeName() == IMAGE) {
 						mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "copyImage", PLPRuntimeImageOps.copyImageSig, false);
+						System.out.println("Putting the top of the stack into an image after calling copyImage");
+						mv.visitVarInsn(ASTORE, slot);
 					}
-					mv.visitVarInsn(ISTORE, slot);
+					else {
+						mv.visitVarInsn(ISTORE, slot);
+					}
 				}
 			}
 			else if (d.getFirstToken().get_TypeName() == TypeName.FILE) {
+				String variableName = d.getIdent().getText();
+				String localDesc = d.getFirstToken().get_TypeName().getJVMTypeDesc();
+				mv.visitVarInsn(ALOAD, 0); // load "this" to later be used for GETFIELD as objRef
+				mv.visitFieldInsn(GETFIELD, className, variableName, localDesc);
 				mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "write", PLPRuntimeImageIO.writeImageDesc, false);
 			}
 			else if (d.getFirstToken().get_TypeName() == TypeName.FRAME) {
@@ -546,10 +556,16 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 				String localDesc = d.getFirstToken().get_TypeName().getJVMTypeDesc();
 				mv.visitVarInsn(ALOAD, 0); // load "this" to later be used for GETFIELD as objRef
 				mv.visitFieldInsn(GETFIELD, className, variableName, localDesc);
+				System.out.println("Put a paramDec on the stack");
 			}
 			else {
 				int slot = d.getSlotNumber();
-				mv.visitVarInsn(ILOAD, slot);
+				if (d.getFirstToken().get_TypeName() == IMAGE) {
+					mv.visitVarInsn(ALOAD, slot);
+				}
+				else {
+					mv.visitVarInsn(ILOAD, slot);
+				}
 			}
 		}
 		return null;
@@ -567,7 +583,12 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		}
 		else {
 			int slot = d.getSlotNumber();
-			mv.visitVarInsn(ILOAD, slot);
+			if (d.getFirstToken().get_TypeName() == IMAGE) {
+				mv.visitVarInsn(ALOAD, slot);
+			}
+			else {
+				mv.visitVarInsn(ILOAD, slot);
+			}
 		}
 		return null;
 	}
@@ -578,15 +599,19 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		Dec d = identX.get_Dec();
 		if (d instanceof ParamDec) {
 			String variableName = d.getIdent().getText();
+			//System.out.println("VARIABLE NAME: " + variableName);
 			String localDesc = d.getFirstToken().get_TypeName().getJVMTypeDesc();
 			mv.visitFieldInsn(PUTFIELD, className, variableName, localDesc);
 		}
 		else {
 			int slot = d.getSlotNumber();
-			if (d.getIdent().get_TypeName() == IMAGE) {
+			if (d.getFirstToken().get_TypeName() == IMAGE) {
 				mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "copyImage", PLPRuntimeImageOps.copyImageSig, false);
+				mv.visitVarInsn(ASTORE, slot);
 			}
-			mv.visitVarInsn(ISTORE, slot);
+			else {
+				mv.visitVarInsn(ISTORE, slot);
+			}
 		}
 		return null;
 	}
@@ -622,37 +647,25 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "scale", PLPRuntimeImageOps.scaleSig, false);
 		}
 		else if (imageOpChain.firstToken.kind == OP_HEIGHT) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "getHeight", PLPRuntimeImageOps.getHeightSig, false);
+			mv.visitMethodInsn(INVOKEVIRTUAL, PLPRuntimeImageIO.BufferedImageClassName, "getHeight", PLPRuntimeImageOps.getHeightSig, false);
 		}
 		else if (imageOpChain.firstToken.kind == OP_WIDTH) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "getWidth", PLPRuntimeImageOps.getWidthSig, false);
+			mv.visitMethodInsn(INVOKEVIRTUAL, PLPRuntimeImageIO.BufferedImageClassName, "getWidth", PLPRuntimeImageOps.getWidthSig, false);
 		}
-		else if (PLPRuntimeLog.getString() == "add") {
+		else if (imageOpChain.firstToken.kind == PLUS) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "add", PLPRuntimeImageOps.addSig, false);
 		}
-		else if (PLPRuntimeLog.getString() == "sub") {
+		else if (imageOpChain.firstToken.kind == MINUS) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "sub", PLPRuntimeImageOps.subSig, false);
 		}
-		else if (PLPRuntimeLog.getString() == "mul") {
+		else if (imageOpChain.firstToken.kind == TIMES) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "mul", PLPRuntimeImageOps.mulSig, false);
 		}
-		else if (PLPRuntimeLog.getString() == "div") {
+		else if (imageOpChain.firstToken.kind == DIV) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "div", PLPRuntimeImageOps.divSig, false);
 		}
-		else if (PLPRuntimeLog.getString() == "mod") {
+		else if (imageOpChain.firstToken.kind == MOD) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "mod", PLPRuntimeImageOps.modSig, false);
-		}
-		else if (PLPRuntimeLog.getString().startsWith("getURL")) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "getURL", PLPRuntimeImageIO.getURLSig, false);
-		}
-		else if (PLPRuntimeLog.getString().startsWith("readFromFile")) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "readFromFile", PLPRuntimeImageIO.readFromFileDesc, false);
-		}
-		else if (PLPRuntimeLog.getString().startsWith("write")) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "write", PLPRuntimeImageIO.writeImageDesc, false);
-		}
-		else if (PLPRuntimeLog.getString().startsWith("readFromURL")) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "readFromURL", PLPRuntimeImageIO.readFromURLSig, false);
 		}
 		return null;
 	}
