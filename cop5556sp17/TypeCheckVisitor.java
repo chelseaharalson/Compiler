@@ -183,7 +183,10 @@ public class TypeCheckVisitor implements ASTVisitor {
 			binaryExpression.set_TypeName(IMAGE);
 			tn = IMAGE;
 		}
-		else if (binaryExpression.getE0().get_TypeName() == TypeName.IMAGE && (binaryExpression.getOp().kind == TIMES) 
+		else if (binaryExpression.getE0().get_TypeName() == TypeName.IMAGE && 
+				(binaryExpression.getOp().kind == TIMES
+						|| binaryExpression.getOp().kind == DIV
+						|| binaryExpression.getOp().kind == MOD) 
 				&& binaryExpression.getE1().get_TypeName() == TypeName.INTEGER) {
 			binaryExpression.set_TypeName(IMAGE);
 			tn = IMAGE;

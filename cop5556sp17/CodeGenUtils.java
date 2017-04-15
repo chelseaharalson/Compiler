@@ -154,7 +154,7 @@ public class CodeGenUtils{
 				mv.visitMethodInsn(Opcodes.INVOKESTATIC, "cop5556sp17/PLPRuntimeLog", "globalLogAddEntry", "(Ljava/lang/String;)V", false);
 			}
 				break;
-			case IMAGE: {
+			case IMAGE: case FRAME: {
 					/* ignore */
 				} break;
 			default: {
