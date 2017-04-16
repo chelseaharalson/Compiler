@@ -458,15 +458,34 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 
 		// Generate code to invoke the appropriate method for PLPRuntimeFilterOps
 		if (filterOpChain.getFirstToken().kind == OP_BLUR) {
-			mv.visitInsn(ACONST_NULL);
+			if (filterOpChain.getArrowKind() == ARROW) {
+				mv.visitInsn(ACONST_NULL);
+			}
+			else if (filterOpChain.getArrowKind() == BARARROW) {
+				mv.visitInsn(DUP);
+				mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "copyImage", PLPRuntimeImageOps.copyImageSig, false);
+				mv.visitInsn(SWAP);
+			}
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "blurOp", PLPRuntimeFilterOps.opSig, false);
 		}
 		else if (filterOpChain.getFirstToken().kind == OP_CONVOLVE) {
-			mv.visitInsn(ACONST_NULL);
+			if (filterOpChain.getArrowKind() == ARROW) {
+				mv.visitInsn(ACONST_NULL);
+			}
+			else if (filterOpChain.getArrowKind() == BARARROW) {
+				mv.visitInsn(DUP);
+				mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "copyImage", PLPRuntimeImageOps.copyImageSig, false);
+				mv.visitInsn(SWAP);
+			}
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "convolveOp", PLPRuntimeFilterOps.opSig, false);
 		}
 		else if (filterOpChain.getFirstToken().kind == OP_GRAY) {
-			mv.visitInsn(ACONST_NULL);
+			if (filterOpChain.getArrowKind() == ARROW) {
+				mv.visitInsn(ACONST_NULL);
+			}
+			else if (filterOpChain.getArrowKind() == BARARROW) {
+				mv.visitInsn(DUP);
+			}
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "grayOp", PLPRuntimeFilterOps.opSig, false);
 		}
 		return null;
@@ -654,7 +673,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		else if (imageOpChain.firstToken.kind == OP_WIDTH) {
 			mv.visitMethodInsn(INVOKEVIRTUAL, PLPRuntimeImageIO.BufferedImageClassName, "getWidth", PLPRuntimeImageOps.getWidthSig, false);
 		}
-		else if (imageOpChain.firstToken.kind == PLUS) {
+		/*else if (imageOpChain.firstToken.kind == PLUS) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "add", PLPRuntimeImageOps.addSig, false);
 		}
 		else if (imageOpChain.firstToken.kind == MINUS) {
@@ -668,7 +687,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		}
 		else if (imageOpChain.firstToken.kind == MOD) {
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "mod", PLPRuntimeImageOps.modSig, false);
-		}
+		}*/
 		return null;
 	}
 

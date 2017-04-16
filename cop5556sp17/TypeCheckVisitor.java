@@ -120,6 +120,7 @@ public class TypeCheckVisitor implements ASTVisitor {
 				&& (binaryChain.getE1().firstToken.kind == OP_GRAY || binaryChain.getE1().firstToken.kind == OP_BLUR
 						|| binaryChain.getE1().firstToken.kind == OP_CONVOLVE)) {
 			//System.out.println("8");
+			binaryChain.getE1().setArrowKind(binaryChain.getArrow().kind);
 			binaryChain.set_TypeName(IMAGE);
 			tn = IMAGE;
 		}
@@ -320,6 +321,9 @@ public class TypeCheckVisitor implements ASTVisitor {
 		}
 		else if (frameOpChain.getFirstToken().kind == KW_MOVE) {
 			if (frameOpChain.getArg().getExprList().size() == 2) {
+				for (int i = 0; i < frameOpChain.getArg().getExprList().size(); i++) {
+					frameOpChain.getArg().getExprList().get(i).visit(this, arg);
+				}
 				frameOpChain.set_TypeName(NONE);
 				tn = NONE;
 			}
@@ -518,6 +522,7 @@ public class TypeCheckVisitor implements ASTVisitor {
 		}
 		else if (imageOpChain.getFirstToken().kind == KW_SCALE) {
 			if (imageOpChain.getArg().getExprList().size() == 1) {
+				imageOpChain.getArg().getExprList().get(0).visit(this, arg);
 				imageOpChain.set_TypeName(IMAGE);
 				tn = IMAGE;
 			}

@@ -66,7 +66,7 @@ public class PLPRuntimeFilterOps {
 	 * @param dest
 	 * @return
 	 */
-	public static BufferedImage  grayOp(BufferedImage image, BufferedImage dest){
+	public static BufferedImage grayOp(BufferedImage image, BufferedImage dest){
 		PLPRuntimeLog.globalLogAddEntry("grayOp");
 		int w = image.getWidth();
 		int h = image.getHeight();
