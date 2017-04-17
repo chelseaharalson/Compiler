@@ -458,25 +458,11 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 
 		// Generate code to invoke the appropriate method for PLPRuntimeFilterOps
 		if (filterOpChain.getFirstToken().kind == OP_BLUR) {
-			if (filterOpChain.getArrowKind() == ARROW) {
-				mv.visitInsn(ACONST_NULL);
-			}
-			else if (filterOpChain.getArrowKind() == BARARROW) {
-				mv.visitInsn(DUP);
-				mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "copyImage", PLPRuntimeImageOps.copyImageSig, false);
-				mv.visitInsn(SWAP);
-			}
+			mv.visitInsn(ACONST_NULL);
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "blurOp", PLPRuntimeFilterOps.opSig, false);
 		}
 		else if (filterOpChain.getFirstToken().kind == OP_CONVOLVE) {
-			if (filterOpChain.getArrowKind() == ARROW) {
-				mv.visitInsn(ACONST_NULL);
-			}
-			else if (filterOpChain.getArrowKind() == BARARROW) {
-				mv.visitInsn(DUP);
-				mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "copyImage", PLPRuntimeImageOps.copyImageSig, false);
-				mv.visitInsn(SWAP);
-			}
+			mv.visitInsn(ACONST_NULL);
 			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeFilterOps.JVMName, "convolveOp", PLPRuntimeFilterOps.opSig, false);
 		}
 		else if (filterOpChain.getFirstToken().kind == OP_GRAY) {

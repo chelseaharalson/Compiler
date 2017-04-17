@@ -115,10 +115,19 @@ public class TypeCheckVisitor implements ASTVisitor {
 			tn = INTEGER;
 		}
 		else if (binaryChain.getE0().get_TypeName() == TypeName.IMAGE
-				&& (binaryChain.getArrow().kind == ARROW || binaryChain.getArrow().kind == BARARROW)
+				&& (binaryChain.getArrow().kind == ARROW)
 				&& binaryChain.getE1() instanceof FilterOpChain
 				&& (binaryChain.getE1().firstToken.kind == OP_GRAY || binaryChain.getE1().firstToken.kind == OP_BLUR
 						|| binaryChain.getE1().firstToken.kind == OP_CONVOLVE)) {
+			//System.out.println("8");
+			binaryChain.getE1().setArrowKind(binaryChain.getArrow().kind);
+			binaryChain.set_TypeName(IMAGE);
+			tn = IMAGE;
+		}
+		else if (binaryChain.getE0().get_TypeName() == TypeName.IMAGE
+				&& (binaryChain.getArrow().kind == BARARROW)
+				&& binaryChain.getE1() instanceof FilterOpChain
+				&& (binaryChain.getE1().firstToken.kind == OP_GRAY)) {
 			//System.out.println("8");
 			binaryChain.getE1().setArrowKind(binaryChain.getArrow().kind);
 			binaryChain.set_TypeName(IMAGE);
