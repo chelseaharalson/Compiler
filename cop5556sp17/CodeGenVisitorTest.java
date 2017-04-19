@@ -1431,7 +1431,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG","/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImage3072";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)3072";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -1473,7 +1473,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG","/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImagegrayOpwrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)grayOpwrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -1515,7 +1515,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG","/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImageconvolvewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)convolvewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -1557,7 +1557,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG","/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImageblurOpwrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)blurOpwrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -1601,7 +1601,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG","/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImage2146";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)2146";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -1614,7 +1614,7 @@ public class CodeGenVisitorTest {
 	public void prog32() throws Exception {
 		//scan, parse, and type check the program
 		String progname = "prog32";
-		String input = progname + " file in {image i  frame f in -> i; i -> f; sleep(2000); f -> show; sleep(10000);\n f -> hide; f -> move(100,200) -> show; sleep(5000);}";
+		String input = progname + " file in {image i  frame f in -> i; i -> f; sleep(5); f -> show; sleep(5);\n f -> hide; f -> move(100,200) -> show; sleep(5);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -1643,7 +1643,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImagecreateOrSetFrameshowImagehideImagemoveFrameshowImage";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)createOrSetFrameshowImagehideImagemoveFrameshowImage";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -1687,7 +1687,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG","/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)write(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -1731,7 +1731,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG","/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)grayOpwrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)write(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)grayOpwrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -1773,7 +1773,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG", "/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Vancouver9.JPG", "/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImagereadFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Vancouver9.JPG)copyImageaddcopyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Vancouver9.JPG)addcopyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -1815,7 +1815,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG", "/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Vancouver9.JPG", "/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImagereadFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Vancouver9.JPG)copyImagesubcopyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Vancouver9.JPG)subcopyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -1857,7 +1857,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG", "/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImage2mulcopyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)2mulcopyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -1899,7 +1899,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG", "/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImage2divcopyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)2divcopyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -1941,7 +1941,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG", "/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImage2modcopyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)2modcopyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -1983,7 +1983,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG", "/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImage2mulcopyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)2mulcopyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/OregonTEST1.JPG)";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -1996,7 +1996,7 @@ public class CodeGenVisitorTest {
 	public void prog41() throws Exception {
 		//scan, parse, and type check the program
 		String progname = "prog41";
-		String input = progname + " file in {image i frame f in -> i; i-> scale(2) ->i; i -> f; f -> show; sleep(10000);}";
+		String input = progname + " file in {image i frame f in -> i; i-> scale(2) ->i; i -> f; f -> show; sleep(5);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -2025,7 +2025,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImagescalecopyImagecreateOrSetFrameshowImage";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)scalecreateOrSetFrameshowImage";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -2038,7 +2038,7 @@ public class CodeGenVisitorTest {
 	public void prog42() throws Exception {
 		//scan, parse, and type check the program
 		String progname = "prog42";
-		String input = progname + " file in {image i frame f in -> i; i -> f; f -> show; sleep(5000); integer x integer y integer test f -> xloc -> x; f -> yloc -> y; test <- x; test <- y; f -> move(100, 200); f -> xloc -> x; f -> yloc -> y; test <- x; test <- y;}";
+		String input = progname + " file in {image i frame f in -> i; i -> f; f -> show; sleep(5); integer x integer y integer test f -> xloc -> x; f -> yloc -> y; test <- x; test <- y; f -> move(100, 200); f -> xloc -> x; f -> yloc -> y; test <- x; test <- y;}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -2067,7 +2067,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImagecreateOrSetFrameshowImagegetXgetY00moveFramegetXgetY100200";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)createOrSetFrameshowImagegetXgetY00moveFramegetXgetY100200";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -2109,7 +2109,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg", "/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)copyImagegrayOpwrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg)";
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)grayOpwrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg)";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -2164,7 +2164,7 @@ public class CodeGenVisitorTest {
 	public void prog45() throws Exception {
 		//scan, parse, and type check the program
 		String progname = "prog45";
-		String input = progname + " file in {image i frame f in -> i; i -> f; integer x x <- 500; integer y y <- 600; f -> move(x, y); f -> show; sleep(5000);}";
+		String input = progname + " file in {image i frame f in -> i; i -> f; integer x x <- 500; integer y y <- 600; f -> move(x, y); f -> show; sleep(5);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -2193,7 +2193,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImagecreateOrSetFrame500600moveFrameshowImage";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)createOrSetFrame500600moveFrameshowImage";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -2206,7 +2206,7 @@ public class CodeGenVisitorTest {
 	public void prog46() throws Exception {
 		//scan, parse, and type check the program
 		String progname = "prog46";
-		String input = progname + " file in {image i frame f in -> i; i -> f; integer x x <- screenwidth-100; integer y y <- screenheight-100; f -> move(x, y); f -> show; sleep(5000);}";
+		String input = progname + " file in {image i frame f in -> i; i -> f; integer x x <- screenwidth-100; integer y y <- screenheight-100; f -> move(x, y); f -> show; sleep(5);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -2235,7 +2235,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImagecreateOrSetFramegetScreenWidth1180getScreenHeight700moveFrameshowImage";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)createOrSetFramegetScreenWidth1180getScreenHeight700moveFrameshowImage";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -2277,7 +2277,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg", "/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)blurOpcopyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg)";
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)blurOpwrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg)";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -2290,7 +2290,7 @@ public class CodeGenVisitorTest {
 	public void prog48() throws Exception {
 		//scan, parse, and type check the program
 		String progname = "prog48";
-		String input = progname + " url u, file f {integer int int <- 5000; image i u->blur->i->f; sleep(int);}";
+		String input = progname + " url u, file f {integer int int <- 5; image i u->blur->i->f; sleep(int);}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
 		Parser parser = new Parser(scanner);
@@ -2319,7 +2319,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg", "/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)5000readFromURL(http://i.imgur.com/O75rAPi.jpg)blurOpcopyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg)";
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)5readFromURL(http://i.imgur.com/O75rAPi.jpg)blurOpwrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg)";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -2361,7 +2361,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg", "/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)2readFromURL(http://i.imgur.com/O75rAPi.jpg)scalecopyImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg)";
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)2readFromURL(http://i.imgur.com/O75rAPi.jpg)scalewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg)";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -2403,7 +2403,7 @@ public class CodeGenVisitorTest {
 		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG"}; //create command line argument array to initialize params, none in this case
 		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
 		
-		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)copyImagegrayOpwrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)";
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)grayOpwrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)";
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		PrintStream oldStream = System.out;
 	    System.setOut(new PrintStream(outContent));
@@ -2497,7 +2497,7 @@ public class CodeGenVisitorTest {
 	}*/
 	
 	@Test
-	public void pro53() throws Exception {
+	public void prog53() throws Exception {
 		//scan, parse, and type check the program
 		String progname = "prog53";
 		//should print 115
@@ -2542,10 +2542,9 @@ public class CodeGenVisitorTest {
 	}
 	
 	@Test
-	public void pro54() throws Exception {
+	public void prog54() throws Exception {
 		//scan, parse, and type check the program
 		String progname = "prog54";
-		//should print 115
 		String input = progname + " integer f1, integer f2 {\n integer i i <- f1; f2 <- i;}";
 		Scanner scanner = new Scanner(input);
 		scanner.scan();
@@ -2584,5 +2583,929 @@ public class CodeGenVisitorTest {
 	    System.setOut(oldStream);
 		
 		instance.run();
+	}
+	
+	@Test
+	public void subImage() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "subImage";
+		String input = progname + " url u {image i image j image k frame f \nu -> i; \nu -> j; \n k <- i-j; k -> f -> show;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)subcopyImagecreateOrSetFrameshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void readFromURLandWriteToFile2() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "readFromURLandWriteToFile2";
+		String input = progname + " url u, \nfile out \n{image i frame f \nu -> gray -> i;\n i -> f -> show; \n i -> out;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg", "/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)grayOpcreateOrSetFrameshowImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg)";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void sleepImg() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "sleepImg";
+		String input = progname + " url u {image i frame f \nu -> i -> convolve -> f -> show;sleep 5;integer j j <- 42;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)convolvecreateOrSetFrameshowImage42";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void addImage() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "addImage";
+		String input = progname + " url u {image i image j image k frame f \nu -> i; \nu -> j; \n k <- i-j; k -> f -> show; sleep 5; k <- k + i; k -> f -> show; \n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)subcopyImagecreateOrSetFrameshowImageaddcopyImagecreateOrSetFrameshowImageshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void convolveImg() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "convolveImg";
+		String input = progname + " url u {image i frame f \nu -> i -> convolve -> f -> show;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)convolvecreateOrSetFrameshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void readFromURLandDisplay() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "readFromURLandDisplay";
+		String input = progname + " url u {image i frame f \nu -> i;i -> f -> show;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)createOrSetFrameshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void imgMove2() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "imgMove2";
+		String input = progname + " url u {image i frame f \nu -> i;i -> f -> show; \nsleep 5; \ninteger x \ninteger y \nx <- screenwidth;\ny <- screenheight; \nf -> move (x*3/4,y/4) -> show;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)createOrSetFrameshowImagegetScreenWidth1280getScreenHeight800moveFrameshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void subImage2() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "subImage2";
+		String input = progname + " url u {image i image j frame f \nu -> i; \nu -> j; \n i <- i-j; i -> f -> show;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)subcopyImagecreateOrSetFrameshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void modImage() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "modImage";
+		String input = progname + " url u {image i image j frame f \nu -> j; \n i <- j%128; i -> f -> show;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)modcopyImagecreateOrSetFrameshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void allTheOps() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "allTheOps";
+		String input = progname + " file u {image i frame f \nu -> i -> gray -> convolve -> blur -> i -> f -> show;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)grayOpconvolveblurOpcreateOrSetFrameshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void readFromURLandDisplayDisplay2() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "readFromURLandDisplayDisplay2";
+		String input = progname + " url u {image i frame f \nu -> i -> f -> show;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)createOrSetFrameshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void readFromURLandWriteToFile() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "readFromURLandWriteToFile";
+		String input = progname + " url u, \nfile out \n{image i frame f \nu -> i;i -> f -> show; \n i -> out;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg", "/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)createOrSetFrameshowImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg)";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void blurImg() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "blurImg";
+		String input = progname + " url u {image i frame f \nu -> i -> blur -> f -> show;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)blurOpcreateOrSetFrameshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void grayImg() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "grayImg";
+		String input = progname + " url u {image i frame f \nu -> i -> gray -> f -> show;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)grayOpcreateOrSetFrameshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void divImage() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "divImage";
+		String input = progname + " url u {image i image j frame f \nu -> j; \n i <- j/2; i -> f -> show;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)divcopyImagecreateOrSetFrameshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void readFromURLandWriteScaledImageToFile() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "readFromURLandWriteScaledImageToFile";
+		String input = progname + " url u, \nfile out \n{image i frame f \nu -> scale (3) -> i;i -> f -> show; \n i -> out;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg", "/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)scalecreateOrSetFrameshowImagewrite(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/TestUrl.jpg)";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void readFromFile() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "readFromFile";
+		String input = progname + " file u {image i frame f \nu -> i;i -> f -> show; \n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "readFromFile(/Users/chelseametcalf/Documents/workspace3/PLPHomework/bin/Oregon1.JPG)createOrSetFrameshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void barArrowGray() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "barArrowGray";
+		String input = progname + " url u {image i frame f \nu -> i |-> gray -> f -> show;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)grayOpcreateOrSetFrameshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void assignImage() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "assignImage";
+		String input = progname + " url u {image i image j frame f \nu -> i; j <- i;j -> f -> show;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)copyImagecreateOrSetFrameshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void scaleImage() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "scaleImage";
+		String input = progname + " url u {image i frame f \nu -> i -> f -> show; frame f2 \ni -> scale (3) -> f2 -> show;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)createOrSetFrameshowImagescalecreateOrSetFrameshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void imgMove() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "imgMove";
+		String input = progname + " url u {image i frame f \nu -> i;i -> f -> show; \nsleep 5; \ninteger x \ninteger y \nf -> xloc -> x; \nf -> yloc -> y; \nf -> move (x+100,y-100) -> show;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)createOrSetFrameshowImagegetXgetYmoveFrameshowImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
+	}
+	
+	@Test
+	public void assignImageAndFrame() throws Exception {
+		//scan, parse, and type check the program
+		String progname = "assignImageAndFrame";
+		String input = progname + " url u {image i image i1 frame f frame f1\nu -> i -> f -> show; frame f2 \ni -> scale (3) -> f2 -> show; \n i1 <- i; \n f2 <- f;\n}";
+		Scanner scanner = new Scanner(input);
+		scanner.scan();
+		Parser parser = new Parser(scanner);
+		ASTNode program = parser.parse();
+		TypeCheckVisitor v = new TypeCheckVisitor();
+		PLPRuntimeLog.initLog();
+		program.visit(v, null);
+		show(program);
+		
+		//generate code
+		CodeGenVisitor cv = new CodeGenVisitor(devel,grade,null);
+		byte[] bytecode = (byte[]) program.visit(cv, null);
+		
+		//output the generated bytecode
+		CodeGenUtils.dumpBytecode(bytecode);
+		
+		//write byte code to file 
+		String name = ((Program) program).getName();
+		String classFileName = "bin/" + name + ".class";
+		OutputStream output = new FileOutputStream(classFileName);
+		output.write(bytecode);
+		output.close();
+		System.out.println("wrote classfile to " + classFileName);
+		
+		// directly execute bytecode
+		String[] args = new String[]{"http://i.imgur.com/O75rAPi.jpg"}; //create command line argument array to initialize params		
+		Runnable instance = CodeGenUtils.getInstance(name, bytecode, args);
+		
+		String expOut = "getURL(http://i.imgur.com/O75rAPi.jpg)readFromURL(http://i.imgur.com/O75rAPi.jpg)createOrSetFrameshowImagescalecreateOrSetFrameshowImagecopyImage";
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		PrintStream oldStream = System.out;
+	    System.setOut(new PrintStream(outContent));
+	    instance.run();
+	    assertEquals(expOut, PLPRuntimeLog.getString());
+	    System.setOut(oldStream);
 	}
 }

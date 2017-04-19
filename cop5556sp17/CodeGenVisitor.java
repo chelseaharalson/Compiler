@@ -532,7 +532,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 				else {
 					int slot = d.getSlotNumber();
 					if (d.getFirstToken().get_TypeName() == IMAGE) {
-						mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "copyImage", PLPRuntimeImageOps.copyImageSig, false);
+						//mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "copyImage", PLPRuntimeImageOps.copyImageSig, false);
 						//System.out.println("Putting the top of the stack into an image after calling copyImage");
 						mv.visitInsn(DUP);
 						mv.visitVarInsn(ASTORE, slot);
@@ -590,7 +590,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		}
 		else {
 			int slot = d.getSlotNumber();
-			if (d.getFirstToken().get_TypeName() == IMAGE) {
+			if (d.getFirstToken().get_TypeName() == IMAGE || d.getFirstToken().get_TypeName() == FRAME) {
 				mv.visitVarInsn(ALOAD, slot);
 			}
 			else {
@@ -614,6 +614,9 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 			int slot = d.getSlotNumber();
 			if (d.getFirstToken().get_TypeName() == IMAGE) {
 				mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "copyImage", PLPRuntimeImageOps.copyImageSig, false);
+				mv.visitVarInsn(ASTORE, slot);
+			}
+			else if (d.getFirstToken().get_TypeName() == FRAME) {
 				mv.visitVarInsn(ASTORE, slot);
 			}
 			else {
