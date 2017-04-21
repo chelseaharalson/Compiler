@@ -398,8 +398,8 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		}
 		for (Statement s : block.getStatements()) {
 			s.visit(this, arg);
-			if (s instanceof BinaryChain && (((BinaryChain) s).get_TypeName() == TypeName.NONE || 
-					((BinaryChain) s).get_TypeName() == TypeName.FRAME)) {
+			if (s instanceof BinaryChain /*&& (((BinaryChain) s).get_TypeName() == TypeName.NONE || 
+					((BinaryChain) s).get_TypeName() == TypeName.FRAME)*/) {
 			    mv.visitInsn(POP);
 			 }
 		}
@@ -525,6 +525,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 				if (d instanceof ParamDec) {
 					String variableName = d.getIdent().getText();
 					String localDesc = d.getFirstToken().get_TypeName().getJVMTypeDesc();
+					mv.visitInsn(DUP);
 					mv.visitVarInsn(ALOAD, 0); // load "this" to later be used for PUTFIELD as objRef
 					mv.visitInsn(SWAP);
 					mv.visitFieldInsn(PUTFIELD, className, variableName, localDesc);
@@ -532,12 +533,11 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 				else {
 					int slot = d.getSlotNumber();
 					if (d.getFirstToken().get_TypeName() == IMAGE) {
-						//mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "copyImage", PLPRuntimeImageOps.copyImageSig, false);
-						//System.out.println("Putting the top of the stack into an image after calling copyImage");
 						mv.visitInsn(DUP);
 						mv.visitVarInsn(ASTORE, slot);
 					}
 					else {
+						mv.visitInsn(DUP);
 						mv.visitVarInsn(ISTORE, slot);
 					}
 				}
@@ -548,6 +548,7 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 				mv.visitVarInsn(ALOAD, 0); // load "this" to later be used for GETFIELD as objRef
 				mv.visitFieldInsn(GETFIELD, className, variableName, localDesc);
 				mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageIO.className, "write", PLPRuntimeImageIO.writeImageDesc, false);
+				mv.visitInsn(DUP);
 			}
 			else if (d.getFirstToken().get_TypeName() == TypeName.FRAME) {
 				int slot = d.getSlotNumber();
@@ -662,21 +663,6 @@ public class CodeGenVisitor implements ASTVisitor, Opcodes {
 		else if (imageOpChain.firstToken.kind == OP_WIDTH) {
 			mv.visitMethodInsn(INVOKEVIRTUAL, PLPRuntimeImageIO.BufferedImageClassName, "getWidth", PLPRuntimeImageOps.getWidthSig, false);
 		}
-		/*else if (imageOpChain.firstToken.kind == PLUS) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "add", PLPRuntimeImageOps.addSig, false);
-		}
-		else if (imageOpChain.firstToken.kind == MINUS) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "sub", PLPRuntimeImageOps.subSig, false);
-		}
-		else if (imageOpChain.firstToken.kind == TIMES) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "mul", PLPRuntimeImageOps.mulSig, false);
-		}
-		else if (imageOpChain.firstToken.kind == DIV) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "div", PLPRuntimeImageOps.divSig, false);
-		}
-		else if (imageOpChain.firstToken.kind == MOD) {
-			mv.visitMethodInsn(INVOKESTATIC, PLPRuntimeImageOps.JVMName, "mod", PLPRuntimeImageOps.modSig, false);
-		}*/
 		return null;
 	}
 
